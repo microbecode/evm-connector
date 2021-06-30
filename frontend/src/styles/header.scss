@@ -14,11 +14,11 @@ $border-bottom: 2px;
 
   .navbar-light .navbar-nav .nav-link:hover,
   .navbar-light .navbar-nav .nav-link.active {
-    border-bottom: $border-bottom solid #09D1B7;
+    border-bottom: $border-bottom solid #090cd1;
     padding-bottom: $padding-y - $border-bottom;
   }
 
   .navbar-light .navbar-toggler {
-    background: #09D1B7;
+    background: #090cd1;
   }
 }
