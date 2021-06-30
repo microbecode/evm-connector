@@ -1,0 +1,13 @@
+[build]
+  command = "CI='' npm i && react-scripts build"
+  publish = "build"
+
+[build.environment]
+#  YARN_VERSION = "1.22.10"
+#  YARN_FLAGS = "--production=false"
+
+# support SPA setup
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

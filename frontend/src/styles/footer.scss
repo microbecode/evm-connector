@@ -1,0 +1,26 @@
+.footer-container {
+  .footer-logo {
+    img {
+      width: 13rem;
+    }
+  }
+
+  .social-img {  
+    &:hover {
+      -webkit-filter: none;
+      -moz-filter: none;
+      -ms-filter: none;
+      -o-filter: none;
+      filter: none;
+      filter: none;
+    }
+  }
+
+  .modal-link {
+    &:hover {
+      cursor: pointer;
+      color: #09D1B7;
+      text-decoration: underline;
+    }
+  }
+}

@@ -1,0 +1,270 @@
+@import "node_modules/normalize-scss/sass/normalize";
+
+@include normalize();
+
+@font-face {
+  font-family: 'Impact';
+  src: local('Impact'), url(./fonts/impact.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: local('Futura'), url(./fonts/futura.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: local('Avenir'), url(./fonts/avenir.otf) format('opentype');
+}
+
+$dark-color: #121212;
+$light-color: white;
+
+body {
+  color: $dark-color;
+  background: $light-color;
+
+  .container-fluid {
+    padding: 0;
+  }
+
+  .theme-container {
+    background: #F5F5F5;
+  }
+
+  .theme-card {
+    background-color: #E8E8E8;
+  }
+
+  .form-group > input {
+    background: white;
+  }
+
+  .create-container .form-group > input {
+    background: #F0F0F0;
+  }
+
+  .feature-container {
+    background: white;
+  }
+
+  .social-img {
+    -webkit-filter: brightness(0);
+    -moz-filter: brightness(0);
+    -ms-filter: brightness(0);
+    -o-filter: brightness(0);
+    filter: brightness(0);
+  }
+
+
+  a {
+    color: #171717;
+
+    &:hover {
+      color: #09D1B7;
+    }
+  }
+
+  .img-container {
+    background: #d8d8d8;
+    background: linear-gradient(#d8d8d8 0%, #f0f0f0 100%);
+    background: -webkit-linear-gradient(#d8d8d8 0%, #f0f0f0 100%);
+  }
+
+  .header-container {
+    background: white;
+    border-bottom: 1px solid #D6D6D6;
+  }
+
+  .theme-button-container {
+    background: #F5F5F5;
+  }
+
+  .navbar-light .navbar-nav .nav-link:hover,
+  .navbar-light .navbar-nav .nav-link.active {
+    color: #171717;
+  }
+
+  .card-header {
+    background: white;
+
+    &::after {
+      border: solid #171717;
+      border-width: 0 3px 3px 0;
+    }
+  }
+
+  .faq-container {
+    .card {
+        border: 0 !important;
+        border-bottom: 1px solid rgba(23, 23, 23, 0.1) !important;
+    }
+  }
+
+  .btn.btn-link {
+    color: #171717;
+  }
+
+  .modal-content {
+    background: white;
+    color: #171717;
+    border-radius: 20px;
+    border: 3px dashed #09D1B7;
+
+    .close span {
+      color: #171717;
+    }
+  }
+
+  .create-container {    
+    .upload-img {
+      background-color: #F0F0F0;
+    }
+  
+    .upload-label {
+      color: #7E7E7E;
+    }
+  }
+
+  .form-control {
+    color: #333333;
+    border-radius: 20px;
+    border: 0;
+    padding: 35px;
+
+    &:focus {
+      color: inherit;
+    }
+  }
+
+  &.dark-theme {
+    background: $dark-color;
+    color: $light-color;
+
+    .theme-container {
+      background: #1A1A1A;
+    }
+
+    .theme-card {
+      background-color: #343434;
+    }
+
+    .form-group > input {
+      background: #333333;
+    }
+
+    .create-container .form-group > input {
+      background: #333333;
+    }
+
+    .feature-container {
+      background: #343434;
+    }
+
+    .social-img {
+      -webkit-filter: brightness(0) invert(1);
+      -moz-filter: brightness(0) invert(1);
+      -ms-filter: brightness(0) invert(1);
+      -o-filter: brightness(0) invert(1);
+      filter: brightness(0) invert(1);
+    }
+
+    a {
+      color: white;
+
+      &:hover {
+        color: #09D1B7;
+      }
+    }
+
+    .img-container {
+      background: #343434;
+      background: linear-gradient(#343434 0%, #1a1a1a 100%);
+      background: -webkit-linear-gradient(#343434 0%, #1a1a1a 100%);
+    }
+
+    .header-container {
+      background: #1A1A1A;
+      border-bottom: 1px solid #393939;
+    }
+
+    .theme-button-container {
+      background: #292929;
+    }
+
+    .navbar-light .navbar-nav .nav-link:hover,
+    .navbar-light .navbar-nav .nav-link.active {
+      color: white;
+    }
+
+    .card-header {
+      background: #121212;
+
+      &::after {
+        border: solid white;
+        border-width: 0 3px 3px 0;
+      }
+    }
+
+    .faq-container {
+      .card {
+          border: 0 !important;
+          border-bottom: 1px solid rgba(255, 255, 255, .1) !important;
+      }
+    }
+
+    .btn.btn-link {
+      color: white;
+    }
+
+    .modal-content {
+      background: #121212;
+      color: white;
+
+      .close span {
+        color: white;
+      }
+    }
+
+    .create-container {    
+      .upload-img {
+        background-color: #333333;
+      }
+    }
+
+    .form-control {
+      color: white;
+    }
+  }
+
+  font-family: 'Futura';
+
+  h1, h2, h2, h3, h4, h5, h6 {
+    font-family: 'Impact';
+  }
+
+  h2 {
+    font-size: 4rem;
+  }
+
+  footer {
+    font-family: 'Avenir';
+  }
+}
+
+.card {
+  background: inherit;
+  
+  .card-header {
+    cursor: pointer;
+  }
+}
+
+.btn-link, .btn-link:hover {
+  color: $dark-color;
+}
+
+.btn:focus, .btn:active {
+  outline: none !important;
+  box-shadow: none;
+}

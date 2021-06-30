@@ -1,0 +1,18 @@
+.alert {
+    position: fixed !important;
+    z-index: 999;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin-bottom: 0 !important;
+
+    &.alert-danger {
+        background-color: #DF54FC;
+        color: #121212;
+        border: 0;
+    }
+
+    .close > span {
+        color: white;
+    }
+}
