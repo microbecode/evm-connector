@@ -23,7 +23,7 @@ export function Footer() {
           </Col>
           <Col xs={12} md={6} lg={4} className="mt-4 mt-md-0">
             <Row className="justify-content-center">
-              <p>Got questions? Ask us on our channels</p>
+              <p>Got questions? Let's figure out later where you could ask...</p>
             </Row>
             <Row className="justify-content-center">
               
