@@ -12,6 +12,7 @@ import { Header } from "./common/Header";
 import { NetworkErrorMessage } from "./NetworkErrorMessage";
 import { Progress } from "./Progress";
 import { Copyright } from "./common/Copyright";
+import { ContractInteract } from "./contract/ContractInteract";
 
 
 // This is the Hardhat Network id, you might change it in the hardhat.config.js
@@ -161,6 +162,8 @@ export class Dapp extends React.Component<{}, DappState> {
                   )}
                 </div>
               </div>
+
+              <ContractInteract></ContractInteract>
 
               <Footer />
 
