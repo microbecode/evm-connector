@@ -31,7 +31,7 @@ export function ContractInteract() {
   }
 
   const updateSig = () => {
-    let sig = funcName;
+    let sig = funcName.split(' ')[0]; // ignore all after space
     const addParam = (params : FunctionParam[]) => {
       let inSig = '';
       inSig += '(';
@@ -193,7 +193,7 @@ export function ContractInteract() {
             value={item}     
             checked={item == funcType}
             />
-              {item}
+              {item == 'nonpayable' ? 'default' : item}
             </span>
             
             
@@ -222,7 +222,7 @@ export function ContractInteract() {
         {functionInputParams.map((item, i) => { return (
           <div key={i}>
             <label>Input parameter {i} type:</label>
-            <select onChange={(e) => { changeInputParam(i, e.target.value) }}>
+            <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType}>
               {Object.keys(UnitTypes).map((item2, i2) => {
                 return (
                 <option key={i2} value={item2}>{item2}</option>
