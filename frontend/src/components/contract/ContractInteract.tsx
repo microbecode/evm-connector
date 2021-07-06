@@ -45,6 +45,9 @@ export function ContractInteract() {
     }
     
     sig += addParam(functionInputParams);
+    if (funcType != 'nonpayable') {
+      sig += ' ' + funcType;
+    }
     sig += ' returns ';
     sig += addParam(functionOutputParams);
 
@@ -86,7 +89,7 @@ export function ContractInteract() {
 
   useEffect(() => {
     updateSig();
-  }, [functionInputParams, functionOutputParams, funcName]);
+  }, [functionInputParams, functionOutputParams, funcName, funcType]);
 
   const changeInputParam = (index, newType) => {
     const copy = [...functionInputParams];
@@ -201,6 +204,7 @@ export function ContractInteract() {
         <label>Function signature</label>
         <input
           type="text" 
+          style={{ width: '500px'}}
           disabled={true}
           placeholder="Enter signature" 
           onChange={(e) => { setFuncSignature(e.target.value) }}
