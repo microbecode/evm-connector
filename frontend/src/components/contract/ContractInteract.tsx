@@ -60,6 +60,11 @@ export function ContractInteract() {
     ]);
   }
 
+  const removeInputParam = (index : number) => {
+    const copy = functionInputParams.filter((_, i) => i !== index);
+    setFunctionInputParams(copy);
+  }
+
   const addOutputParam = () =>{
     const newParam : FunctionParam = {
       unitType : UnitTypes.string,
@@ -69,6 +74,11 @@ export function ContractInteract() {
       ...functionOutputParams,
       newParam
     ]);
+  }
+
+  const removeOutputParam = (index : number) => {
+    const copy = functionOutputParams.filter((_, i) => i !== index);
+    setFunctionOutputParams(copy);
   }
 
   useEffect(() => {
@@ -84,7 +94,7 @@ export function ContractInteract() {
   }
 
   const changeOutputParam = (index, newType) => {
-    const copy = [...functionInputParams];
+    const copy = [...functionOutputParams];
     const item = {...copy[index]};
     item.unitType = newType;
     copy[index] = item;
@@ -168,21 +178,21 @@ export function ContractInteract() {
       <div>
         <label>Function type: </label>
         {Object.keys(FuncTypes).filter(k => Number.isNaN(+k)).map((item, i) => {
-                return (
-                  <>
-                  <input
-                  key={i}
-                  type="radio" 
-                  name="funcType"
-                  onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
-                  value={item}     
-                  checked={item == funcType}
-                  />
-                    {item}
-                  </>
-                  
-                  
-                )})}
+          return (
+            <span key={i}>
+            <input
+            
+            type="radio" 
+            name="funcType"
+            onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
+            value={item}     
+            checked={item == funcType}
+            />
+              {item}
+            </span>
+            
+            
+          )})}
         
       </div>
       <div>
@@ -207,12 +217,13 @@ export function ContractInteract() {
           <div key={i}>
             <label>Input parameter {i} type:</label>
             <select onChange={(e) => { changeInputParam(i, e.target.value) }}>
-              {Object.keys(UnitTypes).map((item, i) => {
+              {Object.keys(UnitTypes).map((item2, i2) => {
                 return (
-                <option key={i} value={item}>{item}</option>
+                <option key={i2} value={item2}>{item2}</option>
                 )})}
           
-        </select>
+            </select>
+            <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
           </div>
         )})}
       
@@ -224,13 +235,14 @@ export function ContractInteract() {
         {functionOutputParams.map((item, i) => { return (
           <div key={i}>
             <label>Output parameter {i} type:</label>
-            <select onChange={(e) => { changeOutputParam(i, e.target.value) }}>
-              {Object.keys(UnitTypes).map((item, i) => {
+            <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType}>
+              {Object.keys(UnitTypes).map((item2, i2) => {
                 return (
-                <option key={i} value={item}>{item}</option>
+                  <option key={i2} value={item2}>{item2}</option>
                 )})}
           
-        </select>
+            </select>
+            <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
           </div>
         )})}
       
