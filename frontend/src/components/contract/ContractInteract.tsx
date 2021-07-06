@@ -4,7 +4,9 @@ import { isJSDocOptionalType } from "typescript";
 import { RawAbiDefinition, RawAbiParameter, StateMutability } from "./types";
 
 export function ContractInteract() {
-  const [contractAddress, setContractAddress] = useState<string>('0x5FbDB2315678afecb367f032d93F642f64180aa3');
+  //const [contractAddress, setContractAddress] = useState<string>('0x5FbDB2315678afecb367f032d93F642f64180aa3');
+  const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
+  // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
   const [funcName, setFuncName] = useState<string>('');
   const [funcType, setFuncType] = useState<StateMutability>('nonpayable');
   const [funcSignature, setFuncSignature] = useState<string>('');
@@ -12,12 +14,13 @@ export function ContractInteract() {
   const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
 
   interface FunctionParam {
-    unitType : UnitTypes,
-    name: string
+    unitType: UnitTypes,
+    value: string
   }
   enum UnitTypes  {
     string = 'string',
-    address = 'address'
+    address = 'address',
+    uint = 'uint256'
   };
 
   enum FuncTypes {
@@ -52,7 +55,7 @@ export function ContractInteract() {
   const addInputParam = () =>{
     const newParam : FunctionParam = {
       unitType : UnitTypes.string,
-      name: 'enterName'
+      value: ''
     };
     setFunctionInputParams([
       ...functionInputParams,
@@ -68,7 +71,7 @@ export function ContractInteract() {
   const addOutputParam = () =>{
     const newParam : FunctionParam = {
       unitType : UnitTypes.string,
-      name: 'enterName'
+      value: ''
     };
     setFunctionOutputParams([
       ...functionOutputParams,
@@ -101,8 +104,12 @@ export function ContractInteract() {
     setFunctionOutputParams(copy);
   }
 
-  const changeFuncType = (value : string) => {
-
+  const setInputParamValue = (index, value) => {
+    const copy = [...functionInputParams];
+    const item = {...copy[index]};
+    item.value = value;
+    copy[index] = item;
+    setFunctionInputParams(copy);
   }
 
   const refContract = async () => {
@@ -111,7 +118,7 @@ export function ContractInteract() {
     const inputParams : RawAbiParameter[] = [];
     functionInputParams.forEach((item) => {
       const para : RawAbiParameter = {
-        name: item.name,
+        name: '',
         type: item.unitType
       };
       inputParams.push(para);
@@ -120,7 +127,7 @@ export function ContractInteract() {
     const outputParams : RawAbiParameter[] = [];
     functionOutputParams.forEach((item) => {
       const para : RawAbiParameter = {
-        name: item.name,
+        name: '',
         type: item.unitType
       };
       outputParams.push(para);
@@ -134,25 +141,20 @@ export function ContractInteract() {
       outputs: outputParams
     };
 
-/*     const abi = [ {
-      "type":"function",
-      "inputs": [{"name":"a","type":"uint256"}],
-      "name":"foo",
-      "outputs": [],
-      "stateMutability": "view"
-      }]; */
-
-
-
     const contract = new ethers.Contract(
       contractAddress,
       JSON.stringify([abi]),
       provider.getSigner(0),
     );
 
-    const res = await contract.name();
+    const inputValues = functionInputParams.map((param, i) => { 
+      return param.value;
+    });
+    console.log('inputting', inputValues);
 
-    console.log('contract', contract, res);
+    const res = await contract[funcName](...inputValues);
+
+    console.log('contract', contract, res.toString());
   }
 
   return (
@@ -223,6 +225,8 @@ export function ContractInteract() {
                 )})}
           
             </select>
+            <label>Value:</label>
+            <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }}></input>
             <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
           </div>
         )})}

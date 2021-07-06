@@ -14,20 +14,6 @@ import { Progress } from "./Progress";
 import { Copyright } from "./common/Copyright";
 import { ContractInteract } from "./contract/ContractInteract";
 
-
-// This is the Hardhat Network id, you might change it in the hardhat.config.js
-// Here's a list of network ids https://docs.metamask.io/guide/ethereum-provider.html#properties
-// to use when deploying to other networks.
-const HARDHAT_NETWORK_ID = "31337";
-const MAIN_NETWORK_ID = "1";
-const ROPSTEN_NETWORK_ID = "3";
-
-const SUPPORTED_NETWORK_IDS = [
-  HARDHAT_NETWORK_ID,
-  MAIN_NETWORK_ID,
-  ROPSTEN_NETWORK_ID
-];
-
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
 
@@ -196,11 +182,6 @@ export class Dapp extends React.Component<{}, DappState> {
 
     // Once we have the address, we can initialize the application.
 
-    // First we check the network
-    if (!this._checkNetwork()) {
-      return;
-    }
-
     this._initialize(selectedAddress);
 
     // We reinitialize it whenever the user changes their account.
@@ -275,20 +256,5 @@ export class Dapp extends React.Component<{}, DappState> {
   // This method resets the state
   _resetState() {
     this.setState(this.initialState);
-  }
-
-  // This method checks if Metamask selected network is Localhost:8545
-  _checkNetwork() {
-    //if (window.ethereum.networkVersion === HARDHAT_NETWORK_ID) {
-    if (SUPPORTED_NETWORK_IDS.includes(window.ethereum.networkVersion)) {
-      return true;
-    }
-
-    this.setState({
-      networkError:
-        "Please connect to the Metamask and choose one of the supported networks.",
-    });
-
-    return false;
   }
 }
