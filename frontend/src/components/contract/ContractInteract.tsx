@@ -1,12 +1,15 @@
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import { RawAbiDefinition, RawAbiParameter } from "./types";
+import { isJSDocOptionalType } from "typescript";
+import { RawAbiDefinition, RawAbiParameter, StateMutability } from "./types";
 
 export function ContractInteract() {
   const [contractAddress, setContractAddress] = useState<string>('0x5FbDB2315678afecb367f032d93F642f64180aa3');
   const [funcName, setFuncName] = useState<string>('');
+  const [funcType, setFuncType] = useState<StateMutability>('nonpayable');
   const [funcSignature, setFuncSignature] = useState<string>('');
-  const [functionParams, setFunctionParams] = useState<FunctionParam[]>([]);
+  const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
+  const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
 
   interface FunctionParam {
     unitType : UnitTypes,
@@ -17,67 +20,109 @@ export function ContractInteract() {
     address = 'address'
   };
 
+  enum FuncTypes {
+    nonpayable,
+    view,
+    pure,
+    payable
+  }
+
   const updateSig = () => {
-    let sig = funcName + '(';
-    let paramTypes = [];
-    functionParams.forEach((item) => {
-      paramTypes.push(item.unitType);
-    });
-    sig += paramTypes.flat();
-    sig += ')';
+    let sig = funcName;
+    const addParam = (params : FunctionParam[]) => {
+      let inSig = '';
+      inSig += '(';
+      let paramTypes = [];
+      params.forEach((item) => {
+        paramTypes.push(item.unitType);
+      });
+      inSig += paramTypes.flat();
+      inSig += ')';
+      return inSig;
+    }
+    
+    sig += addParam(functionInputParams);
+    sig += ' returns ';
+    sig += addParam(functionOutputParams);
+
+
     setFuncSignature(sig);
   }
 
-  const addParam = () =>{
+  const addInputParam = () =>{
     const newParam : FunctionParam = {
       unitType : UnitTypes.string,
       name: 'enterName'
     };
-    setFunctionParams([
-      ...functionParams,
+    setFunctionInputParams([
+      ...functionInputParams,
+      newParam
+    ]);
+  }
+
+  const addOutputParam = () =>{
+    const newParam : FunctionParam = {
+      unitType : UnitTypes.string,
+      name: 'enterName'
+    };
+    setFunctionOutputParams([
+      ...functionOutputParams,
       newParam
     ]);
   }
 
   useEffect(() => {
     updateSig();
-  }, [functionParams, funcName]);
+  }, [functionInputParams, functionOutputParams, funcName]);
 
-  const changeParam = (index, newType) => {
-    const copy = [...functionParams];
+  const changeInputParam = (index, newType) => {
+    const copy = [...functionInputParams];
     const item = {...copy[index]};
     item.unitType = newType;
     copy[index] = item;
-    setFunctionParams(copy);
+    setFunctionInputParams(copy);
+  }
+
+  const changeOutputParam = (index, newType) => {
+    const copy = [...functionInputParams];
+    const item = {...copy[index]};
+    item.unitType = newType;
+    copy[index] = item;
+    setFunctionOutputParams(copy);
+  }
+
+  const changeFuncType = (value : string) => {
+
   }
 
   const refContract = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const params : RawAbiParameter[] = [];
-    functionParams.forEach((item) => {
+    const inputParams : RawAbiParameter[] = [];
+    functionInputParams.forEach((item) => {
       const para : RawAbiParameter = {
         name: item.name,
         type: item.unitType
       };
-      params.push(para);
+      inputParams.push(para);
+    });
+
+    const outputParams : RawAbiParameter[] = [];
+    functionOutputParams.forEach((item) => {
+      const para : RawAbiParameter = {
+        name: item.name,
+        type: item.unitType
+      };
+      outputParams.push(para);
     });
 
     const abi : RawAbiDefinition = {
       name: funcName,
       type: 'function',
-      inputs: params,
-      stateMutability: 'view',
-      outputs: [{"name":"hmm","type":"string"}]
+      inputs: inputParams,
+      stateMutability: funcType,
+      outputs: outputParams
     };
-
-    const abi2 = [ {
-      "type":"function",
-      "inputs": [],
-      "name": funcName,
-      "outputs": [],
-      "stateMutability": "view"
-      }];
 
 /*     const abi = [ {
       "type":"function",
@@ -121,25 +166,65 @@ export function ContractInteract() {
         />
       </div>
       <div>
+        <label>Function type: </label>
+        {Object.keys(FuncTypes).filter(k => Number.isNaN(+k)).map((item, i) => {
+                return (
+                  <>
+                  <input
+                  key={i}
+                  type="radio" 
+                  name="funcType"
+                  onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
+                  value={item}     
+                  checked={item == funcType}
+                  />
+                    {item}
+                  </>
+                  
+                  
+                )})}
+        
+      </div>
+      <div>
         <label>Function signature</label>
         <input
           type="text" 
+          disabled={true}
           placeholder="Enter signature" 
           onChange={(e) => { setFuncSignature(e.target.value) }}
-          value={funcSignature}       
+          value={funcSignature}    
+             
         />
       </div>
       <div>
         <input type="button" value='Doit' onClick={refContract}></input>
       </div>
       <div>
-        <input type="button" value='Add parameter' onClick={addParam}></input>
+        <input type="button" value='Add input parameter' onClick={addInputParam}></input>
       </div>
       <div>
-        {functionParams.map((item, i) => { return (
+        {functionInputParams.map((item, i) => { return (
           <div key={i}>
-            <label>Parameter {i} type:</label>
-            <select onChange={(e) => { changeParam(i, e.target.value) }}>
+            <label>Input parameter {i} type:</label>
+            <select onChange={(e) => { changeInputParam(i, e.target.value) }}>
+              {Object.keys(UnitTypes).map((item, i) => {
+                return (
+                <option key={i} value={item}>{item}</option>
+                )})}
+          
+        </select>
+          </div>
+        )})}
+      
+      </div>
+      <div>
+        <input type="button" value='Add output parameter' onClick={addOutputParam}></input>
+      </div>
+      <div>
+        {functionOutputParams.map((item, i) => { return (
+          <div key={i}>
+            <label>Output parameter {i} type:</label>
+            <select onChange={(e) => { changeOutputParam(i, e.target.value) }}>
               {Object.keys(UnitTypes).map((item, i) => {
                 return (
                 <option key={i} value={item}>{item}</option>
