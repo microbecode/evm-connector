@@ -27,11 +27,11 @@ async function main() {
   // set init params
   const owner = await deployer.getAddress();
 
-  const MockERC20 = await ethers.getContractFactory("MockERC20");
-  const token = await MockERC20.deploy("Token", "TK");
-  await token.deployed();
+  const sampleFact = await ethers.getContractFactory("Sample");
+  const sample = await sampleFact.deploy();
+  await sample.deployed();
 
-  console.log('token addre', token.address);
+  console.log('contr addre', sample.address);
 
   console.log('all done')
 }
