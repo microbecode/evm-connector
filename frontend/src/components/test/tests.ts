@@ -59,7 +59,7 @@ export const fillTest = (params : Params) => {
       case 7:
         params.setFuncName("ReturnDefault");
         params.setFuncType("nonpayable");
-        params.setFunctionInputParams([
+        params.setFunctionOutputParams([
             { unitType: UnitTypes.uint, value: 6 },
             { unitType: UnitTypes.string, value: "hmm" },
             { unitType: UnitTypes.address, value: dummyAddr },

@@ -2,6 +2,7 @@ import { BytesLike, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability } from "../types";
+import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 
 export function ContractInteract() {
   const [contractAddress, setContractAddress] = useState<string>('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
@@ -12,22 +13,25 @@ export function ContractInteract() {
   const [funcSignature, setFuncSignature] = useState<string>('');
   const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
   const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
+  const [waitTxHash, setWaitTxHash] = useState<string>('');
+  const [previousTxHash, setPreviousTxHash] = useState<string>('');
 
-const doTest = (index : number) => {
-  setContractAddress('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
-  fillTest({
-      index, 
-      setFuncName, 
-      setFuncType,
-      setFunctionInputParams,
-      setFunctionOutputParams,
-      execute
-    }
-)}
+  const doTest = (index : number) => {
+    setContractAddress('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
+    fillTest({
+        index, 
+        setFuncName, 
+        setFuncType,
+        setFunctionInputParams,
+        setFunctionOutputParams,
+        execute
+      }
+  )}
 
-useEffect(() => {
-  doTest(9);
-}, []);
+  useEffect(() => {
+    doTest(7);
+  }, []);
+
 
 
   const updateSig = () => {
@@ -164,18 +168,25 @@ useEffect(() => {
     console.log('inputting', inputValues);
 
     const res = await contract.functions[funcName](...inputValues);
+    if (res.wait) {
+      setWaitTxHash(res.hash);
+      setPreviousTxHash(res.hash);
+      console.log('awaiting tx', res);
+      await res.wait();   
+      setWaitTxHash(null);   
+      return;
+    }
 
     const copy = [...functionOutputParams];
     for (let index = 0; index < functionOutputParams.length; index++) {
-      //setOutputParamValue(i, res[i]);
-      
+      //setOutputParamValue(i, res[i]);      
       const item = {...copy[index]};
       item.value = res[index];
       copy[index] = item;    
     }
     setFunctionOutputParams(copy);
 
-    console.log('contract', contract, res, res.toString());
+    console.log('result', res, res.toString());
   }
 
   const getItemValue = (item : FunctionParam) => {
@@ -237,15 +248,13 @@ useEffect(() => {
           value={funcSignature}    
         />
       </div>
-      <div>
-        <input type="button" value='Doit' onClick={execute}></input>
-      </div>
+      
       <div>
         <input type="button" value='Add input parameter' onClick={addInputParam}></input>
       </div>
       <div>
         {functionInputParams.map((item, i) => { 
-          console.log('found item', item)
+          //console.log('found item', item)
           return (
           <div key={i}>
             <label>Input parameter {i} type:</label>
@@ -268,7 +277,7 @@ useEffect(() => {
       </div>
       <div>
         {functionOutputParams.map((item, i) => { 
-          console.log('output', item)
+          //console.log('output', item)
           return (
           <div key={i}>
             <label>Output parameter {i} type:</label>
@@ -285,6 +294,17 @@ useEffect(() => {
           </div>
         )})}
       </div>
+      <div>
+        <input type="button" value='Execute' onClick={execute}></input>
+      </div>
+      {previousTxHash &&
+        <div>
+        <label>Previous transaction hash:</label>
+        <input type="text" value={previousTxHash}></input>
+      </div>
+      }      
+      {waitTxHash && <WaitingForTransactionMessage txHash={waitTxHash}></WaitingForTransactionMessage> }
     </form>
+    
   );
 }
