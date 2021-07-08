@@ -26,7 +26,7 @@ const doTest = (index : number) => {
 )}
 
 useEffect(() => {
-  doTest(2);
+  doTest(9);
 }, []);
 
 
@@ -115,6 +115,14 @@ useEffect(() => {
     setFunctionInputParams(copy);
   }
 
+  const setOutputParamValue = (index, value) => {
+    const copy = [...functionOutputParams];
+    const item = {...copy[index]};
+    item.value = value;
+    copy[index] = item;
+    setFunctionOutputParams(copy);
+  }
+
   const execute = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
@@ -157,10 +165,23 @@ useEffect(() => {
 
     const res = await contract.functions[funcName](...inputValues);
 
+    const copy = [...functionOutputParams];
+    for (let index = 0; index < functionOutputParams.length; index++) {
+      //setOutputParamValue(i, res[i]);
+      
+      const item = {...copy[index]};
+      item.value = res[index];
+      copy[index] = item;    
+    }
+    setFunctionOutputParams(copy);
+
     console.log('contract', contract, res, res.toString());
   }
 
   const getItemValue = (item : FunctionParam) => {
+    if (!item.value) {
+      return '';
+    }
     if (item.unitType == UnitTypes.bytes) {
       return ethers.utils.toUtf8String(item.value as BytesLike);
     }
@@ -246,16 +267,20 @@ useEffect(() => {
         <input type="button" value='Add output parameter' onClick={addOutputParam}></input>
       </div>
       <div>
-        {functionOutputParams.map((item, i) => { return (
+        {functionOutputParams.map((item, i) => { 
+          console.log('output', item)
+          return (
           <div key={i}>
             <label>Output parameter {i} type:</label>
             <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType}>
               {Object.keys(UnitTypes).map((item2, i2) => {
                 return (
-                  <option key={i2} value={item2}>{item2}</option>
+                  <option key={i2} value={UnitTypes[item2]}>{item2}</option>
                 )})}
           
             </select>
+            <label>Result value:</label>
+            <input type="text" disabled={true} value={getItemValue(item)}></input>
             <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
           </div>
         )})}

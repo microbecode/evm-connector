@@ -19,6 +19,20 @@ export const fillTest = (params : Params) => {
         params.setFuncType("nonpayable");
       break;
       case 2:
+        params.setFuncName("NoReturnDefault");
+        params.setFuncType("nonpayable");
+        params.setFunctionInputParams([
+            { unitType: UnitTypes.uint, value: 6 },
+            { unitType: UnitTypes.string, value: "hmm" },
+            { unitType: UnitTypes.address, value: dummyAddr },
+            { unitType: UnitTypes.bytes, value: ethers.utils.toUtf8Bytes("hmm") }
+        ]);
+      break;
+      case 3:
+        params.setFuncName("NoReturnView");
+        params.setFuncType("view");
+      break;
+      case 4:
         params.setFuncName("NoReturnView");
         params.setFuncType("view");
         params.setFunctionInputParams([
@@ -26,49 +40,52 @@ export const fillTest = (params : Params) => {
             { unitType: UnitTypes.string, value: "hmm" },
             { unitType: UnitTypes.address, value: dummyAddr },
             { unitType: UnitTypes.bytes, value: ethers.utils.toUtf8Bytes("hmm") }
-        ])
+        ]);
       break;
-/*
-    function NoReturnDefault(uint a, string calldata b, address c, bytes calldata d) public {
-
-    }  
-    function NoReturnView() public view {
-
-    } 
-    function NoReturnView(uint a, string calldata b, address c, bytes calldata d) public view {
-
-    } 
-    function NoReturnPayable() public payable {
-
-    } 
-    function NoReturnPayable(uint a, string calldata b, address c, bytes calldata d) public payable {
-
-    } 
-
-    function ReturnDefault() public returns(uint, string memory, address, bytes memory)  {
-        stor = 5;
-        string memory b = "hello";
-        address c = msg.sender;
-        bytes memory d = "there";
-        return (stor,b,c,d);
-    } 
-
-    function ReturnNamedDefault() public returns(uint a, string memory b, address c, bytes memory d)  {
-        stor = 5;
-        a = stor;
-        b = string("hello");
-        c = msg.sender;
-        d = "there";
-    } 
-    
-    function ReturnView() public view returns(uint, string memory, address, bytes memory)  {
-        uint a = 5;
-        string memory b = "hello";
-        address c = msg.sender;
-        bytes memory d = "there";
-        return (a,b,c,d);
-    } 
-      */
+      case 5:
+        params.setFuncName("NoReturnPayable");
+        params.setFuncType("payable");
+      break;
+      case 6:
+        params.setFuncName("NoReturnPayable");
+        params.setFuncType("payable");
+        params.setFunctionInputParams([
+            { unitType: UnitTypes.uint, value: 6 },
+            { unitType: UnitTypes.string, value: "hmm" },
+            { unitType: UnitTypes.address, value: dummyAddr },
+            { unitType: UnitTypes.bytes, value: ethers.utils.toUtf8Bytes("hmm") }
+        ]);
+      break;
+      case 7:
+        params.setFuncName("ReturnDefault");
+        params.setFuncType("nonpayable");
+        params.setFunctionInputParams([
+            { unitType: UnitTypes.uint, value: 6 },
+            { unitType: UnitTypes.string, value: "hmm" },
+            { unitType: UnitTypes.address, value: dummyAddr },
+            { unitType: UnitTypes.bytes, value: ethers.utils.toUtf8Bytes("hmm") }
+        ]);
+      break;
+      case 8:
+        params.setFuncName("ReturnNamedDefault");
+        params.setFuncType("nonpayable");
+        params.setFunctionOutputParams([
+            { unitType: UnitTypes.uint },
+            { unitType: UnitTypes.string },
+            { unitType: UnitTypes.address },
+            { unitType: UnitTypes.bytes }
+        ]);
+      break;
+      case 9:
+        params.setFuncName("ReturnView");
+        params.setFuncType("view");
+        params.setFunctionOutputParams([
+            { unitType: UnitTypes.uint },
+            { unitType: UnitTypes.string },
+            { unitType: UnitTypes.address },
+            { unitType: UnitTypes.bytes }
+        ]);
+      break;
     }
 
     const delay = (ms : number) => new Promise(res => setTimeout(res, ms));

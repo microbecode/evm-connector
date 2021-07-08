@@ -36,7 +36,7 @@ export interface RawAbiDefinition {
 
   export interface FunctionParam {
     unitType: UnitTypes,
-    value: string | number | Uint8Array | BytesLike
+    value?: string | number | Uint8Array | BytesLike
 }
 
 export enum UnitTypes  {
