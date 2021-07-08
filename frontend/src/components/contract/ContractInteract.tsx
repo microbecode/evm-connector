@@ -1,6 +1,7 @@
-import { ethers } from "ethers";
+import { BytesLike, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import { RawAbiDefinition, RawAbiParameter, StateMutability } from "./types";
+import { fillTest } from "../test/tests";
+import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability } from "../types";
 
 export function ContractInteract() {
   const [contractAddress, setContractAddress] = useState<string>('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
@@ -12,22 +13,22 @@ export function ContractInteract() {
   const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
   const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
 
-  interface FunctionParam {
-    unitType: UnitTypes,
-    value: string
-  }
-  enum UnitTypes  {
-    string = 'string',
-    address = 'address',
-    uint = 'uint256'
-  };
+const doTest = (index : number) => {
+  setContractAddress('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
+  fillTest({
+      index, 
+      setFuncName, 
+      setFuncType,
+      setFunctionInputParams,
+      setFunctionOutputParams,
+      execute
+    }
+)}
 
-  enum FuncTypes {
-    nonpayable,
-    view,
-    pure,
-    payable
-  }
+useEffect(() => {
+  doTest(2);
+}, []);
+
 
   const updateSig = () => {
     let sig = funcName.split(' ')[0]; // ignore all after space
@@ -114,7 +115,7 @@ export function ContractInteract() {
     setFunctionInputParams(copy);
   }
 
-  const refContract = async () => {
+  const execute = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     const inputParams : RawAbiParameter[] = [];
@@ -154,9 +155,16 @@ export function ContractInteract() {
     });
     console.log('inputting', inputValues);
 
-    const res = await contract[funcName](...inputValues);
+    const res = await contract.functions[funcName](...inputValues);
 
-    console.log('contract', contract, res.toString());
+    console.log('contract', contract, res, res.toString());
+  }
+
+  const getItemValue = (item : FunctionParam) => {
+    if (item.unitType == UnitTypes.bytes) {
+      return ethers.utils.toUtf8String(item.value as BytesLike);
+    }
+    return item.value.toString();
   }
 
   return (
@@ -194,8 +202,6 @@ export function ContractInteract() {
             />
               {item == 'nonpayable' ? 'default' : item}
             </span>
-            
-            
           )})}
         
       </div>
@@ -208,28 +214,29 @@ export function ContractInteract() {
           placeholder="Enter signature" 
           onChange={(e) => { setFuncSignature(e.target.value) }}
           value={funcSignature}    
-             
         />
       </div>
       <div>
-        <input type="button" value='Doit' onClick={refContract}></input>
+        <input type="button" value='Doit' onClick={execute}></input>
       </div>
       <div>
         <input type="button" value='Add input parameter' onClick={addInputParam}></input>
       </div>
       <div>
-        {functionInputParams.map((item, i) => { return (
+        {functionInputParams.map((item, i) => { 
+          console.log('found item', item)
+          return (
           <div key={i}>
             <label>Input parameter {i} type:</label>
             <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType}>
               {Object.keys(UnitTypes).map((item2, i2) => {
                 return (
-                <option key={i2} value={item2}>{item2}</option>
+                <option key={i2} value={UnitTypes[item2]}>{item2}</option>
                 )})}
           
             </select>
             <label>Value:</label>
-            <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }}></input>
+            <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }} value={getItemValue(item)}></input>
             <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
           </div>
         )})}
@@ -252,7 +259,6 @@ export function ContractInteract() {
             <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
           </div>
         )})}
-      
       </div>
     </form>
   );
