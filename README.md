@@ -1,6 +1,6 @@
 # Connector
 
-EVM connector website
+This tool can be used to interact with EVM (Ethereum Virtual Machine) based blockchains.
 
 ## Technical stuff
 

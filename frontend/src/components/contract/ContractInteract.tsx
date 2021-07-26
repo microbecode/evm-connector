@@ -328,7 +328,7 @@ export function ContractInteract() {
                   )})}
             
               </select>
-              <label>Result value:</label>
+              {canHaveOutput && <label>Result value:</label>}
               {canHaveOutput && <input type="text" disabled={true} value={getItemValue(item)}></input>}
               <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
             </div>
