@@ -46,6 +46,12 @@ export enum UnitTypes  {
     bytes = 'bytes'
 };
 
+export enum ExecutionTypes  {
+  default = 'Default (infer from function type)',
+  local = 'Local call',
+  tx = 'Transaction'
+};
+
 export enum FuncTypes {
     nonpayable,
     view,

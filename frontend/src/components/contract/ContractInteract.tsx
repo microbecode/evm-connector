@@ -1,7 +1,7 @@
 import { BytesLike, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
-import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability } from "../types";
+import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 
 export function ContractInteract() {
@@ -11,6 +11,7 @@ export function ContractInteract() {
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
   const [funcName, setFuncName] = useState<string>('');
   const [funcType, setFuncType] = useState<StateMutability>('nonpayable');
+  const [execType, setExecType] = useState<ExecutionTypes>(ExecutionTypes.default);
   const [funcSignature, setFuncSignature] = useState<string>('');
   const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
   const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
@@ -133,6 +134,9 @@ export function ContractInteract() {
     setFunctionOutputParams(copy);
   } */
 
+  const canHaveOutput = (execType == ExecutionTypes.default && (funcType == "pure" || funcType == "view")) ||
+  execType == ExecutionTypes.local;
+
   const execute = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
@@ -154,11 +158,16 @@ export function ContractInteract() {
       outputParams.push(para);
     });
 
+    let useMutability : StateMutability = funcType;
+    if (execType == ExecutionTypes.local) {
+      useMutability = 'view';
+    }
+
     const abi : RawAbiDefinition = {
       name: funcName,
       type: 'function',
       inputs: inputParams,
-      stateMutability: funcType,
+      stateMutability: useMutability,
       outputs: outputParams
     };
 
@@ -211,7 +220,7 @@ export function ContractInteract() {
     return item.value.toString();
   }
 
-  const canHaveOutput = funcType == "pure" || funcType == "view";
+
 
   return (
     <form onSubmit={() => {}}>
@@ -247,18 +256,32 @@ export function ContractInteract() {
         {Object.keys(FuncTypes).filter(k => Number.isNaN(+k)).map((item, i) => {
           return (
             <span key={i}>
-            <input
-            
-            type="radio" 
-            name="funcType"
-            onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
-            value={item}     
-            checked={item == funcType}
+            <input            
+              type="radio" 
+              name="funcType"
+              onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
+              value={item}     
+              checked={item == funcType}
             />
               {item == 'nonpayable' ? 'default' : item}
             </span>
-          )})}
-        
+          )})}        
+      </div>
+      <div>
+        <label>Execution type: </label>
+        {Object.keys(ExecutionTypes).map((item, i) => {
+          return (
+            <span key={i}>
+            <input            
+              type="radio" 
+              name="tranType"
+              onChange={(e) => { setExecType(ExecutionTypes[e.target.value]) }}
+              value={item}     
+              checked={ExecutionTypes[item] == execType}
+            />
+              {ExecutionTypes[item]}
+            </span>
+          )})}        
       </div>
       <div>
         <label>Function signature</label>
