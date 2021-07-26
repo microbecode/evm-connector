@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
+import { Notification } from "../Notification";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
@@ -16,10 +17,13 @@ export function ContractInteract() {
   const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
   const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
   const [waitTxHash, setWaitTxHash] = useState<string>('');
+  const [notifyText, setNotifyText] = useState<string>('');
   const [previousTxHash, setPreviousTxHash] = useState<string>('');
 
+  const debug : boolean = false;
+
   const doTest = (index : number) => {
-    setContractAddress('0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6');
+    setContractAddress('0x8A791620dd6260079BF849Dc5567aDC3F2FdC318');
     fillTest({
         index, 
         setFuncName, 
@@ -159,19 +163,24 @@ export function ContractInteract() {
       outputs: outputParams
     };
 
+   // console.log('used abi', abi)
+
     const contract = new ethers.Contract(
       contractAddress,
       JSON.stringify([abi]),
       provider.getSigner(0),
     );
 
+    //console.log('contract', contract)
+
     const inputValues = functionInputParams.map((param, i) => { 
       return param.value;
     });
-    console.log('inputting', inputValues);
+    //console.log('inputting', inputValues);
     try {
       const res = await contract.functions[funcName](...inputValues);
       if (res.wait) { // It's a real transaction
+        console.log('real')
         setWaitTxHash(res.hash);
         setPreviousTxHash(res.hash);
         console.log('awaiting tx', res);
@@ -180,10 +189,9 @@ export function ContractInteract() {
         // non-constant function return values can't be received directly, so don't even try
         return;
       }
-
+      console.log('checking return values')
       const copy = [...functionOutputParams];
       for (let index = 0; index < functionOutputParams.length; index++) {
-        //setOutputParamValue(i, res[i]);      
         const item = {...copy[index]};
         item.value = res[index];
         copy[index] = item;    
@@ -192,10 +200,9 @@ export function ContractInteract() {
       console.log('result', res, res.toString());
     }
     catch (ex) {
+      setNotifyText('ERROR: ' + ex.message);
       console.error(ex);
     }
-
-    
   }
 
   const getItemValue = (item : FunctionParam) => {
@@ -208,19 +215,21 @@ export function ContractInteract() {
     return item.value.toString();
   }
 
-
+  const executeName = 'Execute on blockchain ID ' + window.ethereum?.networkVersion;
 
   return (
     <form onSubmit={() => {}} id="interact">
-      <div>
-        <label>Perform test number</label>
-        <input
-          type="text" 
-          placeholder="Number" 
-          onChange={(e) => { setTestNumber(parseInt(e.target.value)) }}
-          value={testNumber}       
-        />
-      </div>
+      {debug &&
+        <div>
+          <label>Perform test number</label>
+          <input
+            type="text" 
+            placeholder="Number" 
+            onChange={(e) => { setTestNumber(parseInt(e.target.value)) }}
+            value={testNumber}       
+          />
+        </div>
+      }
       <div>
         <label>Contract address</label>
         <input
@@ -331,7 +340,7 @@ export function ContractInteract() {
       </div>  
       {window.ethereum !== undefined &&
       <div>
-        <input type="button" value='Execute' onClick={execute}></input>
+        <input type="button" value={executeName} onClick={execute}></input>
       </div>}
       {previousTxHash &&
         <div>
@@ -339,6 +348,7 @@ export function ContractInteract() {
         <input type="text" readOnly value={previousTxHash}></input>
       </div>
       }      
+      {notifyText && <Notification text={notifyText} dismiss={() => setNotifyText(null)}></Notification> }
       {waitTxHash && <WaitingForTransactionMessage txHash={waitTxHash}></WaitingForTransactionMessage> }
     </form>
     

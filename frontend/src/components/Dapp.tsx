@@ -111,45 +111,45 @@ export class Dapp extends React.Component<{}, DappState> {
                 window.ethereum === undefined ? <NoWalletDetected /> : null
               }
 
-              <div className="row justify-content-md-center">
-                <div className="col-12 text-center">
-                  {this.state.networkError && (
-                    <NetworkErrorMessage
-                      message={this.state.networkError}
-                      dismiss={() => this._dismissNetworkError()}
-                    />
-                  )}
+              {this.state.networkError &&
+                <div className="row justify-content-md-center">
+                  <div className="col-12 text-center">
+                      <NetworkErrorMessage
+                        message={this.state.networkError}
+                        dismiss={() => this._dismissNetworkError()}
+                      /> 
+                  </div>
                 </div>
-              </div>
+              }
 
-
-              <div className="row mt-5">
-                <div className="col-12">
-                  {/*
-                  Sending a transaction isn't an immediate action. You have to wait
-                  for it to be mined.
-                  If we are waiting for one, we show a message here.
-                */}
-                  {this.state.txBeingSent && (
-                    <WaitingForTransactionMessage
-                      txHash={this.state.txBeingSent}
-                    />
-                  )}
-                  {/*
-                  Sending a transaction can fail in multiple ways. 
-                  If that happened, we show a message here.
+              {(this.state.txBeingSent || this.state.transactionError) && 
+                <div className="row mt-5">
+                  <div className="col-12">
+                    {/*
+                    Sending a transaction isn't an immediate action. You have to wait
+                    for it to be mined.
+                    If we are waiting for one, we show a message here.
                   */}
-                  {this.state.transactionError && (
-                    <TransactionErrorMessage
-                      message={this._getRpcErrorMessage(
-                        this.state.transactionError,
-                      )}
-                      dismiss={() => this._dismissTransactionError()}
-                    />
-                  )}
+                    {this.state.txBeingSent && (
+                      <WaitingForTransactionMessage
+                        txHash={this.state.txBeingSent}
+                      />
+                    )}
+                    {/*
+                    Sending a transaction can fail in multiple ways. 
+                    If that happened, we show a message here.
+                    */}
+                    {this.state.transactionError && (
+                      <TransactionErrorMessage
+                        message={this._getRpcErrorMessage(
+                          this.state.transactionError,
+                        )}
+                        dismiss={() => this._dismissTransactionError()}
+                      />
+                    )}
+                  </div>
                 </div>
-              </div>
-
+              }
               <What></What>
 
               <ContractInteract></ContractInteract>

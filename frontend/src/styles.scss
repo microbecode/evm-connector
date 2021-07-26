@@ -285,7 +285,7 @@ label {
   padding-right: 10px;
 }
 
-input[type=button] {
+input[type=button], button {
   margin: 10px;
 }
 
@@ -296,4 +296,8 @@ input[type=button] {
 
 .myRadio {
   padding: 10px;
+}
+
+select {
+  margin-right: 10px;
 }
