@@ -1,9 +1,7 @@
 import React from "react";
 import { BigNumber, Contract, ethers } from "ethers";
 import { Container } from "react-bootstrap";
-
 import { ContractsContext, Web3Context } from "../contexts/Context";
-
 import { NoWalletDetected } from "./NoWalletDetected";
 import { TransactionErrorMessage } from "./TransactionErrorMessage";
 import { WaitingForTransactionMessage } from "./WaitingForTransactionMessage";

@@ -6,7 +6,7 @@ export function What() {
   return (
     <div className="create-container pt-5 pb-0 px-5" id="what">
         <p>
-            This tool allows you to interact with any smart contract on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI.
+            This tool allows you to interact with any smart contract function on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI.
             Such blockchains are for example:
         </p>
         <ul>
