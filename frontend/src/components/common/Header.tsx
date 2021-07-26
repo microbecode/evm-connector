@@ -49,16 +49,25 @@ export function Header({ connectWallet, selectedAddress }: Props) {
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto py-0">
                   <NavHashLink
-                    to="/#top"
+                    to="/#what"
                     className="mx-2 nav-link"
                     smooth
                     activeClassName="active"
                   >
-                    wtf
+                    Hmm?
+                  </NavHashLink>
+
+                  <NavHashLink
+                    to="/#interact"
+                    className="mx-2 nav-link"
+                    smooth
+                    activeClassName="active"
+                  >
+                    Interact
                   </NavHashLink>
                   
                 </Nav>
-                {selectedAddress ? (
+                {window.ethereum !== undefined ? selectedAddress ? (
                   <Button
                     variant="primary-outline"
                     className="d-blockmt-3 my-xl-0 mx-4"
@@ -76,8 +85,8 @@ export function Header({ connectWallet, selectedAddress }: Props) {
                   >
                     Connect
                   </Button>
-                )}
-                <ThemeButton />
+                ) : ''}
+               {/*  <ThemeButton /> */}
               </Navbar.Collapse>
             </Navbar>
           </Col>

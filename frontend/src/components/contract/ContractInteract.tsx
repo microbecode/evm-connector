@@ -6,7 +6,7 @@ import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
-  const [contractAddress, setContractAddress] = useState<string>('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
+  const [contractAddress, setContractAddress] = useState<string>('');
   //const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
   const [funcName, setFuncName] = useState<string>('');
@@ -29,10 +29,6 @@ export function ContractInteract() {
         execute
       }
   )}
-
-/*   useEffect(() => {
-    doTest(testNumber);
-  }, []); */
 
   useEffect(() => {
     if (testNumber > 0) {
@@ -126,16 +122,8 @@ export function ContractInteract() {
     setFunctionInputParams(copy);
   }
 
-/*   const setOutputParamValue = (index, value) => {
-    const copy = [...functionOutputParams];
-    const item = {...copy[index]};
-    item.value = value;
-    copy[index] = item;
-    setFunctionOutputParams(copy);
-  } */
-
   const canHaveOutput = (execType == ExecutionTypes.default && (funcType == "pure" || funcType == "view")) ||
-  execType == ExecutionTypes.local;
+    execType == ExecutionTypes.local;
 
   const execute = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -223,7 +211,7 @@ export function ContractInteract() {
 
 
   return (
-    <form onSubmit={() => {}}>
+    <form onSubmit={() => {}} id="interact">
       <div>
         <label>Perform test number</label>
         <input
@@ -255,7 +243,7 @@ export function ContractInteract() {
         <label>Function type: </label>
         {Object.keys(FuncTypes).filter(k => Number.isNaN(+k)).map((item, i) => {
           return (
-            <span key={i}>
+            <span key={i} className={'myRadio'}>
             <input            
               type="radio" 
               name="funcType"
@@ -271,7 +259,7 @@ export function ContractInteract() {
         <label>Execution type: </label>
         {Object.keys(ExecutionTypes).map((item, i) => {
           return (
-            <span key={i}>
+            <span key={i} className={'myRadio'}>
             <input            
               type="radio" 
               name="tranType"
@@ -294,55 +282,57 @@ export function ContractInteract() {
           value={funcSignature}    
         />
       </div>
-      
-      <div>
-        <input type="button" value='Add input parameter' onClick={addInputParam}></input>
-      </div>
-      <div>
-        {functionInputParams.map((item, i) => { 
-          //console.log('found item', item)
-          return (
-          <div key={i}>
-            <label>Input parameter {i} type:</label>
-            <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType}>
-              {Object.keys(UnitTypes).map((item2, i2) => {
-                return (
-                <option key={i2} value={UnitTypes[item2]}>{item2}</option>
-                )})}
-          
-            </select>
-            <label>Value:</label>
-            <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }} value={getItemValue(item)}></input>
-            <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
-          </div>
-        )})}
-      
-      </div>
-      <div>
-        <input type="button" value='Add output parameter' onClick={addOutputParam}></input>
-      </div>
-      <div>
-        {functionOutputParams.map((item, i) => { 
-          //console.log('output', item)
-          return (
-          <div key={i}>
-            <label>Output parameter {i} type:</label>
-            <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType}>
-              {Object.keys(UnitTypes).map((item2, i2) => {
-                return (
+      <div className='box'>
+        <div>
+          {functionInputParams.map((item, i) => { 
+            //console.log('found item', item)
+            return (
+            <div key={i}>
+              <label>Input parameter {i} type:</label>
+              <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType}>
+                {Object.keys(UnitTypes).map((item2, i2) => {
+                  return (
                   <option key={i2} value={UnitTypes[item2]}>{item2}</option>
-                )})}
-          
-            </select>
-            <label>Result value:</label>
-            {canHaveOutput && <input type="text" disabled={true} value={getItemValue(item)}></input>}
-            <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
-          </div>
-        )})}
+                  )})}
+            
+              </select>
+              <label>Value:</label>
+              <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }} value={getItemValue(item)}></input>
+              <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
+            </div>
+          )})}      
+        </div> 
+        <div>
+          <input type="button" value='Add input parameter' onClick={addInputParam}></input>
+        </div>   
       </div>
+      <div className='box'>
+        <div>
+          {functionOutputParams.map((item, i) => { 
+            return (
+            <div key={i}>
+              <label>Output parameter {i} type:</label>
+              <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType}>
+                {Object.keys(UnitTypes).map((item2, i2) => {
+                  return (
+                    <option key={i2} value={UnitTypes[item2]}>{item2}</option>
+                  )})}
+            
+              </select>
+              <label>Result value:</label>
+              {canHaveOutput && <input type="text" disabled={true} value={getItemValue(item)}></input>}
+              <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
+            </div>
+          )})}
+        </div>
+        <div>
+          <input type="button" value='Add output parameter' onClick={addOutputParam}></input>
+        </div>
+      </div>  
+      {window.ethereum !== undefined &&
       <div>
         <input type="button" value='Execute' onClick={execute}></input>
-      </div>
+      </div>}
       {previousTxHash &&
         <div>
         <label>Previous transaction hash:</label>

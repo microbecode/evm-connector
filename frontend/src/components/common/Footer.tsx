@@ -23,13 +23,13 @@ export function Footer() {
           </Col>
           <Col xs={12} md={6} lg={4} className="mt-4 mt-md-0">
             <Row className="justify-content-center">
-              <p>Got questions? Let's figure out later where you could ask...</p>
+              <p>Got questions? Poke me in Telegram at http://t .me/Lauri_P or have a look at the <a href='https://github.com/microbecode/evm-connector'>Github repo</a></p>
             </Row>
             <Row className="justify-content-center">
               
             </Row>
           </Col>
-          <Col xs={12} md={12} lg={4} className="mt-4 mt-lg-0">
+        {/*   <Col xs={12} md={12} lg={4} className="mt-4 mt-lg-0">
             <Row className="justify-content-center justify-content-lg-end">
               <p
                 className="modal-link"
@@ -46,7 +46,7 @@ export function Footer() {
                 Privacy policy
               </p>
             </Row>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
       <PrivacyPolicy

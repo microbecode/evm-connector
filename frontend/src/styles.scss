@@ -268,3 +268,32 @@ body {
   outline: none !important;
   box-shadow: none;
 }
+
+#interact {
+  margin: 10px;
+}
+
+input[type=text] {
+  width: 500px;
+}
+
+input[type=radio] {
+  margin: 10px
+}
+
+label {
+  padding-right: 10px;
+}
+
+input[type=button] {
+  margin: 10px;
+}
+
+.box {
+  border-style: solid;
+  padding: 10px;
+}
+
+.myRadio {
+  padding: 10px;
+}
