@@ -5,6 +5,7 @@ import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter,
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 
 export function ContractInteract() {
+  const [testNumber, setTestNumber] = useState<number>(0);
   const [contractAddress, setContractAddress] = useState<string>('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
   //const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
@@ -17,7 +18,7 @@ export function ContractInteract() {
   const [previousTxHash, setPreviousTxHash] = useState<string>('');
 
   const doTest = (index : number) => {
-    setContractAddress('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
+    setContractAddress('0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6');
     fillTest({
         index, 
         setFuncName, 
@@ -28,11 +29,16 @@ export function ContractInteract() {
       }
   )}
 
+/*   useEffect(() => {
+    doTest(testNumber);
+  }, []); */
+
   useEffect(() => {
-    doTest(7);
-  }, []);
-
-
+    if (testNumber > 0) {
+      doTest(testNumber);
+    }
+    
+  }, [testNumber]);
 
   const updateSig = () => {
     let sig = funcName.split(' ')[0]; // ignore all after space
@@ -119,13 +125,13 @@ export function ContractInteract() {
     setFunctionInputParams(copy);
   }
 
-  const setOutputParamValue = (index, value) => {
+/*   const setOutputParamValue = (index, value) => {
     const copy = [...functionOutputParams];
     const item = {...copy[index]};
     item.value = value;
     copy[index] = item;
     setFunctionOutputParams(copy);
-  }
+  } */
 
   const execute = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -166,27 +172,33 @@ export function ContractInteract() {
       return param.value;
     });
     console.log('inputting', inputValues);
+    try {
+      const res = await contract.functions[funcName](...inputValues);
+      if (res.wait) { // It's a real transaction
+        setWaitTxHash(res.hash);
+        setPreviousTxHash(res.hash);
+        console.log('awaiting tx', res);
+        await res.wait();   
+        setWaitTxHash(null);   
+        // non-constant function return values can't be received directly, so don't even try
+        return;
+      }
 
-    const res = await contract.functions[funcName](...inputValues);
-    if (res.wait) {
-      setWaitTxHash(res.hash);
-      setPreviousTxHash(res.hash);
-      console.log('awaiting tx', res);
-      await res.wait();   
-      setWaitTxHash(null);   
-      return;
+      const copy = [...functionOutputParams];
+      for (let index = 0; index < functionOutputParams.length; index++) {
+        //setOutputParamValue(i, res[i]);      
+        const item = {...copy[index]};
+        item.value = res[index];
+        copy[index] = item;    
+      }
+      setFunctionOutputParams(copy);
+      console.log('result', res, res.toString());
+    }
+    catch (ex) {
+      console.error(ex);
     }
 
-    const copy = [...functionOutputParams];
-    for (let index = 0; index < functionOutputParams.length; index++) {
-      //setOutputParamValue(i, res[i]);      
-      const item = {...copy[index]};
-      item.value = res[index];
-      copy[index] = item;    
-    }
-    setFunctionOutputParams(copy);
-
-    console.log('result', res, res.toString());
+    
   }
 
   const getItemValue = (item : FunctionParam) => {
@@ -199,8 +211,19 @@ export function ContractInteract() {
     return item.value.toString();
   }
 
+  const canHaveOutput = funcType == "pure" || funcType == "view";
+
   return (
     <form onSubmit={() => {}}>
+      <div>
+        <label>Perform test number</label>
+        <input
+          type="text" 
+          placeholder="Number" 
+          onChange={(e) => { setTestNumber(parseInt(e.target.value)) }}
+          value={testNumber}       
+        />
+      </div>
       <div>
         <label>Contract address</label>
         <input
@@ -289,7 +312,7 @@ export function ContractInteract() {
           
             </select>
             <label>Result value:</label>
-            <input type="text" disabled={true} value={getItemValue(item)}></input>
+            {canHaveOutput && <input type="text" disabled={true} value={getItemValue(item)}></input>}
             <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
           </div>
         )})}
@@ -300,7 +323,7 @@ export function ContractInteract() {
       {previousTxHash &&
         <div>
         <label>Previous transaction hash:</label>
-        <input type="text" value={previousTxHash}></input>
+        <input type="text" readOnly value={previousTxHash}></input>
       </div>
       }      
       {waitTxHash && <WaitingForTransactionMessage txHash={waitTxHash}></WaitingForTransactionMessage> }

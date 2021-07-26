@@ -50,20 +50,20 @@ export const fillTest = (params : Params) => {
         params.setFuncName("NoReturnPayable");
         params.setFuncType("payable");
         params.setFunctionInputParams([
-            { unitType: UnitTypes.uint, value: 6 },
-            { unitType: UnitTypes.string, value: "hmm" },
-            { unitType: UnitTypes.address, value: dummyAddr },
-            { unitType: UnitTypes.bytes, value: ethers.utils.toUtf8Bytes("hmm") }
+            { unitType: UnitTypes.uint },
+            { unitType: UnitTypes.string },
+            { unitType: UnitTypes.address },
+            { unitType: UnitTypes.bytes }
         ]);
       break;
       case 7:
         params.setFuncName("ReturnDefault");
         params.setFuncType("nonpayable");
         params.setFunctionOutputParams([
-            { unitType: UnitTypes.uint, value: 6 },
-            { unitType: UnitTypes.string, value: "hmm" },
-            { unitType: UnitTypes.address, value: dummyAddr },
-            { unitType: UnitTypes.bytes, value: ethers.utils.toUtf8Bytes("hmm") }
+            { unitType: UnitTypes.uint },
+            { unitType: UnitTypes.string },
+            { unitType: UnitTypes.address },
+            { unitType: UnitTypes.bytes }
         ]);
       break;
       case 8:
