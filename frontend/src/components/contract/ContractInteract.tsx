@@ -361,7 +361,7 @@ export function ContractInteract() {
           type="text" 
           style={{ width: '500px'}}
           disabled={true}
-          placeholder="Signature hash" 
+          placeholder="" 
           onChange={(e) => { }}
           value={signatureHash}    
         />
