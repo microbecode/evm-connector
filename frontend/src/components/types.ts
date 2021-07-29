@@ -43,13 +43,14 @@ export enum UnitTypes  {
     string = 'string',
     address = 'address',
     uint = 'uint256',
-    bytes = 'bytes'
+    uint32 = 'uint32',
+    bytes = 'bytes',
+    bool = 'bool'
 };
 
 export enum ExecutionTypes  {
   default = 'Default (infer from function type)',
-  local = 'Local call',
-  tx = 'Transaction'
+  local = 'Local call'
 };
 
 export enum FuncTypes {

@@ -14,6 +14,7 @@ export function ContractInteract() {
   const [funcType, setFuncType] = useState<StateMutability>('nonpayable');
   const [execType, setExecType] = useState<ExecutionTypes>(ExecutionTypes.default);
   const [funcSignature, setFuncSignature] = useState<string>('');
+  const [signatureHash, setSignatureHash] = useState<string>('');
   const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
   const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
   const [waitTxHash, setWaitTxHash] = useState<string>('');
@@ -42,7 +43,8 @@ export function ContractInteract() {
   }, [testNumber]);
 
   const updateSig = () => {
-    let sig = funcName.split(' ')[0]; // ignore all after space
+    const funcTrimName = funcName.split(' ')[0]; // ignore all after space
+    let sig = funcTrimName;
     const addParam = (params : FunctionParam[]) => {
       let inSig = '';
       inSig += '(';
@@ -62,7 +64,18 @@ export function ContractInteract() {
     sig += ' returns ';
     sig += addParam(functionOutputParams);
 
+    const getFuncSig = () => {
+      if (!funcTrimName) {
+        return '';
+      }
+      const abi = getAbi();
+      let iface = new ethers.utils.Interface(abi);
+      const sigHash = iface.getSighash(iface.getFunction(funcTrimName));
+      return sigHash;
+    }
+    const sigHash = getFuncSig();
 
+    setSignatureHash(sigHash);
     setFuncSignature(sig);
   }
 
@@ -129,9 +142,7 @@ export function ContractInteract() {
   const canHaveOutput = (execType == ExecutionTypes.default && (funcType == "pure" || funcType == "view")) ||
     execType == ExecutionTypes.local;
 
-  const execute = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-
+  const getAbi = () : string => {
     const inputParams : RawAbiParameter[] = [];
     functionInputParams.forEach((item) => {
       const para : RawAbiParameter = {
@@ -162,12 +173,20 @@ export function ContractInteract() {
       stateMutability: useMutability,
       outputs: outputParams
     };
+    const abiStr = JSON.stringify([abi]);
+    return abiStr;
+  }
+
+  const execute = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const abiStr = getAbi();
 
    // console.log('used abi', abi)
 
     const contract = new ethers.Contract(
       contractAddress,
-      JSON.stringify([abi]),
+      abiStr,
       provider.getSigner(0),
     );
 
@@ -221,7 +240,7 @@ export function ContractInteract() {
     <form onSubmit={() => {}} id="interact">
       {debug &&
         <div>
-          <label>Perform test number</label>
+          <label>Perform test number:</label>
           <input
             type="text" 
             placeholder="Number" 
@@ -231,7 +250,7 @@ export function ContractInteract() {
         </div>
       }
       <div>
-        <label>Contract address</label>
+        <label>Contract address:</label>
         <input
           type="text" 
           placeholder="Enter contract address" 
@@ -240,7 +259,7 @@ export function ContractInteract() {
         />
       </div>
       <div>
-        <label>Function name</label>
+        <label>Function name:</label>
         <input
           type="text" 
           placeholder="Enter function name" 
@@ -279,17 +298,6 @@ export function ContractInteract() {
               {ExecutionTypes[item]}
             </span>
           )})}        
-      </div>
-      <div>
-        <label>Function signature</label>
-        <input
-          type="text" 
-          style={{ width: '500px'}}
-          disabled={true}
-          placeholder="Enter signature" 
-          onChange={(e) => { setFuncSignature(e.target.value) }}
-          value={funcSignature}    
-        />
       </div>
       <div className='box'>
         <div>
@@ -337,7 +345,27 @@ export function ContractInteract() {
         <div>
           <input type="button" value='Add output parameter' onClick={addOutputParam}></input>
         </div>
-      </div>  
+      </div> 
+      <div>
+        <label>Function signature:</label>
+        <input
+          type="text" 
+          style={{ width: '500px'}}
+          disabled={true}
+          placeholder="Signature" 
+          onChange={(e) => { }}
+          value={funcSignature}    
+        />
+        <label>Function hash:</label>
+        <input
+          type="text" 
+          style={{ width: '500px'}}
+          disabled={true}
+          placeholder="Signature hash" 
+          onChange={(e) => { }}
+          value={signatureHash}    
+        />
+      </div> 
       {window.ethereum !== undefined &&
       <div>
         <input type="button" value={executeName} onClick={execute}></input>

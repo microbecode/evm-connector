@@ -23,10 +23,9 @@ export function Footer() {
           </Col>
           <Col xs={12} md={6} lg={4} className="mt-4 mt-md-0">
             <Row className="justify-content-center">
-              <p>Got questions? Poke me in Telegram at http://t .me/Lauri_P or have a look at the <a href='https://github.com/microbecode/evm-connector'>Github repo</a></p>
-            </Row>
-            <Row className="justify-content-center">
-              
+              <p>Got questions or feedback? Poke me in Telegram at http://t .me/Lauri_P or have a look at the <a href='https://github.com/microbecode/evm-connector'>Github repo</a>.
+              Icons made by <a href="https://www.flaticon.com/authors/dinosoftlabs" title="DinosoftLabs">DinosoftLabs</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+              </p>
             </Row>
           </Col>
         {/*   <Col xs={12} md={12} lg={4} className="mt-4 mt-lg-0">
