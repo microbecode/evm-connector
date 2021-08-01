@@ -35,18 +35,50 @@ export interface RawAbiDefinition {
   }
 
   export interface FunctionParam {
-    unitType: UnitTypes,
-    value?: string | number | Uint8Array | BytesLike
+    unitType: string,
+    value?: any
 }
 
-export enum UnitTypes  {
-    string = 'string',
-    address = 'address',
-    uint = 'uint256',
-    uint32 = 'uint32',
-    bytes = 'bytes',
-    bool = 'bool'
-};
+export const UnitTypes : string[] = [    
+    'address',
+    'address[]',  
+    'bool',    
+    'bool[]',
+    'bytes',
+    'bytes[]',
+    'bytes8',
+    'bytes8[]',
+    'bytes16',
+    'bytes16[]',
+    'bytes32',
+    'bytes32[]',
+    'int8',
+    'int8[]',
+    'int16',
+    'int16[]',
+    'int32',
+    'int32[]',
+    'int64',
+    'int64[]',
+    'int128',
+    'int128[]',
+    'int',
+    'int[]',
+    'uint8',
+    'uint8[]',
+    'uint16',
+    'uint16[]',
+    'uint32',
+    'uint32[]',
+    'uint64',
+    'uint64[]',
+    'uint128',
+    'uint128[]',
+    'uint',
+    'uint[]',
+    'string',
+    'string[]'
+];
 
 export enum ExecutionTypes  {
   default = 'Default (infer from function type)',

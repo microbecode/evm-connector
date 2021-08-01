@@ -53,5 +53,10 @@ contract Sample {
         address c = msg.sender;
         bytes memory d = "there";
         return (a,b,c,d);
+    }
+
+    // test case 10
+    function ReturnView2(bool a, bytes8 b, uint[] c) public view returns(bool, bytes8, uint[]) {
+        return (a, b, c);
     } 
 }

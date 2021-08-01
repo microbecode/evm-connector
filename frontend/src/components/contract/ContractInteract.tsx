@@ -21,7 +21,7 @@ export function ContractInteract() {
   const [notifyText, setNotifyText] = useState<string>('');
   const [previousTxHash, setPreviousTxHash] = useState<string>('');
 
-  const debug : boolean = false;
+  const debug : boolean = true;
 
   const doTest = (index : number) => {
     setContractAddress('0x8A791620dd6260079BF849Dc5567aDC3F2FdC318');
@@ -41,6 +41,11 @@ export function ContractInteract() {
     }
     
   }, [testNumber]);
+
+  
+  useEffect(() => {
+    updateSig();
+  }, [functionInputParams, functionOutputParams, funcName, funcType]);
 
   const updateSig = () => {
     const funcTrimName = funcName.split(' ')[0]; // ignore all after space
@@ -81,7 +86,7 @@ export function ContractInteract() {
 
   const addInputParam = () =>{
     const newParam : FunctionParam = {
-      unitType : UnitTypes.string,
+      unitType : 'string',
       value: ''
     };
     setFunctionInputParams([
@@ -97,7 +102,7 @@ export function ContractInteract() {
 
   const addOutputParam = () =>{
     const newParam : FunctionParam = {
-      unitType : UnitTypes.string,
+      unitType : 'string',
       value: ''
     };
     setFunctionOutputParams([
@@ -111,9 +116,6 @@ export function ContractInteract() {
     setFunctionOutputParams(copy);
   }
 
-  useEffect(() => {
-    updateSig();
-  }, [functionInputParams, functionOutputParams, funcName, funcType]);
 
   const changeInputParam = (index, newType) => {
     const copy = [...functionInputParams];
@@ -228,8 +230,14 @@ export function ContractInteract() {
     if (!item.value) {
       return '';
     }
-    if (item.unitType == UnitTypes.bytes) {
+    if (item.unitType == 'bytes') {
       return ethers.utils.toUtf8String(item.value as BytesLike);
+    }
+    if (item.unitType.indexOf('[]') > -1) {
+      console.log('arr', item);
+    /*   const ret = (item.value as string[]).map((item, i) => { return item; });
+      return ret; */
+      return '[' + item.value + ']';
     }
     return item.value.toString();
   }
@@ -302,14 +310,14 @@ export function ContractInteract() {
       <div className='box'>
         <div>
           {functionInputParams.map((item, i) => { 
-            //console.log('found item', item)
+            console.log('found item', item)
             return (
             <div key={i}>
               <label>Input parameter {i} type:</label>
               <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType}>
                 {Object.keys(UnitTypes).map((item2, i2) => {
                   return (
-                  <option key={i2} value={UnitTypes[item2]}>{item2}</option>
+                  <option key={i2} value={UnitTypes[item2]}>{UnitTypes[item2]}</option>
                   )})}
             
               </select>
