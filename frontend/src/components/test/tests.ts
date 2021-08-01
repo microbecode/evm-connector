@@ -12,7 +12,6 @@ interface Params {
 }
 
 export const fillTest = (params : Params) => {
-    console.log('s')
     const dummyAddr = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512';
     switch (params.index) {
       case 1:
@@ -25,8 +24,7 @@ export const fillTest = (params : Params) => {
         params.setFunctionInputParams([
             { unitType: 'uint', value: 6 },
             { unitType: 'string', value: 'hmm' },
-            { unitType: 'address', value: dummyAddr },
-            { unitType: 'bytes', value: ethers.utils.toUtf8Bytes("hmm") } 
+            { unitType: 'address', value: dummyAddr }
         ]);
       break;
       case 3:
@@ -39,8 +37,7 @@ export const fillTest = (params : Params) => {
         params.setFunctionInputParams([
             { unitType: 'uint', value: 6 },
             { unitType: 'string', value: "hmm" },
-            { unitType: 'address', value: dummyAddr },
-            { unitType: 'bytes', value: ethers.utils.toUtf8Bytes("hmm") }
+            { unitType: 'address', value: dummyAddr }
         ]);
       break;
       case 5:
@@ -54,7 +51,7 @@ export const fillTest = (params : Params) => {
             { unitType: 'uint' },
             { unitType: 'string' },
             { unitType: 'address' },
-            { unitType: 'bytes' }
+            { unitType: 'string[]' }
         ]);
       break;
       case 7:
@@ -64,7 +61,7 @@ export const fillTest = (params : Params) => {
             { unitType: 'uint' },
             { unitType: 'string' },
             { unitType: 'address' },
-            { unitType: 'bytes' }
+            { unitType: 'int64[]' }
         ]);
       break;
       case 8:
@@ -73,8 +70,7 @@ export const fillTest = (params : Params) => {
         params.setFunctionOutputParams([
             { unitType: 'uint' },
             { unitType: 'string' },
-            { unitType: 'address' },
-            { unitType: 'bytes' }
+            { unitType: 'address' }
         ]);
       break;
       case 9:
@@ -84,26 +80,25 @@ export const fillTest = (params : Params) => {
             { unitType: 'uint' },
             { unitType: 'string' },
             { unitType: 'address' },
-            { unitType: 'bytes'}
+            { unitType: 'bool'}
         ]);
       break;
-      case 10:
+/*       case 10:
         params.setFuncName("ReturnView2");
         params.setFuncType("view");
         params.setFunctionInputParams([
             { unitType: 'bool', value: true },
-             { unitType: 'bytes8[]', value: [ 
-                "hmm hmm", 
-                "hmm2 hmm3"
+             { unitType: 'string[]', value: [ 
+                ethers.utils.toUtf8Bytes("a")
             ] }, 
             { unitType: 'uint[]', value: [1, 2, 99] } 
-        ]);
+        ]); */
       break;
     }
     
     const delay = (ms : number) => new Promise(res => setTimeout(res, ms));
 
     delay(1000); // let the state changes go through. nasty hack.
-    console.log('set2')
+
     //params.execute();
   }

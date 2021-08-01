@@ -1,9 +1,11 @@
-import { BytesLike, ethers } from "ethers";
+import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
+import { isTemplateExpression } from "typescript";
+import { TransactionTypes } from "@ethersproject/transactions";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
@@ -12,6 +14,7 @@ export function ContractInteract() {
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
   const [funcName, setFuncName] = useState<string>('');
   const [funcType, setFuncType] = useState<StateMutability>('nonpayable');
+  const [tranValue, setTranValue] = useState<BigNumber>(BigNumber.from(0));
   const [execType, setExecType] = useState<ExecutionTypes>(ExecutionTypes.default);
   const [funcSignature, setFuncSignature] = useState<string>('');
   const [signatureHash, setSignatureHash] = useState<string>('');
@@ -24,7 +27,7 @@ export function ContractInteract() {
   const debug : boolean = true;
 
   const doTest = (index : number) => {
-    setContractAddress('0x8A791620dd6260079BF849Dc5567aDC3F2FdC318');
+    setContractAddress('0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82');
     fillTest({
         index, 
         setFuncName, 
@@ -137,6 +140,21 @@ export function ContractInteract() {
     const copy = [...functionInputParams];
     const item = {...copy[index]};
     item.value = value;
+/*     if (item.unitType.indexOf('bytes') > -1) {
+      console.log('new value', value, item)
+      if (item.unitType.indexOf('[]') > -1) {
+        const rawValues = item.value.split(',');
+        const values = rawValues.map(item2 => ethers.utils.toUtf8Bytes(ethers.utils.hexZeroPad(item2, 8)));
+        item.value = values;
+      }
+      else {        
+        item.value = ethers.utils.toUtf8Bytes(value);
+      }
+    }
+    else  */if (item.unitType.indexOf('[]') > 0) {
+      item.value = item.value.split(',');
+    }
+    console.log('setting new value', item.value);
     copy[index] = item;
     setFunctionInputParams(copy);
   }
@@ -184,7 +202,7 @@ export function ContractInteract() {
 
     const abiStr = getAbi();
 
-   // console.log('used abi', abi)
+    console.log('used abi', abiStr)
 
     const contract = new ethers.Contract(
       contractAddress,
@@ -195,11 +213,17 @@ export function ContractInteract() {
     //console.log('contract', contract)
 
     const inputValues = functionInputParams.map((param, i) => { 
+      console.log('value for exec', param.value)
       return param.value;
     });
     //console.log('inputting', inputValues);
     try {
-      const res = await contract.functions[funcName](...inputValues);
+      let customValue = BigNumber.from(0);
+      if (funcType === 'payable') {
+        customValue = tranValue;
+        console.log('etting val', customValue)
+      }
+      const res = await contract.functions[funcName](...inputValues, { value : customValue });
       if (res.wait) { // It's a real transaction
         console.log('real')
         setWaitTxHash(res.hash);
@@ -230,13 +254,17 @@ export function ContractInteract() {
     if (!item.value) {
       return '';
     }
-    if (item.unitType == 'bytes') {
+    console.log('found item', item)
+/*     if (item.unitType.indexOf('bytes') > -1) {
+      if (item.unitType.indexOf('[]') > -1) {
+        const rawValues = item.value as string[];
+        const values = rawValues.map(item2 => ethers.utils.toUtf8String(item2 as BytesLike));
+        console.log('vallll', values)
+        return values;
+      }
       return ethers.utils.toUtf8String(item.value as BytesLike);
-    }
-/*     if (item.unitType.indexOf('[]') > -1) {
-      console.log('arr', item);
-      return '[' + item.value + ']';
     } */
+
     return item.value.toString();
   }
 
@@ -305,10 +333,20 @@ export function ContractInteract() {
             </span>
           )})}        
       </div>
+      {funcType == 'payable' && execType == ExecutionTypes.default &&
+        <div>
+          <label>Value: </label>
+          <input
+            type="text" 
+            onChange={(e) => { setTranValue(BigNumber.from(e.target.value)) }}
+            value={tranValue.toString()}       
+        />  
+        </div>
+      }      
       <div className='box'>
         <div>
           {functionInputParams.map((item, i) => { 
-            console.log('found item', item)
+            //console.log('found item', item)
             return (
             <div key={i}>
               <label>Input parameter {i} type:</label>
@@ -323,7 +361,7 @@ export function ContractInteract() {
               {(item.unitType.indexOf('[]') > -1) && <input type="text" value='[' disabled={true} style={{width: '15px'}}></input>}
               <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }} value={getItemValue(item)}></input>
               {(item.unitType.indexOf('[]') > -1) && <input type="text" value=']' disabled={true} style={{width: '15px'}}></input>}
-              <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
+              <input type="button" value='Remove parameter' onClick={() => { removeInputParam(i); }}></input>
             </div>
           )})}      
         </div> 

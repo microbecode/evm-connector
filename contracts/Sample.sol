@@ -9,7 +9,7 @@ contract Sample {
     } 
 
     // test case 2
-    function NoReturnDefault(uint a, string calldata b, address c, bytes calldata d) public {
+    function NoReturnDefault(uint a, string calldata b, address c) public {
     }  
 
     // test case 3
@@ -17,7 +17,7 @@ contract Sample {
     } 
 
     // test case 4
-    function NoReturnView(uint a, string calldata b, address c, bytes calldata d) public view {
+    function NoReturnView(uint a, string calldata b, address c) public view {
     } 
 
     // test case 5
@@ -25,38 +25,34 @@ contract Sample {
     } 
 
     // test case 6
-    function NoReturnPayable(uint a, string calldata b, address c, bytes calldata d) public payable {
+    function NoReturnPayable(uint a, string calldata b, address c, string[] calldata d) public payable {
     } 
 
     // test case 7
-    function ReturnDefault() public returns(uint, string memory, address, bytes memory)  {
+    function ReturnDefault() public returns(uint, string memory, address, int64[] memory)  {
         stor = 5;
         string memory b = "hello";
         address c = msg.sender;
-        bytes memory d = "there";
+        int64[] memory d = new int64[](3);
+        d[0] = int64(-5);
+        d[2] = int64(6);
         return (stor,b,c,d);
     } 
 
     // test case 8
-    function ReturnNamedDefault() public returns(uint a, string memory b, address c, bytes memory d)  {
+    function ReturnNamedDefault() public returns(uint a, string memory b, address c)  {
         stor = 5;
         a = stor;
         b = string("hello");
         c = msg.sender;
-        d = "there";
     } 
     
     // test case 9
-    function ReturnView() public view returns(uint, string memory, address, bytes memory)  {
+    function ReturnView() public view returns(uint, string memory, address, bool)  {
         uint a = 5;
         string memory b = "hello";
         address c = msg.sender;
-        bytes memory d = "there";
+        bool d = true;
         return (a,b,c,d);
     }
-
-    // test case 10
-    function ReturnView2(bool a, bytes8 b, uint[] c) public view returns(bool, bytes8, uint[]) {
-        return (a, b, c);
-    } 
 }
