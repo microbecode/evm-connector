@@ -43,10 +43,6 @@ export const fillTest = (params : Params) => {
       case 5:
         params.setFuncName("NoReturnPayable");
         params.setFuncType("payable");
-      break;
-      case 6:
-        params.setFuncName("NoReturnPayable");
-        params.setFuncType("payable");
         params.setFunctionInputParams([
             { unitType: 'uint' },
             { unitType: 'string' },
@@ -54,7 +50,7 @@ export const fillTest = (params : Params) => {
             { unitType: 'string[]' }
         ]);
       break;
-      case 7:
+      case 6:
         params.setFuncName("ReturnDefault");
         params.setFuncType("nonpayable");
         params.setFunctionOutputParams([
@@ -64,7 +60,7 @@ export const fillTest = (params : Params) => {
             { unitType: 'int64[]' }
         ]);
       break;
-      case 8:
+      case 7:
         params.setFuncName("ReturnNamedDefault");
         params.setFuncType("nonpayable");
         params.setFunctionOutputParams([
@@ -73,7 +69,7 @@ export const fillTest = (params : Params) => {
             { unitType: 'address' }
         ]);
       break;
-      case 9:
+      case 8:
         params.setFuncName("ReturnView");
         params.setFuncType("view");
         params.setFunctionOutputParams([

@@ -21,14 +21,10 @@ contract Sample {
     } 
 
     // test case 5
-    function NoReturnPayable() public payable {
-    } 
-
-    // test case 6
     function NoReturnPayable(uint a, string calldata b, address c, string[] calldata d) public payable {
     } 
 
-    // test case 7
+    // test case 6
     function ReturnDefault() public returns(uint, string memory, address, int64[] memory)  {
         stor = 5;
         string memory b = "hello";
@@ -39,7 +35,7 @@ contract Sample {
         return (stor,b,c,d);
     } 
 
-    // test case 8
+    // test case 7
     function ReturnNamedDefault() public returns(uint a, string memory b, address c)  {
         stor = 5;
         a = stor;
@@ -47,7 +43,7 @@ contract Sample {
         c = msg.sender;
     } 
     
-    // test case 9
+    // test case 8
     function ReturnView() public view returns(uint, string memory, address, bool)  {
         uint a = 5;
         string memory b = "hello";
