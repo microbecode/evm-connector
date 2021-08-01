@@ -233,12 +233,10 @@ export function ContractInteract() {
     if (item.unitType == 'bytes') {
       return ethers.utils.toUtf8String(item.value as BytesLike);
     }
-    if (item.unitType.indexOf('[]') > -1) {
+/*     if (item.unitType.indexOf('[]') > -1) {
       console.log('arr', item);
-    /*   const ret = (item.value as string[]).map((item, i) => { return item; });
-      return ret; */
       return '[' + item.value + ']';
-    }
+    } */
     return item.value.toString();
   }
 
@@ -322,7 +320,9 @@ export function ContractInteract() {
             
               </select>
               <label>Value:</label>
+              {(item.unitType.indexOf('[]') > -1) && <input type="text" value='[' disabled={true} style={{width: '15px'}}></input>}
               <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }} value={getItemValue(item)}></input>
+              {(item.unitType.indexOf('[]') > -1) && <input type="text" value=']' disabled={true} style={{width: '15px'}}></input>}
               <input type="button" value='Remove' onClick={() => { removeInputParam(i); }}></input>
             </div>
           )})}      
@@ -340,12 +340,14 @@ export function ContractInteract() {
               <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType}>
                 {Object.keys(UnitTypes).map((item2, i2) => {
                   return (
-                    <option key={i2} value={UnitTypes[item2]}>{item2}</option>
+                    <option key={i2} value={UnitTypes[item2]}>{UnitTypes[item2]}</option>
                   )})}
             
               </select>
               {canHaveOutput && <label>Result value:</label>}
+              {canHaveOutput && (item.unitType.indexOf('[]') > -1) && <input type="text" value='[' disabled={true} style={{width: '15px'}}></input>}
               {canHaveOutput && <input type="text" disabled={true} value={getItemValue(item)}></input>}
+              {canHaveOutput && (item.unitType.indexOf('[]') > -1) && <input type="text" value=']' disabled={true} style={{width: '15px'}}></input>}
               <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
             </div>
           )})}
