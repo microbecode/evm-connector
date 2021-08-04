@@ -24,7 +24,7 @@ export function ContractInteract() {
   const [notifyText, setNotifyText] = useState<string>('');
   const [previousTxHash, setPreviousTxHash] = useState<string>('');
 
-  const debug : boolean = true;
+  const debug : boolean = false;
 
   const doTest = (index : number) => {
     setContractAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3');
