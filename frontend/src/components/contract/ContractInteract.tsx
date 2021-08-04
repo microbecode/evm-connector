@@ -4,8 +4,6 @@ import { fillTest } from "../test/tests";
 import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
-import { isTemplateExpression } from "typescript";
-import { TransactionTypes } from "@ethersproject/transactions";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
