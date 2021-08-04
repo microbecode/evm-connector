@@ -1,4 +1,4 @@
-# Connector
+# EVM Connector
 
 This tool allows you to interact with any smart contract function on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI. It utilizes your installed browser wallet (MetaMask).
 
@@ -9,6 +9,10 @@ EVM-based blockchains are for example:
     <li>Tron</li>
     <li>Layer 2 / sidechain solutions, such as Optimism</li>
 </ul>
+
+## Web app
+
+The app is deployed at https://evmconnector.dev
 
 ## Functionality
 
@@ -24,6 +28,10 @@ This tool is mostly meant for developers who know what they are doing. Anyway, h
 
 <p>Q: Why is there an option to specify the execution type? A: Normally you can just leave this to be the default value.But if you need, for example, the return value from a state-changing function, you can change this to "Local call" to simulate calling the function as type `view` even if really isn't a `view` function. This way you can get the resulting data (although no state changes are performed).</p>
 
+### Future development
+
+Some future development is considered and issues are created for those this repo. Please feel free to leave feedback!
+
 ## Technical stuff
 
 ### Technologies used
@@ -38,17 +46,24 @@ This tool is mostly meant for developers who know what they are doing. Anyway, h
 
 ### Instructions
 
-Please read INSTRUCTIONS.md and scripts in package.json
+You can run the project fully locally with the following instructions.
+
+To run local blockchain:
 
 ```
 npm run localchain
 ```
 
+To deploy the example contract locally:
 ```
 npm run deploy-local
 ```
 
+To run the frontend locally:
 ```
 npm run serve-frontend
 ```
 
+## Contact
+
+If you have any questions or comments, feel free to poke me at http://t .me/Lauri_P . Hope you find the tool useful!
