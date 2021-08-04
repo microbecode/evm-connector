@@ -14,6 +14,10 @@ EVM-based blockchains are for example:
 
 The app is deployed at https://evmconnector.dev
 
+![alt text](example.png)
+
+<i>An example where the tool is used to check the balance of an address</i>
+
 ## Functionality
 
 This tool is meant to be used if you know a function you want to interact with, but don't have the tools nor the ABI to interact with the function in more conventional ways.
