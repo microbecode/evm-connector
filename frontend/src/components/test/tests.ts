@@ -47,7 +47,7 @@ export const fillTest = (params : Params) => {
             { unitType: 'uint' },
             { unitType: 'string' },
             { unitType: 'address' },
-            { unitType: 'string[]' }
+            { unitType: 'string' }
         ]);
       break;
       case 6:

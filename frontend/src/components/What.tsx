@@ -11,7 +11,7 @@ export function What() {
         
         
         <p>
-            This tool is from developers for developers, so no fancy bells & whistles are to be expected.
+            This tool is from developers for developers, so no bells & whistles are to be expected.
         </p>
     </div>
 

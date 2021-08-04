@@ -27,7 +27,7 @@ export function ContractInteract() {
   const debug : boolean = true;
 
   const doTest = (index : number) => {
-    setContractAddress('0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE');
+    setContractAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3');
     fillTest({
         index, 
         setFuncName, 
@@ -154,7 +154,7 @@ export function ContractInteract() {
     else  */if (item.unitType.indexOf('[]') > 0) {
       item.value = item.value.split(',');
     }
-    console.log('setting new value', item.value);
+    //console.log('setting new value', item.value);
     copy[index] = item;
     setFunctionInputParams(copy);
   }
@@ -202,7 +202,7 @@ export function ContractInteract() {
 
     const abiStr = getAbi();
 
-    console.log('used abi', abiStr)
+    //console.log('used abi', abiStr)
 
     const contract = new ethers.Contract(
       contractAddress,
@@ -213,7 +213,7 @@ export function ContractInteract() {
     //console.log('contract', contract)
 
     const inputValues = functionInputParams.map((param, i) => { 
-      console.log('value for exec', param.value)
+      //console.log('value for exec', param.value)
       return param.value;
     });
     //console.log('inputting', inputValues);
@@ -221,20 +221,19 @@ export function ContractInteract() {
       let customValue = BigNumber.from(0);
       if (funcType === 'payable') {
         customValue = tranValue;
-        console.log('etting val', customValue)
+        //console.log('etting val', customValue)
       }
       const res = await contract.functions[funcName](...inputValues, { value : customValue });
       if (res.wait) { // It's a real transaction
-        console.log('real')
         setWaitTxHash(res.hash);
         setPreviousTxHash(res.hash);
-        console.log('awaiting tx', res);
+        //console.log('awaiting tx', res);
         await res.wait();   
         setWaitTxHash(null);   
         // non-constant function return values can't be received directly, so don't even try
         return;
       }
-      console.log('checking return values')
+      //console.log('checking return values')
       const copy = [...functionOutputParams];
       for (let index = 0; index < functionOutputParams.length; index++) {
         const item = {...copy[index]};
@@ -242,7 +241,7 @@ export function ContractInteract() {
         copy[index] = item;    
       }
       setFunctionOutputParams(copy);
-      console.log('result', res, res.toString());
+      //console.log('result', res, res.toString());
     }
     catch (ex) {
       setNotifyText('ERROR: ' + ex.message);
@@ -254,7 +253,7 @@ export function ContractInteract() {
     if (!item.value) {
       return '';
     }
-    console.log('found item', item)
+    //console.log('found item', item)
 /*     if (item.unitType.indexOf('bytes') > -1) {
       if (item.unitType.indexOf('[]') > -1) {
         const rawValues = item.value as string[];
@@ -414,7 +413,7 @@ export function ContractInteract() {
           value={signatureHash}    
         />
       </div> 
-      {window.ethereum !== undefined &&
+      {window.ethereum !== undefined && window.ethereum.networkVersion != null &&
       <div>
         <input type="button" value={executeName} onClick={execute}></input>
       </div>}

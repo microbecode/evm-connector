@@ -10,7 +10,6 @@ import {
   Image,
   Button,
 } from "react-bootstrap";
-import { ThemeButton } from "../ThemeButton";
 
 import "../../styles/header.scss";
 
@@ -48,24 +47,6 @@ export function Header({ connectWallet, selectedAddress }: Props) {
               />
               <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto py-0">
-    {/*               <NavHashLink
-                    to="/#what"
-                    className="mx-2 nav-link"
-                    smooth
-                    activeClassName="active"
-                  >
-                    Hmm?
-                  </NavHashLink>
-
-                  <NavHashLink
-                    to="/#interact"
-                    className="mx-2 nav-link"
-                    smooth
-                    activeClassName="active"
-                  >
-                    Interact
-                  </NavHashLink> */}
-                  
                 </Nav>
                 {window.ethereum !== undefined ? selectedAddress ? (
                   <Button
@@ -83,10 +64,9 @@ export function Header({ connectWallet, selectedAddress }: Props) {
                     className="d-block filled arrow mt-3 my-xl-0 mx-4"
                     onClick={connectWallet}
                   >
-                    Connect
+                    Connect wallet
                   </Button>
                 ) : ''}
-               {/*  <ThemeButton /> */}
               </Navbar.Collapse>
             </Navbar>
           </Col>
