@@ -77,14 +77,24 @@ export function ContractInteract() {
         return '';
       }
       const abi = getAbi();
-      let iface = new ethers.utils.Interface(abi);
-      const sigHash = iface.getSighash(iface.getFunction(funcTrimName));
+      
+      let sigHash = null; 
+      try {
+        let iface = new ethers.utils.Interface(abi);
+        sigHash = iface.getSighash(iface.getFunction(funcTrimName));
+      }
+      catch (ex) {
+        setNotifyText('Error in creating function signature, please check your inputs');
+        console.error('Unable to create function signature hash', ex);
+      }
       return sigHash;
     }
     const sigHash = getFuncSig();
 
-    setSignatureHash(sigHash);
-    setFuncSignature(sig);
+    if (sigHash != null) {
+      setSignatureHash(sigHash);
+      setFuncSignature(sig);
+    }
   }
 
   const addInputParam = () =>{
