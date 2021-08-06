@@ -64,22 +64,26 @@ export function ContractInteract() {
     let sig = funcTrimName;
     const addParam = (params : FunctionParam[]) => {
       let inSig = '';
-      inSig += '(';
       let paramTypes = [];
       params.forEach((item) => {
         paramTypes.push(item.unitType);
       });
       inSig += paramTypes.flat();
-      inSig += ')';
       return inSig;
     }
+    const inputParamsStr = addParam(functionInputParams);
     
-    sig += addParam(functionInputParams);
+    sig += '(' + inputParamsStr + ')';
     if (funcType != 'nonpayable') {
       sig += ' ' + funcType;
     }
-    sig += ' returns ';
-    sig += addParam(functionOutputParams);
+    const outputParamsStr = addParam(functionOutputParams);
+    if (outputParamsStr && outputParamsStr.length > 0) {
+      sig += ' returns (';
+      sig += outputParamsStr;
+      sig += ')';
+    }
+
 
     const getFuncSig = () => {
       if (!funcTrimName) {
