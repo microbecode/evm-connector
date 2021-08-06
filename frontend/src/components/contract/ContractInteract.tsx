@@ -102,6 +102,7 @@ export function ContractInteract() {
       }
       return sigHash;
     }
+    
     const sigHash = getFuncSig();
 
     if (sigHash != null) {
