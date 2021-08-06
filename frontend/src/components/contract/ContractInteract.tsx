@@ -4,9 +4,11 @@ import { fillTest } from "../test/tests";
 import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
+import { FuncTemplate } from "./FuncTemplate";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
+  const [useTemplate, setUseTemplate] = useState<boolean>(false);
   const [contractAddress, setContractAddress] = useState<string>('');
   //const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
@@ -38,10 +40,19 @@ export function ContractInteract() {
 
   useEffect(() => {
     if (testNumber > 0) {
+      reset();
       doTest(testNumber);
-    }
-    
+    }    
   }, [testNumber]);
+
+  const reset = () => {
+    setContractAddress('');
+    setFuncName('');
+    setFuncType('nonpayable');
+    setFunctionInputParams([]);
+    setFunctionOutputParams([]);
+    setExecType(ExecutionTypes.default);
+  }
 
   
   useEffect(() => {
@@ -290,6 +301,13 @@ export function ContractInteract() {
           />
         </div>
       }
+      <FuncTemplate
+        setFuncName={setFuncName}
+        setFuncType={setFuncType}
+        setFunctionInputParams={setFunctionInputParams}
+        setFunctionOutputParams={setFunctionOutputParams}
+        setUseTemplate={setUseTemplate}
+      ></FuncTemplate>
       <div>
         <label>Contract address:</label>
         <input
@@ -305,7 +323,8 @@ export function ContractInteract() {
           type="text" 
           placeholder="Enter function name" 
           onChange={(e) => { setFuncName(e.target.value) }}
-          value={funcName}       
+          value={funcName}
+          disabled={useTemplate}     
         />
       </div>
       <div>
@@ -319,6 +338,7 @@ export function ContractInteract() {
               onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
               value={item}     
               checked={item == funcType}
+              disabled={useTemplate} 
             />
               {item == 'nonpayable' ? 'default' : item}
             </span>
@@ -357,7 +377,7 @@ export function ContractInteract() {
             return (
             <div key={i}>
               <label>Input parameter {i} type:</label>
-              <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType}>
+              <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType} disabled={useTemplate} >
                 {Object.keys(UnitTypes).map((item2, i2) => {
                   return (
                   <option key={i2} value={UnitTypes[item2]}>{UnitTypes[item2]}</option>
@@ -366,14 +386,29 @@ export function ContractInteract() {
               </select>
               <label>Value:</label>
               {(item.unitType.indexOf('[]') > -1) && <input type="text" value='[' disabled={true} style={{width: '15px'}}></input>}
-              <input type="text" onChange={(e) => { setInputParamValue(i, e.target.value) }} value={getItemValue(item)}></input>
+              <input 
+                type="text" 
+                onChange={(e) => { setInputParamValue(i, e.target.value) }} 
+                value={getItemValue(item)}>
+                
+              </input>
               {(item.unitType.indexOf('[]') > -1) && <input type="text" value=']' disabled={true} style={{width: '15px'}}></input>}
-              <input type="button" value='Remove parameter' onClick={() => { removeInputParam(i); }}></input>
+              <input 
+                type="button" 
+                value='Remove parameter' 
+                onClick={() => { removeInputParam(i); }}
+                disabled={useTemplate} >
+              </input>
             </div>
           )})}      
         </div> 
         <div>
-          <input type="button" value='Add input parameter' onClick={addInputParam}></input>
+          <input 
+            type="button" 
+            value='Add input parameter' 
+            onClick={addInputParam}
+            disabled={useTemplate} 
+            ></input>
         </div>   
       </div>
       <div className='box'>
@@ -382,7 +417,7 @@ export function ContractInteract() {
             return (
             <div key={i}>
               <label>Output parameter {i} type:</label>
-              <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType}>
+              <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType} disabled={useTemplate} >
                 {Object.keys(UnitTypes).map((item2, i2) => {
                   return (
                     <option key={i2} value={UnitTypes[item2]}>{UnitTypes[item2]}</option>
@@ -393,12 +428,22 @@ export function ContractInteract() {
               {canHaveOutput && (item.unitType.indexOf('[]') > -1) && <input type="text" value='[' disabled={true} style={{width: '15px'}}></input>}
               {canHaveOutput && <input type="text" disabled={true} value={getItemValue(item)}></input>}
               {canHaveOutput && (item.unitType.indexOf('[]') > -1) && <input type="text" value=']' disabled={true} style={{width: '15px'}}></input>}
-              <input type="button" value='Remove' onClick={() => { removeOutputParam(i); }}></input>
+              <input 
+                type="button" 
+                value='Remove' 
+                onClick={() => { removeOutputParam(i); }}
+                disabled={useTemplate} 
+                ></input>
             </div>
           )})}
         </div>
         <div>
-          <input type="button" value='Add output parameter' onClick={addOutputParam}></input>
+          <input 
+            type="button" 
+            value='Add output parameter' 
+            onClick={addOutputParam}
+            disabled={useTemplate} 
+          ></input>
         </div>
       </div> 
       <div>

@@ -91,3 +91,11 @@ export enum FuncTypes {
     pure,
     payable
 }
+
+export interface IFuncTemplate {   
+  selectionTitle: string,   
+  funcName: string,
+  funcType: string,
+  funcInputParams: FunctionParam[],
+  funcOutputParams: FunctionParam[]
+}
