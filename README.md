@@ -1,6 +1,6 @@
 # EVM Connector
 
-This tool allows you to interact with any smart contract function on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI. It utilizes your installed browser wallet (MetaMask).
+This tool allows you to interact with any deployed smart contract function on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI. It utilizes your installed browser wallet (MetaMask).
 
 EVM-based blockchains are for example:
 <ul>
@@ -21,6 +21,16 @@ The app is deployed at https://evmconnector.dev
 ## Functionality
 
 This tool is meant to be used if you know a function you want to interact with, but don't have the tools nor the ABI to interact with the function in more conventional ways.
+
+### Chosen network
+
+The blockchain network to use is determined by your browser wallet. Its chainId (https://chainlist.org/) is displayed in the "Execute" button.
+
+### Defining function
+
+You can either choose a predefined function template, or define your own function with the option "Input manually".
+
+If you choose to define your function manually, you have to at least define "function name" and "contract address". If you choose a predefined function template, you only need to enter the contract address and possible input values.
 
 ### Possible questions
 

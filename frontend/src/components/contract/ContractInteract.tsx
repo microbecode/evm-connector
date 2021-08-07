@@ -1,10 +1,11 @@
 import { BigNumber, BytesLike, ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
 import { FuncTemplate } from "./FuncTemplate";
+import { Web3Context } from "../../contexts/Context";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
@@ -23,6 +24,8 @@ export function ContractInteract() {
   const [waitTxHash, setWaitTxHash] = useState<string>('');
   const [notifyText, setNotifyText] = useState<string>('');
   const [previousTxHash, setPreviousTxHash] = useState<string>('');
+
+  const { selectedAddress } = useContext(Web3Context);
 
   const debug : boolean = false;
 
@@ -83,7 +86,6 @@ export function ContractInteract() {
       sig += outputParamsStr;
       sig += ')';
     }
-
 
     const getFuncSig = () => {
       if (!funcTrimName) {
@@ -221,7 +223,25 @@ export function ContractInteract() {
     return abiStr;
   }
 
+  const validate = () => {
+    let errors = [];
+    if (!contractAddress || contractAddress.length != 42 || !contractAddress.startsWith('0x')) {
+      errors.push('Invalid contract address');
+    }
+    if (!funcName || !funcName.match("^[A-Za-z0-9_-]{1,100}")) {
+      errors.push('Invalid function name');
+    }
+    if (errors.length > 0) {
+      setNotifyText('Validation errors: ' + errors.join(', '));
+      return false;
+    }
+    return true;
+  }
+
   const execute = async () => {
+    if (!validate()) {
+      return;
+    }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
     const abiStr = getAbi();
@@ -471,7 +491,7 @@ export function ContractInteract() {
           value={signatureHash}    
         />
       </div> 
-      {window.ethereum !== undefined && window.ethereum.networkVersion != null &&
+      {window.ethereum !== undefined && window.ethereum.networkVersion != null && selectedAddress &&
       <div>
         <input type="button" value={executeName} onClick={execute}></input>
       </div>}

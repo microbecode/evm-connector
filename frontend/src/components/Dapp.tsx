@@ -89,7 +89,7 @@ export class Dapp extends React.Component<{}, DappState> {
       <div>
         <Web3Context.Provider
           value={{
-            
+            selectedAddress
           }}
         >
           <ContractsContext.Provider
