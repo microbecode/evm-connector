@@ -10,7 +10,7 @@ import { Header } from "./common/Header";
 import { NetworkErrorMessage } from "./NetworkErrorMessage";
 import { Progress } from "./Progress";
 import { Copyright } from "./common/Copyright";
-import { ContractInteract } from "./contract/ContractInteract";
+import { FunctionInteract } from "./function/FunctionInteract";
 import { What } from "./What";
 
 // This is an error code that indicates that the user canceled a transaction
@@ -150,7 +150,7 @@ export class Dapp extends React.Component<{}, DappState> {
               }
               <What></What>
 
-              <ContractInteract></ContractInteract>
+              <FunctionInteract></FunctionInteract>
 
               <Footer />
 
