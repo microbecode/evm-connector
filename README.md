@@ -3,6 +3,7 @@
 This tool allows you to interact with any deployed smart contract function on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI. It utilizes your installed browser wallet (MetaMask).
 
 EVM-based blockchains are for example:
+
 <ul>
     <li>Ethereum</li>
     <li>Binance Smart Chain</li>
@@ -50,13 +51,13 @@ Some future development is considered and issues are created for those this repo
 
 ### Technologies used
 
-* Node v14.15
-* Solidity 0.7.5 (only for some local testing)
-* Hardhat
-* Ethers.js
-* ReactJS
-* TypeScript
-* ESLint / Prettier
+- Node v14.15
+- Solidity 0.7.5 (only for some local testing)
+- Hardhat
+- Ethers.js
+- ReactJS
+- TypeScript
+- ESLint / Prettier
 
 ### Instructions
 
@@ -69,11 +70,13 @@ npm run localchain
 ```
 
 To deploy the example contract locally:
+
 ```
 npm run deploy-local
 ```
 
 To run the frontend locally:
+
 ```
 npm run serve-frontend
 ```

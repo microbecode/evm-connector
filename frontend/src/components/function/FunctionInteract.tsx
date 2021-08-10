@@ -18,6 +18,7 @@ import { Web3Context } from "../../contexts/Context";
 
 interface Params {
   setNotifyText: React.Dispatch<React.SetStateAction<string>>;
+  contractAddress: string;
   selectedFunction: IFuncTemplate;
   setSelectedFunctionName: (value: string) => void;
   setSelectedFunctionType: (value: StateMutability) => void;
@@ -33,6 +34,8 @@ interface Params {
   addSelectedFunctionOutputParam: () => void;
   removeSelectedFunctionInputParam: (paramIndex: number) => void;
   removeSelectedFunctionOutputParam: (paramIndex: number) => void;
+  setWaitTxHash: (value: string) => void;
+  setPreviousTxHash: (value: string) => void;
 }
 
 export function FunctionInteract(params: Params) {
@@ -44,11 +47,110 @@ export function FunctionInteract(params: Params) {
   const [funcSignature, setFuncSignature] = useState<string>("");
   const [signatureHash, setSignatureHash] = useState<string>("");
 
+  const { selectedAddress } = useContext(Web3Context);
+
   useEffect(() => {}, []);
 
   useEffect(() => {
     //updateSig();
   }, [params.selectedFunction]);
+
+  const getAbi = (): string => {
+    const inputParams: RawAbiParameter[] = [];
+    params.selectedFunction.funcInputParams.forEach((item) => {
+      const para: RawAbiParameter = {
+        name: "",
+        type: item.unitType,
+      };
+      inputParams.push(para);
+    });
+
+    const outputParams: RawAbiParameter[] = [];
+    params.selectedFunction.funcOutputParams.forEach((item) => {
+      const para: RawAbiParameter = {
+        name: "",
+        type: item.unitType,
+      };
+      outputParams.push(para);
+    });
+
+    let useMutability: StateMutability = params.selectedFunction.funcType;
+    if (execType == ExecutionTypes.local) {
+      useMutability = "view";
+    }
+
+    const abi: RawAbiDefinition = {
+      name: params.selectedFunction.funcName,
+      type: "function",
+      inputs: inputParams,
+      stateMutability: useMutability,
+      outputs: outputParams,
+    };
+    const abiStr = JSON.stringify([abi]);
+    return abiStr;
+  };
+
+  const execute = async () => {
+    if (!validate()) {
+      return;
+    }
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const abiStr = getAbi();
+
+    console.log("used abi", abiStr);
+
+    const contract = new ethers.Contract(
+      params.contractAddress,
+      abiStr,
+      provider.getSigner(0),
+    );
+
+    console.log("contract", contract);
+
+    const inputValues = params.selectedFunction.funcInputParams.map(
+      (param, i) => {
+        //console.log('value for exec', param.value)
+        return param.value;
+      },
+    );
+    console.log("inputting", inputValues, params.selectedFunction);
+    try {
+      let customValue = BigNumber.from(0);
+      if (params.selectedFunction.funcType === "payable") {
+        customValue = tranValue;
+        //console.log('etting val', customValue)
+      }
+      const res = await contract.functions[params.selectedFunction.funcName](
+        ...inputValues,
+        { value: customValue },
+      );
+      if (res.wait) {
+        // It's a real transaction
+        params.setWaitTxHash(res.hash);
+        params.setPreviousTxHash(res.hash);
+        //console.log('awaiting tx', res);
+        await res.wait();
+        params.setWaitTxHash(null);
+        // non-constant function return values can't be received directly, so don't even try
+        return;
+      }
+      console.log("checking return values", res);
+      for (
+        let index = 0;
+        index < params.selectedFunction.funcOutputParams.length;
+        index++
+      ) {
+        const item = { ...params.selectedFunction.funcOutputParams[index] };
+        item.value = res[index];
+        params.setSelectedFunctionOutputParam(index, item);
+      }
+      //console.log('result', res, res.toString());
+    } catch (ex) {
+      params.setNotifyText("ERROR: " + ex.message);
+      console.error(ex);
+    }
+  };
 
   const updateSig = () => {
     const funcTrimName = params.selectedFunction.funcName.split(" ")[0]; // ignore all after space
@@ -75,32 +177,31 @@ export function FunctionInteract(params: Params) {
       sig += ")";
     }
 
-    /* const getFuncSig = () => {
+    const getFuncSig = () => {
       if (!funcTrimName) {
-        return '';
+        return "";
       }
       const abi = getAbi();
-      
-      let sigHash = null; 
+
+      let sigHash = null;
       try {
         let iface = new ethers.utils.Interface(abi);
         sigHash = iface.getSighash(iface.getFunction(funcTrimName));
-      }
-      catch (ex) {
-        setNotifyText('Error in creating function signature, please check your inputs');
-        console.error('Unable to create function signature hash', ex);
+      } catch (ex) {
+        params.setNotifyText(
+          "Error in creating function signature, please check your inputs",
+        );
+        console.error("Unable to create function signature hash", ex);
       }
       return sigHash;
-    } 
-    
+    };
+
     const sigHash = getFuncSig();
 
     if (sigHash != null) {
       setSignatureHash(sigHash);
-      //setFuncSignature(sig);
+      setFuncSignature(sig);
     }
-    */
-    setFuncSignature(sig);
   };
 
   const setInputParamType = (index: number, value: string) => {
@@ -153,6 +254,13 @@ export function FunctionInteract(params: Params) {
   const validate = () => {
     let errors = [];
     if (
+      !params.contractAddress ||
+      params.contractAddress.length != 42 ||
+      !params.contractAddress.startsWith("0x")
+    ) {
+      errors.push("Invalid contract address");
+    }
+    if (
       !params.selectedFunction.funcName ||
       !params.selectedFunction.funcName.match("^[A-Za-z0-9_-]{1,100}")
     ) {
@@ -182,6 +290,9 @@ export function FunctionInteract(params: Params) {
 
     return item.value.toString();
   };
+
+  const executeName =
+    "Execute on blockchain ID " + window.ethereum?.networkVersion;
 
   return (
     <>
@@ -413,6 +524,13 @@ export function FunctionInteract(params: Params) {
           value={signatureHash}
         />
       </div>
+      {window.ethereum !== undefined &&
+        window.ethereum.networkVersion != null &&
+        selectedAddress && (
+          <div>
+            <input type="button" value={executeName} onClick={execute}></input>
+          </div>
+        )}
     </>
   );
 }

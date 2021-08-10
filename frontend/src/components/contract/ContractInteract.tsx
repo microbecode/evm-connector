@@ -27,8 +27,6 @@ export function ContractInteract() {
   const [notifyText, setNotifyText] = useState<string>("");
   const [previousTxHash, setPreviousTxHash] = useState<string>("");
 
-  const { selectedAddress } = useContext(Web3Context);
-
   const debug: boolean = false;
 
   useEffect(() => {}, []);
@@ -52,6 +50,8 @@ export function ContractInteract() {
     }    
   }, [testNumber]); */
   /* 
+
+  
   const reset = () => {
     setContractAddress('');
     setFuncName('');
@@ -60,41 +60,6 @@ export function ContractInteract() {
     setFunctionOutputParams([]);
     setExecType(ExecutionTypes.default);
   } */
-
-  const getAbi = (): string => {
-    const inputParams: RawAbiParameter[] = [];
-    /*  functionInputParams.forEach((item) => {
-      const para : RawAbiParameter = {
-        name: '',
-        type: item.unitType
-      };
-      inputParams.push(para);
-    });
-
-    const outputParams : RawAbiParameter[] = [];
-    functionOutputParams.forEach((item) => {
-      const para : RawAbiParameter = {
-        name: '',
-        type: item.unitType
-      };
-      outputParams.push(para);
-    });
-
-    let useMutability : StateMutability = funcType;
-    if (execType == ExecutionTypes.local) {
-      useMutability = 'view';
-    }
-
-    const abi : RawAbiDefinition = {
-      name: funcName,
-      type: 'function',
-      inputs: inputParams,
-      stateMutability: useMutability,
-      outputs: outputParams
-    };
-    const abiStr = JSON.stringify([abi]); */
-    return ""; //abiStr;
-  };
 
   const validate = () => {
     let errors = [];
@@ -110,61 +75,6 @@ export function ContractInteract() {
       return false;
     }
     return true;
-  };
-
-  const execute = async () => {
-    if (!validate()) {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    const abiStr = getAbi();
-
-    //console.log('used abi', abiStr)
-
-    const contract = new ethers.Contract(
-      contractAddress,
-      abiStr,
-      provider.getSigner(0),
-    );
-
-    //console.log('contract', contract)
-
-    /* const inputValues = functionInputParams.map((param, i) => { 
-      //console.log('value for exec', param.value)
-      return param.value;
-    });
-    //console.log('inputting', inputValues);
-    try {
-      let customValue = BigNumber.from(0);
-      if (funcType === 'payable') {
-        customValue = tranValue;
-        //console.log('etting val', customValue)
-      }
-      const res = await contract.functions[funcName](...inputValues, { value : customValue });
-      if (res.wait) { // It's a real transaction
-        setWaitTxHash(res.hash);
-        setPreviousTxHash(res.hash);
-        //console.log('awaiting tx', res);
-        await res.wait();   
-        setWaitTxHash(null);   
-        // non-constant function return values can't be received directly, so don't even try
-        return;
-      }
-      //console.log('checking return values')
-      const copy = [...functionOutputParams];
-      for (let index = 0; index < functionOutputParams.length; index++) {
-        const item = {...copy[index]};
-        item.value = res[index];
-        copy[index] = item;    
-      }
-      setFunctionOutputParams(copy);
-      //console.log('result', res, res.toString());
-    }
-    catch (ex) {
-      setNotifyText('ERROR: ' + ex.message);
-      console.error(ex);
-    } */
   };
 
   const addFunction = () => {
@@ -280,9 +190,6 @@ export function ContractInteract() {
     setFunctions(functionsCopy);
   };
 
-  const executeName =
-    "Execute on blockchain ID " + window.ethereum?.networkVersion;
-
   return (
     <form onSubmit={() => {}} id="interact">
       {debug && (
@@ -340,6 +247,7 @@ export function ContractInteract() {
       {functions && functions.length > 0 && (
         <FunctionInteract
           setNotifyText={setNotifyText}
+          contractAddress={contractAddress}
           selectedFunction={functions[selectedFunctionIndex]}
           setSelectedFunctionName={(value) => {
             changeFunctionName(selectedFunctionIndex, value);
@@ -357,16 +265,11 @@ export function ContractInteract() {
           addSelectedFunctionOutputParam={addFunctionOutputParam}
           removeSelectedFunctionInputParam={removeFunctionInputParam}
           removeSelectedFunctionOutputParam={removeFunctionOutputParam}
+          setWaitTxHash={setWaitTxHash}
+          setPreviousTxHash={setPreviousTxHash}
         ></FunctionInteract>
       )}
 
-      {window.ethereum !== undefined &&
-        window.ethereum.networkVersion != null &&
-        selectedAddress && (
-          <div>
-            <input type="button" value={executeName} onClick={execute}></input>
-          </div>
-        )}
       {previousTxHash && (
         <div>
           <label>Previous transaction hash:</label>
