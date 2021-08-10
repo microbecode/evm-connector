@@ -9,9 +9,9 @@ import { Footer } from "./common/Footer";
 import { Header } from "./common/Header";
 import { NetworkErrorMessage } from "./NetworkErrorMessage";
 import { Progress } from "./Progress";
-import { Copyright } from "./common/Copyright";
-import { FunctionInteract } from "./function/FunctionInteract";
+import { ContractInteract } from "./contract/ContractInteract";
 import { What } from "./What";
+import { Copyright } from "./common/Copyright";
 
 // This is an error code that indicates that the user canceled a transaction
 const ERROR_CODE_TX_REJECTED_BY_USER = 4001;
@@ -150,7 +150,7 @@ export class Dapp extends React.Component<{}, DappState> {
               }
               <What></What>
 
-              <FunctionInteract></FunctionInteract>
+              <ContractInteract></ContractInteract>
 
               <Footer />
 

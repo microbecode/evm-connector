@@ -1,69 +1,48 @@
 import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useContext, useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
-import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes } from "../types";
+import { FunctionParam, FuncTypes, UnitTypes, RawAbiDefinition, RawAbiParameter, StateMutability, ExecutionTypes, IFuncTemplate } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
 import { FuncTemplate } from "./FuncTemplate";
 import { Web3Context } from "../../contexts/Context";
 
-export function FunctionInteract() {
-  const [testNumber, setTestNumber] = useState<number>(0);
+interface Params {
+  setNotifyText: React.Dispatch<React.SetStateAction<string>>,
+  selectedFunction: IFuncTemplate,
+  setSelectedFunctionName: (value: string) => void,
+  setSelectedFunctionType: (value: StateMutability) => void,
+  setSelectedFunctionInputParam: (paramIndex: number, value: FunctionParam) => void,
+  setSelectedFunctionOutputParam: (paramIndex: number, value: FunctionParam) => void,
+  addSelectedFunctionInputParam: () => void,
+  addSelectedFunctionOutputParam: () => void,
+  removeSelectedFunctionInputParam: (paramIndex: number) => void,
+  removeSelectedFunctionOutputParam: (paramIndex: number) => void
+}
+
+export function FunctionInteract(params : Params) {
   const [useTemplate, setUseTemplate] = useState<boolean>(false);
-  const [contractAddress, setContractAddress] = useState<string>('');
   //const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
-  const [funcName, setFuncName] = useState<string>('');
-  const [funcType, setFuncType] = useState<StateMutability>('nonpayable');
+/*   const [funcName, setFuncName] = useState<string>('');
+  const [funcType, setFuncType] = useState<StateMutability>('nonpayable');*/
   const [tranValue, setTranValue] = useState<BigNumber>(BigNumber.from(0));
-  const [execType, setExecType] = useState<ExecutionTypes>(ExecutionTypes.default);
+  const [execType, setExecType] = useState<ExecutionTypes>(ExecutionTypes.default); 
   const [funcSignature, setFuncSignature] = useState<string>('');
   const [signatureHash, setSignatureHash] = useState<string>('');
-  const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
-  const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]);
-  const [waitTxHash, setWaitTxHash] = useState<string>('');
-  const [notifyText, setNotifyText] = useState<string>('');
-  const [previousTxHash, setPreviousTxHash] = useState<string>('');
-
-  const { selectedAddress } = useContext(Web3Context);
-
-  const debug : boolean = false;
-
-  const doTest = (index : number) => {
-    setContractAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3');
-    fillTest({
-        index, 
-        setFuncName, 
-        setFuncType,
-        setFunctionInputParams,
-        setFunctionOutputParams,
-        execute
-      }
-  )}
-
-  useEffect(() => {
-    if (testNumber > 0) {
-      reset();
-      doTest(testNumber);
-    }    
-  }, [testNumber]);
-
-  const reset = () => {
-    setContractAddress('');
-    setFuncName('');
-    setFuncType('nonpayable');
-    setFunctionInputParams([]);
-    setFunctionOutputParams([]);
-    setExecType(ExecutionTypes.default);
-  }
-
+ /*  const [functionInputParams, setFunctionInputParams] = useState<FunctionParam[]>([]);
+  const [functionOutputParams, setFunctionOutputParams] = useState<FunctionParam[]>([]); */
   
   useEffect(() => {
-    updateSig();
-  }, [functionInputParams, functionOutputParams, funcName, funcType]);
+    
+  }, []);
+
+  useEffect(() => {
+    //updateSig();
+  }, [params.selectedFunction]);
 
   const updateSig = () => {
-    const funcTrimName = funcName.split(' ')[0]; // ignore all after space
+    const funcTrimName = params.selectedFunction.funcName.split(' ')[0]; // ignore all after space
     let sig = funcTrimName;
     const addParam = (params : FunctionParam[]) => {
       let inSig = '';
@@ -74,20 +53,20 @@ export function FunctionInteract() {
       inSig += paramTypes.flat();
       return inSig;
     }
-    const inputParamsStr = addParam(functionInputParams);
+    const inputParamsStr = addParam(params.selectedFunction.funcInputParams);
     
     sig += '(' + inputParamsStr + ')';
-    if (funcType != 'nonpayable') {
-      sig += ' ' + funcType;
+    if (params.selectedFunction.funcType != 'nonpayable') {
+      sig += ' ' + params.selectedFunction.funcType;
     }
-    const outputParamsStr = addParam(functionOutputParams);
+    const outputParamsStr = addParam(params.selectedFunction.funcOutputParams);
     if (outputParamsStr && outputParamsStr.length > 0) {
       sig += ' returns (';
       sig += outputParamsStr;
       sig += ')';
     }
 
-    const getFuncSig = () => {
+    /* const getFuncSig = () => {
       if (!funcTrimName) {
         return '';
       }
@@ -103,68 +82,47 @@ export function FunctionInteract() {
         console.error('Unable to create function signature hash', ex);
       }
       return sigHash;
-    }
+    } 
     
     const sigHash = getFuncSig();
 
     if (sigHash != null) {
       setSignatureHash(sigHash);
-      setFuncSignature(sig);
+      //setFuncSignature(sig);
     }
-  }
-
-  const addInputParam = () =>{
-    const newParam : FunctionParam = {
-      unitType : 'string',
-      value: ''
-    };
-    setFunctionInputParams([
-      ...functionInputParams,
-      newParam
-    ]);
+    */
+    setFuncSignature(sig);
   }
 
   const removeInputParam = (index : number) => {
-    const copy = functionInputParams.filter((_, i) => i !== index);
-    setFunctionInputParams(copy);
+/*     const copy = params.selectedFunction.funcInputParams.filter((_, i) => i !== index);
+    params.setSelectedFunctionInputParams(copy); */
   }
-
-  const addOutputParam = () =>{
-    const newParam : FunctionParam = {
-      unitType : 'string',
-      value: ''
-    };
-    setFunctionOutputParams([
-      ...functionOutputParams,
-      newParam
-    ]);
-  }
-
+ 
   const removeOutputParam = (index : number) => {
-    const copy = functionOutputParams.filter((_, i) => i !== index);
-    setFunctionOutputParams(copy);
+/*     const copy = params.selectedFunction.funcOutputParams.filter((_, i) => i !== index);
+    params.setSelectedFunctionOutputParams(copy); */
   }
 
 
-  const changeInputParam = (index, newType) => {
-    const copy = [...functionInputParams];
+ /*  const changeInputParam = (index, newType) => {
+    const copy = [...params.selectedFunction.funcInputParams];
     const item = {...copy[index]};
     item.unitType = newType;
     copy[index] = item;
-    setFunctionInputParams(copy);
+    params.setSelectedFunctionInputParams(copy);
+  }
+ */
+
+  const setInputParamType = (index : number, value : string) => {
+    const item = {...[...params.selectedFunction.funcInputParams][index]};
+    item.unitType = value;
+    params.setSelectedFunctionInputParam(index, item);
   }
 
-  const changeOutputParam = (index, newType) => {
-    const copy = [...functionOutputParams];
-    const item = {...copy[index]};
-    item.unitType = newType;
-    copy[index] = item;
-    setFunctionOutputParams(copy);
-  }
-
-  const setInputParamValue = (index, value) => {
-    const copy = [...functionInputParams];
-    const item = {...copy[index]};
+  const setInputParamValue = (index : number, value : string) => {
+    //const copy = [...params.selectedFunction.funcInputParams];
+    const item = {...[...params.selectedFunction.funcInputParams][index]};
     item.value = value;
 /*     if (item.unitType.indexOf('bytes') > -1) {
       console.log('new value', value, item)
@@ -181,117 +139,39 @@ export function FunctionInteract() {
       item.value = item.value.split(',');
     }
     //console.log('setting new value', item.value);
-    copy[index] = item;
-    setFunctionInputParams(copy);
+    //copy[index] = item;
+    params.setSelectedFunctionInputParam(index, item);
   }
 
-  const canHaveOutput = (execType == ExecutionTypes.default && (funcType == "pure" || funcType == "view")) ||
+  const setOutputParamValue = (index : number, value : string) => {
+    const item = {...[...params.selectedFunction.funcOutputParams][index]};
+    item.value = value;
+    params.setSelectedFunctionOutputParam(index, item);
+  }
+
+  const setOutputParamType = (index : number, value : string) => {
+    const item = {...[...params.selectedFunction.funcOutputParams][index]};
+    item.unitType = value;
+    params.setSelectedFunctionOutputParam(index, item);
+  }
+
+  const canHaveOutput = (execType == ExecutionTypes.default && 
+    (params.selectedFunction.funcType == "pure" || params.selectedFunction.funcType == "view")) ||
     execType == ExecutionTypes.local;
 
-  const getAbi = () : string => {
-    const inputParams : RawAbiParameter[] = [];
-    functionInputParams.forEach((item) => {
-      const para : RawAbiParameter = {
-        name: '',
-        type: item.unitType
-      };
-      inputParams.push(para);
-    });
-
-    const outputParams : RawAbiParameter[] = [];
-    functionOutputParams.forEach((item) => {
-      const para : RawAbiParameter = {
-        name: '',
-        type: item.unitType
-      };
-      outputParams.push(para);
-    });
-
-    let useMutability : StateMutability = funcType;
-    if (execType == ExecutionTypes.local) {
-      useMutability = 'view';
-    }
-
-    const abi : RawAbiDefinition = {
-      name: funcName,
-      type: 'function',
-      inputs: inputParams,
-      stateMutability: useMutability,
-      outputs: outputParams
-    };
-    const abiStr = JSON.stringify([abi]);
-    return abiStr;
-  }
 
   const validate = () => {
     let errors = [];
-    if (!contractAddress || contractAddress.length != 42 || !contractAddress.startsWith('0x')) {
-      errors.push('Invalid contract address');
-    }
-    if (!funcName || !funcName.match("^[A-Za-z0-9_-]{1,100}")) {
+    if (!params.selectedFunction.funcName || !params.selectedFunction.funcName.match("^[A-Za-z0-9_-]{1,100}")) {
       errors.push('Invalid function name');
     }
     if (errors.length > 0) {
-      setNotifyText('Validation errors: ' + errors.join(', '));
+      params.setNotifyText('Validation errors: ' + errors.join(', '));
       return false;
     }
     return true;
   }
 
-  const execute = async () => {
-    if (!validate()) {
-      return;
-    }
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-    const abiStr = getAbi();
-
-    //console.log('used abi', abiStr)
-
-    const contract = new ethers.Contract(
-      contractAddress,
-      abiStr,
-      provider.getSigner(0),
-    );
-
-    //console.log('contract', contract)
-
-    const inputValues = functionInputParams.map((param, i) => { 
-      //console.log('value for exec', param.value)
-      return param.value;
-    });
-    //console.log('inputting', inputValues);
-    try {
-      let customValue = BigNumber.from(0);
-      if (funcType === 'payable') {
-        customValue = tranValue;
-        //console.log('etting val', customValue)
-      }
-      const res = await contract.functions[funcName](...inputValues, { value : customValue });
-      if (res.wait) { // It's a real transaction
-        setWaitTxHash(res.hash);
-        setPreviousTxHash(res.hash);
-        //console.log('awaiting tx', res);
-        await res.wait();   
-        setWaitTxHash(null);   
-        // non-constant function return values can't be received directly, so don't even try
-        return;
-      }
-      //console.log('checking return values')
-      const copy = [...functionOutputParams];
-      for (let index = 0; index < functionOutputParams.length; index++) {
-        const item = {...copy[index]};
-        item.value = res[index];
-        copy[index] = item;    
-      }
-      setFunctionOutputParams(copy);
-      //console.log('result', res, res.toString());
-    }
-    catch (ex) {
-      setNotifyText('ERROR: ' + ex.message);
-      console.error(ex);
-    }
-  }
 
   const getItemValue = (item : FunctionParam) => {
     if (!item.value) {
@@ -311,44 +191,24 @@ export function FunctionInteract() {
     return item.value.toString();
   }
 
-  const executeName = 'Execute on blockchain ID ' + window.ethereum?.networkVersion;
+  
 
   return (
-    <form onSubmit={() => {}} id="interact">
-      {debug &&
-        <div>
-          <label>Perform test number:</label>
-          <input
-            type="text" 
-            placeholder="Number" 
-            onChange={(e) => { setTestNumber(parseInt(e.target.value)) }}
-            value={testNumber}       
-          />
-        </div>
-      }
-      <FuncTemplate
+    <>
+    {/*   <FuncTemplate
         setFuncName={setFuncName}
         setFuncType={setFuncType}
         setFunctionInputParams={setFunctionInputParams}
         setFunctionOutputParams={setFunctionOutputParams}
         setUseTemplate={setUseTemplate}
-      ></FuncTemplate>
-      <div>
-        <label>Contract address:</label>
-        <input
-          type="text" 
-          placeholder="Enter contract address" 
-          onChange={(e) => { setContractAddress(e.target.value) }}
-          value={contractAddress}       
-        />
-      </div>
+      ></FuncTemplate> */}
       <div>
         <label>Function name:</label>
         <input
           type="text" 
           placeholder="Enter function name" 
-          onChange={(e) => { setFuncName(e.target.value) }}
-          value={funcName}
+          onChange={(e) => { params.setSelectedFunctionName(e.target.value) }}
+          value={params.selectedFunction?.funcName}
           disabled={useTemplate}     
         />
       </div>
@@ -360,9 +220,9 @@ export function FunctionInteract() {
             <input            
               type="radio" 
               name="funcType"
-              onChange={(e) => { setFuncType(e.target.value as StateMutability) }}
+              onChange={(e) => { params.setSelectedFunctionType(e.target.value as StateMutability) }}
               value={item}     
-              checked={item == funcType}
+              checked={item == params.selectedFunction?.funcType}
               disabled={useTemplate} 
             />
               {item == 'nonpayable' ? 'default' : item}
@@ -385,7 +245,7 @@ export function FunctionInteract() {
             </span>
           )})}        
       </div>
-      {funcType == 'payable' && execType == ExecutionTypes.default &&
+      {params.selectedFunction.funcType == 'payable' && execType == ExecutionTypes.default &&
         <div>
           <label>Value: </label>
           <input
@@ -397,12 +257,12 @@ export function FunctionInteract() {
       }      
       <div className='box'>
         <div>
-          {functionInputParams.map((item, i) => { 
+          {params.selectedFunction.funcInputParams.map((item, i) => { 
             //console.log('found item', item)
             return (
             <div key={i}>
               <label>Input parameter {i} type:</label>
-              <select onChange={(e) => { changeInputParam(i, e.target.value) }} value={item.unitType} disabled={useTemplate} >
+              <select onChange={(e) => { setInputParamType(i, e.target.value) }} value={item.unitType} disabled={useTemplate} >
                 {Object.keys(UnitTypes).map((item2, i2) => {
                   return (
                   <option key={i2} value={UnitTypes[item2]}>{UnitTypes[item2]}</option>
@@ -421,7 +281,7 @@ export function FunctionInteract() {
               <input 
                 type="button" 
                 value='Remove parameter' 
-                onClick={() => { removeInputParam(i); }}
+                onClick={() => { params.removeSelectedFunctionInputParam(i); }}
                 disabled={useTemplate} >
               </input>
             </div>
@@ -431,18 +291,18 @@ export function FunctionInteract() {
           <input 
             type="button" 
             value='Add input parameter' 
-            onClick={addInputParam}
+            onClick={params.addSelectedFunctionInputParam}
             disabled={useTemplate} 
             ></input>
         </div>   
       </div>
       <div className='box'>
         <div>
-          {functionOutputParams.map((item, i) => { 
+          {params.selectedFunction.funcOutputParams.map((item, i) => { 
             return (
             <div key={i}>
               <label>Output parameter {i} type:</label>
-              <select onChange={(e) => { changeOutputParam(i, e.target.value) }} value={item.unitType} disabled={useTemplate} >
+              <select onChange={(e) => { setOutputParamType(i, e.target.value) }} value={item.unitType} disabled={useTemplate} >
                 {Object.keys(UnitTypes).map((item2, i2) => {
                   return (
                     <option key={i2} value={UnitTypes[item2]}>{UnitTypes[item2]}</option>
@@ -456,7 +316,7 @@ export function FunctionInteract() {
               <input 
                 type="button" 
                 value='Remove' 
-                onClick={() => { removeOutputParam(i); }}
+                onClick={() => { params.removeSelectedFunctionOutputParam(i); }}
                 disabled={useTemplate} 
                 ></input>
             </div>
@@ -466,7 +326,7 @@ export function FunctionInteract() {
           <input 
             type="button" 
             value='Add output parameter' 
-            onClick={addOutputParam}
+            onClick={params.addSelectedFunctionOutputParam}
             disabled={useTemplate} 
           ></input>
         </div>
@@ -490,20 +350,8 @@ export function FunctionInteract() {
           onChange={(e) => { }}
           value={signatureHash}    
         />
-      </div> 
-      {window.ethereum !== undefined && window.ethereum.networkVersion != null && selectedAddress &&
-      <div>
-        <input type="button" value={executeName} onClick={execute}></input>
-      </div>}
-      {previousTxHash &&
-        <div>
-        <label>Previous transaction hash:</label>
-        <input type="text" readOnly value={previousTxHash}></input>
       </div>
-      }      
-      {notifyText && <Notification text={notifyText} dismiss={() => setNotifyText(null)}></Notification> }
-      {waitTxHash && <WaitingForTransactionMessage txHash={waitTxHash}></WaitingForTransactionMessage> }
-    </form>
     
+    </>
   );
 }

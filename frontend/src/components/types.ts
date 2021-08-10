@@ -95,7 +95,7 @@ export enum FuncTypes {
 export interface IFuncTemplate {   
   selectionTitle: string,   
   funcName: string,
-  funcType: string,
+  funcType: StateMutability,
   funcInputParams: FunctionParam[],
   funcOutputParams: FunctionParam[]
 }
