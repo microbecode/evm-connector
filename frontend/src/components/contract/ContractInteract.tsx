@@ -173,6 +173,13 @@ export function ContractInteract() {
     setFunctions(copy);
   }
 
+  const removeFunction = () => {
+    const copy = [...functions];
+    copy.splice(selectedFunctionIndex, 1);
+    setSelectedFunctionIndex(0);
+    setFunctions(copy);
+  }
+
   const changeFunctionName = (index: number, value: string) => {
     const copy = [...functions];
     const item = {...copy[index]};
@@ -319,6 +326,7 @@ export function ContractInteract() {
         
             </select>
             <input type="button" value='Add custom' onClick={addFunction}></input>
+            {functions && functions.length > 0 && <input type="button" value='Remove selected function' onClick={removeFunction}></input>}
         </div>
 {functions && functions.length > 0 &&
         <FunctionInteract

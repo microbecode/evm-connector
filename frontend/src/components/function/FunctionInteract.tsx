@@ -94,26 +94,6 @@ export function FunctionInteract(params : Params) {
     setFuncSignature(sig);
   }
 
-  const removeInputParam = (index : number) => {
-/*     const copy = params.selectedFunction.funcInputParams.filter((_, i) => i !== index);
-    params.setSelectedFunctionInputParams(copy); */
-  }
- 
-  const removeOutputParam = (index : number) => {
-/*     const copy = params.selectedFunction.funcOutputParams.filter((_, i) => i !== index);
-    params.setSelectedFunctionOutputParams(copy); */
-  }
-
-
- /*  const changeInputParam = (index, newType) => {
-    const copy = [...params.selectedFunction.funcInputParams];
-    const item = {...copy[index]};
-    item.unitType = newType;
-    copy[index] = item;
-    params.setSelectedFunctionInputParams(copy);
-  }
- */
-
   const setInputParamType = (index : number, value : string) => {
     const item = {...[...params.selectedFunction.funcInputParams][index]};
     item.unitType = value;
@@ -143,11 +123,11 @@ export function FunctionInteract(params : Params) {
     params.setSelectedFunctionInputParam(index, item);
   }
 
-  const setOutputParamValue = (index : number, value : string) => {
+/*   const setOutputParamValue = (index : number, value : string) => {
     const item = {...[...params.selectedFunction.funcOutputParams][index]};
     item.value = value;
     params.setSelectedFunctionOutputParam(index, item);
-  }
+  } */
 
   const setOutputParamType = (index : number, value : string) => {
     const item = {...[...params.selectedFunction.funcOutputParams][index]};
