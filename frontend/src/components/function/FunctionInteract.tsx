@@ -117,6 +117,7 @@ export function FunctionInteract(params: Params) {
         customValue = BigNumber.from(tranValue);
         //console.log('etting val', customValue)
       }
+
       const res = await contract.functions[params.selectedFunction.funcName](
         ...inputValues,
         { value: customValue },
@@ -143,7 +144,11 @@ export function FunctionInteract(params: Params) {
       }
       //console.log('result', res, res.toString());
     } catch (ex) {
-      params.setNotifyText("ERROR: " + ex.message);
+      let msg = ex.message;
+      if (ex.data?.message) {
+        msg += ", " + ex.data.message;
+      }
+      params.setNotifyText("ERROR: " + msg);
       console.error(ex);
     }
   };

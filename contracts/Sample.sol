@@ -51,4 +51,10 @@ contract Sample {
         bool d = true;
         return (a,b,c,d);
     }
+
+    function Test1(uint a) public {
+        if (a > 5) {
+            revert();
+        }
+    }
 }
