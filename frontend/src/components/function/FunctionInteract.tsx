@@ -489,7 +489,7 @@ export function FunctionInteract(params: Params) {
                 )}
                 <input
                   type="button"
-                  value="Remove"
+                  value="Remove parameter"
                   onClick={() => {
                     params.removeSelectedFunctionOutputParam(i);
                   }}
