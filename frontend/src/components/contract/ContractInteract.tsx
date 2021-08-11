@@ -15,6 +15,7 @@ import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
 import { Web3Context } from "../../contexts/Context";
 import { FunctionInteract } from "../function/FunctionInteract";
+import { ContractTemplate } from "./ContractTemplate";
 
 export function ContractInteract() {
   const [testNumber, setTestNumber] = useState<number>(0);
@@ -28,6 +29,8 @@ export function ContractInteract() {
   const [previousTxHash, setPreviousTxHash] = useState<string>("");
 
   const debug: boolean = false;
+
+  //console.log("amounts", functions.length, selectedFunctionIndex);
 
   useEffect(() => {}, []);
 
@@ -61,6 +64,8 @@ export function ContractInteract() {
     setExecType(ExecutionTypes.default);
   } */
 
+  //useEffect(() => {}, [functions]);
+
   const validate = () => {
     let errors = [];
     if (
@@ -77,17 +82,24 @@ export function ContractInteract() {
     return true;
   };
 
-  const addFunction = () => {
+  const addEmptyFunction = () => {
     const custom: IFuncTemplate = {
-      selectionTitle: "",
       funcName: "custom",
       funcType: "nonpayable",
       funcInputParams: [],
       funcOutputParams: [],
     };
-
     const copy = [...functions];
     copy.push(custom);
+    // Choose the new last function in advance
+    setSelectedFunctionIndex(functions.length);
+    setFunctions(copy);
+  };
+
+  const addTemplateFunctions = (newFuncs: IFuncTemplate[]) => {
+    const copy = [...functions];
+    newFuncs.forEach((func) => copy.push(func));
+    setSelectedFunctionIndex(functions.length);
     setFunctions(copy);
   };
 
@@ -216,9 +228,9 @@ export function ContractInteract() {
           value={contractAddress}
         />
       </div>
-      <div>
-        <label>Use contract template:</label>
-      </div>
+      <ContractTemplate
+        addTemplateFunctions={addTemplateFunctions}
+      ></ContractTemplate>
       <div>
         <label>Select function:</label>
         <select
@@ -235,7 +247,11 @@ export function ContractInteract() {
             );
           })}
         </select>
-        <input type="button" value="Add custom" onClick={addFunction}></input>
+        <input
+          type="button"
+          value="Add custom"
+          onClick={addEmptyFunction}
+        ></input>
         {functions && functions.length > 0 && (
           <input
             type="button"
@@ -244,31 +260,33 @@ export function ContractInteract() {
           ></input>
         )}
       </div>
-      {functions && functions.length > 0 && (
-        <FunctionInteract
-          setNotifyText={setNotifyText}
-          contractAddress={contractAddress}
-          selectedFunction={functions[selectedFunctionIndex]}
-          setSelectedFunctionName={(value) => {
-            changeFunctionName(selectedFunctionIndex, value);
-          }}
-          setSelectedFunctionType={(value) => {
-            changeFunctionType(selectedFunctionIndex, value);
-          }}
-          setSelectedFunctionInputParam={(paramIndex, value) => {
-            changeFunctionInputParam(paramIndex, value);
-          }}
-          setSelectedFunctionOutputParam={(paramIndex, value) => {
-            changeFunctionOutputParam(paramIndex, value);
-          }}
-          addSelectedFunctionInputParam={addFunctionInputParam}
-          addSelectedFunctionOutputParam={addFunctionOutputParam}
-          removeSelectedFunctionInputParam={removeFunctionInputParam}
-          removeSelectedFunctionOutputParam={removeFunctionOutputParam}
-          setWaitTxHash={setWaitTxHash}
-          setPreviousTxHash={setPreviousTxHash}
-        ></FunctionInteract>
-      )}
+      {functions &&
+        functions.length > 0 &&
+        selectedFunctionIndex <= functions.length - 1 && (
+          <FunctionInteract
+            setNotifyText={setNotifyText}
+            contractAddress={contractAddress}
+            selectedFunction={functions[selectedFunctionIndex]}
+            setSelectedFunctionName={(value) => {
+              changeFunctionName(selectedFunctionIndex, value);
+            }}
+            setSelectedFunctionType={(value) => {
+              changeFunctionType(selectedFunctionIndex, value);
+            }}
+            setSelectedFunctionInputParam={(paramIndex, value) => {
+              changeFunctionInputParam(paramIndex, value);
+            }}
+            setSelectedFunctionOutputParam={(paramIndex, value) => {
+              changeFunctionOutputParam(paramIndex, value);
+            }}
+            addSelectedFunctionInputParam={addFunctionInputParam}
+            addSelectedFunctionOutputParam={addFunctionOutputParam}
+            removeSelectedFunctionInputParam={removeFunctionInputParam}
+            removeSelectedFunctionOutputParam={removeFunctionOutputParam}
+            setWaitTxHash={setWaitTxHash}
+            setPreviousTxHash={setPreviousTxHash}
+          ></FunctionInteract>
+        )}
 
       {previousTxHash && (
         <div>

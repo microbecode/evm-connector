@@ -3,18 +3,18 @@
 @include normalize();
 
 @font-face {
-  font-family: 'Impact';
-  src: local('Impact'), url(./fonts/impact.ttf) format('truetype');
+  font-family: "Impact";
+  src: local("Impact"), url(./fonts/impact.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: 'Futura';
-  src: local('Futura'), url(./fonts/futura.ttf) format('truetype');
+  font-family: "Futura";
+  src: local("Futura"), url(./fonts/futura.ttf) format("truetype");
 }
 
 @font-face {
-  font-family: 'Avenir';
-  src: local('Avenir'), url(./fonts/avenir.otf) format('opentype');
+  font-family: "Avenir";
+  src: local("Avenir"), url(./fonts/avenir.otf) format("opentype");
 }
 
 $dark-color: #121212;
@@ -29,11 +29,11 @@ body {
   }
 
   .theme-container {
-    background: #F5F5F5;
+    background: #f5f5f5;
   }
 
   .theme-card {
-    background-color: #E8E8E8;
+    background-color: #e8e8e8;
   }
 
   .form-group > input {
@@ -41,7 +41,7 @@ body {
   }
 
   .create-container .form-group > input {
-    background: #F0F0F0;
+    background: #f0f0f0;
   }
 
   .feature-container {
@@ -56,12 +56,11 @@ body {
     filter: brightness(0);
   }
 
-
   a {
     color: #171717;
 
     &:hover {
-      color: #09D1B7;
+      color: #09d1b7;
     }
   }
 
@@ -73,11 +72,11 @@ body {
 
   .header-container {
     background: white;
-    border-bottom: 1px solid #D6D6D6;
+    border-bottom: 1px solid #d6d6d6;
   }
 
   .theme-button-container {
-    background: #F5F5F5;
+    background: #f5f5f5;
   }
 
   .navbar-light .navbar-nav .nav-link:hover,
@@ -96,8 +95,8 @@ body {
 
   .faq-container {
     .card {
-        border: 0 !important;
-        border-bottom: 1px solid rgba(23, 23, 23, 0.1) !important;
+      border: 0 !important;
+      border-bottom: 1px solid rgba(23, 23, 23, 0.1) !important;
     }
   }
 
@@ -109,20 +108,20 @@ body {
     background: white;
     color: #171717;
     border-radius: 20px;
-    border: 3px dashed #09D1B7;
+    border: 3px dashed #09d1b7;
 
     .close span {
       color: #171717;
     }
   }
 
-  .create-container {    
+  .create-container {
     .upload-img {
-      background-color: #F0F0F0;
+      background-color: #f0f0f0;
     }
-  
+
     .upload-label {
-      color: #7E7E7E;
+      color: #7e7e7e;
     }
   }
 
@@ -142,7 +141,7 @@ body {
     color: $light-color;
 
     .theme-container {
-      background: #1A1A1A;
+      background: #1a1a1a;
     }
 
     .theme-card {
@@ -173,7 +172,7 @@ body {
       color: white;
 
       &:hover {
-        color: #09D1B7;
+        color: #09d1b7;
       }
     }
 
@@ -184,7 +183,7 @@ body {
     }
 
     .header-container {
-      background: #1A1A1A;
+      background: #1a1a1a;
       border-bottom: 1px solid #393939;
     }
 
@@ -208,8 +207,8 @@ body {
 
     .faq-container {
       .card {
-          border: 0 !important;
-          border-bottom: 1px solid rgba(255, 255, 255, .1) !important;
+        border: 0 !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
       }
     }
 
@@ -226,7 +225,7 @@ body {
       }
     }
 
-    .create-container {    
+    .create-container {
       .upload-img {
         background-color: #333333;
       }
@@ -237,10 +236,16 @@ body {
     }
   }
 
-  font-family: 'Futura';
+  font-family: "Futura";
 
-  h1, h2, h2, h3, h4, h5, h6 {
-    font-family: 'Impact';
+  h1,
+  h2,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Impact";
   }
 
   h2 {
@@ -248,23 +253,25 @@ body {
   }
 
   footer {
-    font-family: 'Avenir';
+    font-family: "Avenir";
   }
 }
 
 .card {
   background: inherit;
-  
+
   .card-header {
     cursor: pointer;
   }
 }
 
-.btn-link, .btn-link:hover {
+.btn-link,
+.btn-link:hover {
   color: $dark-color;
 }
 
-.btn:focus, .btn:active {
+.btn:focus,
+.btn:active {
   outline: none !important;
   box-shadow: none;
 }
@@ -273,20 +280,27 @@ body {
   margin: 10px;
 }
 
-input[type=text] {
+input[type="text"] {
   width: 500px;
 }
 
-input[type=radio] {
-  margin: 10px
+input[type="radio"] {
+  margin: 10px;
 }
 
 label {
   padding-right: 10px;
 }
 
-input[type=button], button {
+input[type="button"],
+button {
   margin: 10px;
+  /*   padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background: rgb(159, 191, 226);
+  border: solid 1px transparent;
+  border-radius: 18px; */
 }
 
 .box {
@@ -301,4 +315,7 @@ input[type=button], button {
 
 select {
   margin-right: 10px;
+}
+.functions {
+  padding-left: 10px;
 }

@@ -11,9 +11,6 @@ import {
   ExecutionTypes,
   IFuncTemplate,
 } from "../types";
-import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
-import { Notification } from "../Notification";
-import { FuncTemplate } from "./FuncTemplate";
 import { Web3Context } from "../../contexts/Context";
 
 interface Params {
@@ -52,7 +49,7 @@ export function FunctionInteract(params: Params) {
   useEffect(() => {}, []);
 
   useEffect(() => {
-    //updateSig();
+    updateSig();
   }, [params.selectedFunction]);
 
   const getAbi = (): string => {
@@ -295,7 +292,7 @@ export function FunctionInteract(params: Params) {
     "Execute on blockchain ID " + window.ethereum?.networkVersion;
 
   return (
-    <>
+    <div className="functions">
       {/*   <FuncTemplate
         setFuncName={setFuncName}
         setFuncType={setFuncType}
@@ -368,7 +365,9 @@ export function FunctionInteract(params: Params) {
                 setTranValue(BigNumber.from(e.target.value));
               }}
               value={tranValue.toString()}
+              style={{ width: "200px" }}
             />
+            <label>&nbsp;weis</label>
           </div>
         )}
       <div className="box">
@@ -531,6 +530,6 @@ export function FunctionInteract(params: Params) {
             <input type="button" value={executeName} onClick={execute}></input>
           </div>
         )}
-    </>
+    </div>
   );
 }
