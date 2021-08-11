@@ -94,7 +94,7 @@ export function FunctionInteract(params: Params) {
 
     const abiStr = getAbi();
 
-    console.log("used abi", abiStr);
+    //console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -102,7 +102,7 @@ export function FunctionInteract(params: Params) {
       provider.getSigner(0),
     );
 
-    console.log("contract", contract);
+    //console.log("contract", contract);
 
     const inputValues = params.selectedFunction.funcInputParams.map(
       (param, i) => {
@@ -110,7 +110,7 @@ export function FunctionInteract(params: Params) {
         return param.value;
       },
     );
-    console.log("inputting", inputValues, params.selectedFunction);
+    //console.log("inputting", inputValues, params.selectedFunction);
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {
@@ -132,7 +132,7 @@ export function FunctionInteract(params: Params) {
         // non-constant function return values can't be received directly, so don't even try
         return;
       }
-      console.log("checking return values", res);
+      //console.log("checking return values", res);
       for (
         let index = 0;
         index < params.selectedFunction.funcOutputParams.length;
@@ -153,9 +153,29 @@ export function FunctionInteract(params: Params) {
     }
   };
 
+  const getFuncSig = () => {
+    if (!params.selectedFunction.funcName) {
+      return null;
+    }
+    const abi = getAbi();
+
+    let sigHash = null;
+    try {
+      let iface = new ethers.utils.Interface(abi);
+      sigHash = iface.getSighash(
+        iface.getFunction(params.selectedFunction.funcName),
+      );
+    } catch (ex) {
+      params.setNotifyText(
+        "Error in creating function signature, please check your inputs",
+      );
+      console.error("Unable to create function signature hash", ex);
+    }
+    return sigHash;
+  };
+
   const updateSig = () => {
-    const funcTrimName = params.selectedFunction.funcName.split(" ")[0]; // ignore all after space
-    let sig = funcTrimName;
+    let sig = params.selectedFunction.funcName;
     const addParam = (params: FunctionParam[]) => {
       let inSig = "";
       let paramTypes = [];
@@ -177,25 +197,6 @@ export function FunctionInteract(params: Params) {
       sig += outputParamsStr;
       sig += ")";
     }
-
-    const getFuncSig = () => {
-      if (!funcTrimName) {
-        return "";
-      }
-      const abi = getAbi();
-
-      let sigHash = null;
-      try {
-        let iface = new ethers.utils.Interface(abi);
-        sigHash = iface.getSighash(iface.getFunction(funcTrimName));
-      } catch (ex) {
-        params.setNotifyText(
-          "Error in creating function signature, please check your inputs",
-        );
-        console.error("Unable to create function signature hash", ex);
-      }
-      return sigHash;
-    };
 
     const sigHash = getFuncSig();
 
@@ -269,6 +270,9 @@ export function FunctionInteract(params: Params) {
     }
     if (!tranValue.match("^\\d+$")) {
       errors.push("Invalid transaction value");
+    }
+    if (getFuncSig() == null) {
+      errors.push("Invalid function name");
     }
     if (errors.length > 0) {
       params.setNotifyText("Validation errors: " + errors.join(", "));

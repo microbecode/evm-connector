@@ -84,7 +84,7 @@ export function ContractInteract() {
 
   const addEmptyFunction = () => {
     const custom: IFuncTemplate = {
-      funcName: "custom",
+      funcName: "new",
       funcType: "nonpayable",
       funcInputParams: [],
       funcOutputParams: [],
@@ -247,11 +247,7 @@ export function ContractInteract() {
             );
           })}
         </select>
-        <input
-          type="button"
-          value="Add custom"
-          onClick={addEmptyFunction}
-        ></input>
+        <input type="button" value="Add new" onClick={addEmptyFunction}></input>
         {functions && functions.length > 0 && (
           <input
             type="button"
