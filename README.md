@@ -29,11 +29,13 @@ The blockchain network to use is determined by your browser wallet. Its chainId 
 
 ### Defining function
 
-You can either choose a predefined function template, or define your own function with the option "Input manually".
+You can either add your own custom function, or use the predefined contract templates to add functions from standard contracts.
 
-If you choose to define your function manually, you have to at least define "function name" and "contract address". If you choose a predefined function template, you only need to enter the contract address and possible input values.
+### Function interaction
 
-### Possible questions
+If you choose to define a custom function, you have to at least define "function name" and "contract address".
+
+## Possible questions
 
 This tool is mostly meant for developers who know what they are doing. Anyway, here are answers to some of the most obvious questions:
 
@@ -43,13 +45,13 @@ This tool is mostly meant for developers who know what they are doing. Anyway, h
 
 <p>Q: Why is there an option to specify the execution type? A: Normally you can just leave this to be the default value.But if you need, for example, the return value from a state-changing function, you can change this to "Local call" to simulate calling the function as type `view` even if really isn't a `view` function. This way you can get the resulting data (although no state changes are performed).</p>
 
-### Future development
+## Future development
 
 Some future development is considered and issues are created for those this repo. Please feel free to leave feedback!
 
-## Technical stuff
+# Technical stuff
 
-### Technologies used
+## Technologies used
 
 - Node v14.15
 - Solidity 0.7.5 (only for some local testing)
@@ -59,7 +61,7 @@ Some future development is considered and issues are created for those this repo
 - TypeScript
 - ESLint / Prettier
 
-### Instructions
+## Instructions
 
 You can run the project fully locally with the following instructions.
 
@@ -81,6 +83,6 @@ To run the frontend locally:
 npm run serve-frontend
 ```
 
-## Contact
+# Contact
 
 If you have any questions or comments, feel free to poke me at http://t .me/Lauri_P . Hope you find the tool useful!

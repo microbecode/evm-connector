@@ -36,8 +36,7 @@ interface Params {
 }
 
 export function FunctionInteract(params: Params) {
-  const [useTemplate, setUseTemplate] = useState<boolean>(false);
-  const [tranValue, setTranValue] = useState<BigNumber>(BigNumber.from(0));
+  const [tranValue, setTranValue] = useState<string>("0");
   const [execType, setExecType] = useState<ExecutionTypes>(
     ExecutionTypes.default,
   );
@@ -115,7 +114,7 @@ export function FunctionInteract(params: Params) {
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {
-        customValue = tranValue;
+        customValue = BigNumber.from(tranValue);
         //console.log('etting val', customValue)
       }
       const res = await contract.functions[params.selectedFunction.funcName](
@@ -263,6 +262,9 @@ export function FunctionInteract(params: Params) {
     ) {
       errors.push("Invalid function name");
     }
+    if (!tranValue.match("^\\d+$")) {
+      errors.push("Invalid transaction value");
+    }
     if (errors.length > 0) {
       params.setNotifyText("Validation errors: " + errors.join(", "));
       return false;
@@ -309,7 +311,6 @@ export function FunctionInteract(params: Params) {
             params.setSelectedFunctionName(e.target.value);
           }}
           value={params.selectedFunction?.funcName}
-          disabled={useTemplate}
         />
       </div>
       <div>
@@ -329,7 +330,6 @@ export function FunctionInteract(params: Params) {
                   }}
                   value={item}
                   checked={item == params.selectedFunction?.funcType}
-                  disabled={useTemplate}
                 />
                 {item == "nonpayable" ? "default" : item}
               </span>
@@ -362,7 +362,7 @@ export function FunctionInteract(params: Params) {
             <input
               type="text"
               onChange={(e) => {
-                setTranValue(BigNumber.from(e.target.value));
+                setTranValue(e.target.value);
               }}
               value={tranValue.toString()}
               style={{ width: "200px" }}
@@ -382,7 +382,6 @@ export function FunctionInteract(params: Params) {
                     setInputParamType(i, e.target.value);
                   }}
                   value={item.unitType}
-                  disabled={useTemplate}
                 >
                   {Object.keys(UnitTypes).map((item2, i2) => {
                     return (
@@ -422,7 +421,6 @@ export function FunctionInteract(params: Params) {
                   onClick={() => {
                     params.removeSelectedFunctionInputParam(i);
                   }}
-                  disabled={useTemplate}
                 ></input>
               </div>
             );
@@ -433,7 +431,6 @@ export function FunctionInteract(params: Params) {
             type="button"
             value="Add input parameter"
             onClick={params.addSelectedFunctionInputParam}
-            disabled={useTemplate}
           ></input>
         </div>
       </div>
@@ -448,7 +445,6 @@ export function FunctionInteract(params: Params) {
                     setOutputParamType(i, e.target.value);
                   }}
                   value={item.unitType}
-                  disabled={useTemplate}
                 >
                   {Object.keys(UnitTypes).map((item2, i2) => {
                     return (
@@ -488,7 +484,6 @@ export function FunctionInteract(params: Params) {
                   onClick={() => {
                     params.removeSelectedFunctionOutputParam(i);
                   }}
-                  disabled={useTemplate}
                 ></input>
               </div>
             );
@@ -499,7 +494,6 @@ export function FunctionInteract(params: Params) {
             type="button"
             value="Add output parameter"
             onClick={params.addSelectedFunctionOutputParam}
-            disabled={useTemplate}
           ></input>
         </div>
       </div>
