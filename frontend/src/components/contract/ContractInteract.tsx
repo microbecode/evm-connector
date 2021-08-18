@@ -16,10 +16,17 @@ import { Notification } from "../Notification";
 import { Web3Context } from "../../contexts/Context";
 import { FunctionInteract } from "../function/FunctionInteract";
 import { ContractTemplate } from "./ContractTemplate";
+import { decodeUrlParams, generateUrl } from "./urlGenerator";
+import { Redirect, useParams } from "react-router-dom";
 
-export function ContractInteract() {
+interface Params {
+  contractData: string;
+}
+
+export function ContractInteract(params: Params) {
   const [testNumber, setTestNumber] = useState<number>(0);
   const [contractAddress, setContractAddress] = useState<string>("");
+  const [contractUrl, setContractUrl] = useState<string>("");
   //const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
   // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
   const [functions, setFunctions] = useState<IFuncTemplate[]>([]);
@@ -31,8 +38,6 @@ export function ContractInteract() {
   const debug: boolean = false;
 
   //console.log("amounts", functions.length, selectedFunctionIndex);
-
-  useEffect(() => {}, []);
 
   /*   const doTest = (index : number) => {
     setContractAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3');
@@ -66,6 +71,15 @@ export function ContractInteract() {
 
   //useEffect(() => {}, [functions]);
 
+  useEffect(() => {
+    console.log("got params", params);
+    if (params && params.contractData) {
+      const contractData = decodeUrlParams(params.contractData);
+      setContractAddress(contractData.address);
+      setFunctions(contractData.functions);
+    }
+  }, [params]);
+
   const validate = () => {
     let errors = [];
     if (
@@ -80,6 +94,22 @@ export function ContractInteract() {
       return false;
     }
     return true;
+  };
+
+  useEffect(() => {
+    setContractUrl("");
+  }, [contractAddress, functions]);
+
+  /* const readyParams = useParams() as { contract?: string };
+  if (readyParams.contract) {
+    console.log("ready", readyParams);
+    setContractUrl("aaa");
+    return <Redirect to="/"></Redirect>;
+  } */
+
+  const generateUri = () => {
+    const url = generateUrl(contractAddress, functions);
+    setContractUrl(url);
   };
 
   const addEmptyFunction = () => {
@@ -283,6 +313,15 @@ export function ContractInteract() {
             setPreviousTxHash={setPreviousTxHash}
           ></FunctionInteract>
         )}
+
+      <div>
+        <input
+          type="button"
+          value="Generate shareable URI"
+          onClick={generateUri}
+        ></input>
+        <input type="text" placeholder="" disabled={true} value={contractUrl} />
+      </div>
 
       {previousTxHash && (
         <div>

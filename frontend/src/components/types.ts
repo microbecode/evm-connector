@@ -97,6 +97,23 @@ export interface IContractTemplate {
   functions: IFuncTemplate[];
 }
 
+export interface IContract {
+  address: string;
+  functions: IFuncTemplate[];
+}
+
+export interface IShortContract {
+  a: string;
+  f: IShortFunc[];
+}
+
+export interface IShortFunc {
+  n: string;
+  t: StateMutability;
+  i: string[];
+  o: string[];
+}
+
 export interface IFuncTemplate {
   funcName: string;
   funcType: StateMutability;

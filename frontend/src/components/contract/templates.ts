@@ -1,4 +1,4 @@
-import { IContractTemplate, IFuncTemplate } from "../types";
+import { IContractTemplate } from "../types";
 
 export const contractTemplates: IContractTemplate[] = [
   {

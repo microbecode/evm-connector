@@ -94,7 +94,7 @@ export function FunctionInteract(params: Params) {
 
     const abiStr = getAbi();
 
-    //console.log("used abi", abiStr);
+    console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -122,6 +122,7 @@ export function FunctionInteract(params: Params) {
         ...inputValues,
         { value: customValue },
       );
+      console.log("result", res);
       if (res.wait) {
         // It's a real transaction
         params.setWaitTxHash(res.hash);

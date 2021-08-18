@@ -57,4 +57,17 @@ contract Sample {
             revert();
         }
     }
+
+    uint stor5;
+
+    event ABC(address indexed a,  uint indexed b,  uint indexed c);
+
+    function Test() view public returns (uint)  {
+        return (tx.gasprice);
+    /*     revert(msg.sender);
+        stor5 = 10;
+        if (stor5 > 15) {
+            revert();
+        } */
+    }
 }
