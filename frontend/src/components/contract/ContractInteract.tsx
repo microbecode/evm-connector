@@ -17,7 +17,8 @@ import { Web3Context } from "../../contexts/Context";
 import { FunctionInteract } from "../function/FunctionInteract";
 import { ContractTemplate } from "./ContractTemplate";
 import { decodeUrlParams, generateUrl } from "./urlGenerator";
-import { Redirect, useParams } from "react-router-dom";
+import CopyImg from "../../images/copy.png";
+import { SmallIcon } from "../helpers/SmallIcon";
 
 interface Params {
   contractData: string;
@@ -321,6 +322,7 @@ export function ContractInteract(params: Params) {
           onClick={generateUri}
         ></input>
         <input type="text" placeholder="" disabled={true} value={contractUrl} />
+        <SmallIcon imageUrl={CopyImg} tooltip="Copy to clipboard" />
       </div>
 
       {previousTxHash && (
