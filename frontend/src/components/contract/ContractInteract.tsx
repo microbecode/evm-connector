@@ -17,8 +17,7 @@ import { Web3Context } from "../../contexts/Context";
 import { FunctionInteract } from "../function/FunctionInteract";
 import { ContractTemplate } from "./ContractTemplate";
 import { decodeUrlParams, generateUrl } from "./urlGenerator";
-import CopyImg from "../../images/copy.png";
-import { SmallIcon } from "../helpers/SmallIcon";
+import { CopyToClipboard } from "../helpers/CopyToClipboard";
 
 interface Params {
   contractData: string;
@@ -322,13 +321,14 @@ export function ContractInteract(params: Params) {
           onClick={generateUri}
         ></input>
         <input type="text" placeholder="" disabled={true} value={contractUrl} />
-        <SmallIcon imageUrl={CopyImg} tooltip="Copy to clipboard" />
+        <CopyToClipboard textToCopy={contractUrl} />
       </div>
 
       {previousTxHash && (
         <div>
           <label>Previous transaction hash:</label>
           <input type="text" readOnly value={previousTxHash}></input>
+          <CopyToClipboard textToCopy={previousTxHash} />
         </div>
       )}
       {notifyText && (

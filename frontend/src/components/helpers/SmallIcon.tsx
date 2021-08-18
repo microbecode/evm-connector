@@ -5,9 +5,10 @@ import "../../styles/smallIcon.scss";
 type Props = {
   imageUrl: string;
   tooltip: string;
+  onClick: () => void;
 };
 
-export const SmallIcon = ({ imageUrl, tooltip }: Props) => {
+export const SmallIcon = ({ imageUrl, tooltip, onClick }: Props) => {
   const placement = "right";
   return (
     <>
@@ -16,7 +17,7 @@ export const SmallIcon = ({ imageUrl, tooltip }: Props) => {
         placement={placement}
         overlay={<Tooltip id={`tooltip-${placement}`}>{tooltip}</Tooltip>}
       >
-        <img src={imageUrl} />
+        <img src={imageUrl} onClick={onClick} />
       </OverlayTrigger>
     </>
   );

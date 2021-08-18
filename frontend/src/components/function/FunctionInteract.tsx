@@ -12,6 +12,7 @@ import {
   IFuncTemplate,
 } from "../types";
 import { Web3Context } from "../../contexts/Context";
+import { CopyToClipboard } from "../helpers/CopyToClipboard";
 
 interface Params {
   setNotifyText: React.Dispatch<React.SetStateAction<string>>;
@@ -324,7 +325,7 @@ export function FunctionInteract(params: Params) {
         />
       </div>
       <div>
-        <label>Function type: </label>
+        <label>Function type: &nbsp; </label>
         {Object.keys(FuncTypes)
           .filter((k) => Number.isNaN(+k))
           .map((item, i) => {
@@ -517,6 +518,7 @@ export function FunctionInteract(params: Params) {
           onChange={(e) => {}}
           value={funcSignature}
         />
+        <CopyToClipboard textToCopy={funcSignature} />
         <label>Function hash:</label>
         <input
           type="text"
@@ -526,6 +528,7 @@ export function FunctionInteract(params: Params) {
           onChange={(e) => {}}
           value={signatureHash}
         />
+        <CopyToClipboard textToCopy={signatureHash} />
       </div>
       {window.ethereum !== undefined &&
         window.ethereum.networkVersion != null &&
