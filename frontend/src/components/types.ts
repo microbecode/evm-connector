@@ -81,8 +81,8 @@ export const UnitTypes: string[] = [
 ];
 
 export enum ExecutionTypes {
-  default = "Default (infer from function type)",
-  local = "Local call",
+  default = "default (infer from function type)",
+  local = "local call",
 }
 
 export enum FuncTypes {

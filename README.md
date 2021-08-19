@@ -1,6 +1,9 @@
 # EVM Connector
 
-This tool allows you to interact with any deployed smart contract function on any EVM (Ethereum Virtual Machine) based blockchain, without an ABI. It utilizes your installed browser wallet (MetaMask).
+This is a tool for interacting with arbitrary contracts on any EVM
+(Ethereum Virtual Machine) based blockchain, without an ABI. Defined
+functions can be shared via URL, so this can be utilized as a contract
+dashboard. The tool utilizes your installed browser wallet (MetaMask).
 
 EVM-based blockchains are for example:
 
@@ -17,11 +20,30 @@ The app is deployed at https://evmconnector.dev
 
 ![alt text](example.png)
 
-<i>An example where the tool is used to check the balance of an address</i>
+<i>An example where the tool is used to check the ERC20 balance of an address</i>
 
 ## Functionality
 
 This tool is meant to be used if you know a function you want to interact with, but don't have the tools nor the ABI to interact with the function in more conventional ways.
+
+### Share contract definition
+
+Once you have defined a contract with functions, you can share the interaction page with others via a URL. You can generate a URL for any contract you have defined in this tool and other will be able to access the same contract functionality via the URL. Click the "Generate shareable URL" button to generate a contract URL.
+
+Sharing a contract through URL includes the following information:
+
+- Contract address
+- Contract functions:
+  - Name of the function
+  - Function type
+  - Function input and output parameters without values
+
+Once another user opens the site through such contract URL, the data is populated for him. In order to interact with the contract, the user needs to:
+
+1. Connect his wallet and connect to the correct network
+1. Choose which function he wants to interact with
+1. Enter needed input values for the possible input parameters
+1. Execute the function
 
 ### Chosen network
 

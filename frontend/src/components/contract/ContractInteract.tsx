@@ -72,40 +72,20 @@ export function ContractInteract(params: Params) {
   //useEffect(() => {}, [functions]);
 
   useEffect(() => {
-    console.log("got params", params);
     if (params && params.contractData) {
-      const contractData = decodeUrlParams(params.contractData);
-      setContractAddress(contractData.address);
-      setFunctions(contractData.functions);
+      try {
+        const contractData = decodeUrlParams(params.contractData);
+        setContractAddress(contractData.address);
+        setFunctions(contractData.functions);
+      } catch (ex) {
+        setNotifyText("Invalid loaded contract: " + ex);
+      }
     }
   }, [params]);
-
-  const validate = () => {
-    let errors = [];
-    if (
-      !contractAddress ||
-      contractAddress.length != 42 ||
-      !contractAddress.startsWith("0x")
-    ) {
-      errors.push("Invalid contract address");
-    }
-    if (errors.length > 0) {
-      setNotifyText("Validation errors: " + errors.join(", "));
-      return false;
-    }
-    return true;
-  };
 
   useEffect(() => {
     setContractUrl("");
   }, [contractAddress, functions]);
-
-  /* const readyParams = useParams() as { contract?: string };
-  if (readyParams.contract) {
-    console.log("ready", readyParams);
-    setContractUrl("aaa");
-    return <Redirect to="/"></Redirect>;
-  } */
 
   const generateUri = () => {
     const url = generateUrl(contractAddress, functions);
@@ -317,7 +297,7 @@ export function ContractInteract(params: Params) {
       <div>
         <input
           type="button"
-          value="Generate shareable URI"
+          value="Generate shareable URL"
           onClick={generateUri}
         ></input>
         <input type="text" placeholder="" disabled={true} value={contractUrl} />

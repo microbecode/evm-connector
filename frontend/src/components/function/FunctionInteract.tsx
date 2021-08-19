@@ -347,25 +347,7 @@ export function FunctionInteract(params: Params) {
             );
           })}
       </div>
-      <div>
-        <label>Execution type: </label>
-        {Object.keys(ExecutionTypes).map((item, i) => {
-          return (
-            <span key={i} className={"myRadio"}>
-              <input
-                type="radio"
-                name="tranType"
-                onChange={(e) => {
-                  setExecType(ExecutionTypes[e.target.value]);
-                }}
-                value={item}
-                checked={ExecutionTypes[item] == execType}
-              />
-              {ExecutionTypes[item]}
-            </span>
-          );
-        })}
-      </div>
+
       {params.selectedFunction.funcType == "payable" &&
         execType == ExecutionTypes.default && (
           <div>
@@ -530,12 +512,38 @@ export function FunctionInteract(params: Params) {
         />
         <CopyToClipboard textToCopy={signatureHash} />
       </div>
+
       {window.ethereum !== undefined &&
         window.ethereum.networkVersion != null &&
         selectedAddress && (
-          <div>
-            <input type="button" value={executeName} onClick={execute}></input>
-          </div>
+          <>
+            <div>
+              <label>Execution type: </label>
+              {Object.keys(ExecutionTypes).map((item, i) => {
+                return (
+                  <span key={i} className={"myRadio"}>
+                    <input
+                      type="radio"
+                      name="tranType"
+                      onChange={(e) => {
+                        setExecType(ExecutionTypes[e.target.value]);
+                      }}
+                      value={item}
+                      checked={ExecutionTypes[item] == execType}
+                    />
+                    {ExecutionTypes[item]}
+                  </span>
+                );
+              })}
+            </div>
+            <div>
+              <input
+                type="button"
+                value={executeName}
+                onClick={execute}
+              ></input>
+            </div>
+          </>
         )}
     </div>
   );

@@ -12,7 +12,7 @@ export const generateUrl = (
   functions: IFuncTemplate[],
 ): string => {
   const param = encodeUrlParams(address, functions);
-  const url = window.location.origin + "/view/" + param;
+  const url = window.location.origin + "/load/" + param;
   return url;
 };
 

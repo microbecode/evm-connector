@@ -11,7 +11,7 @@ export function RouterElem() {
   return (
     <Router>
       <Switch>
-        <Route path="/view/:contract" component={Dapp} />
+        <Route path="/load/:contract" component={Dapp} />
         <Route path="/*" component={Dapp} />
 
         {/* <Route path="/parsed" children={<Dapp />} /> */}
