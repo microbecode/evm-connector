@@ -28,7 +28,7 @@ export function ContractInteract(params: Params) {
   const [contractAddress, setContractAddress] = useState<string>("");
   const [contractUrl, setContractUrl] = useState<string>("");
   //const [contractAddress, setContractAddress] = useState<string>('0xad6d458402f60fd3bd25163575031acdce07538d');
-  // ropsten balance of 0xeb52ce516a8d054a574905bdc3d4a176d3a2d51a
+  // ropsten balance of 0xad6d458402f60fd3bd25163575031acdce07538d
   const [functions, setFunctions] = useState<IFuncTemplate[]>([]);
   const [selectedFunctionIndex, setSelectedFunctionIndex] = useState<number>(0);
   const [waitTxHash, setWaitTxHash] = useState<string>("");
@@ -269,29 +269,35 @@ export function ContractInteract(params: Params) {
       {functions &&
         functions.length > 0 &&
         selectedFunctionIndex <= functions.length - 1 && (
-          <FunctionInteract
-            setNotifyText={setNotifyText}
-            contractAddress={contractAddress}
-            selectedFunction={functions[selectedFunctionIndex]}
-            setSelectedFunctionName={(value) => {
-              changeFunctionName(selectedFunctionIndex, value);
-            }}
-            setSelectedFunctionType={(value) => {
-              changeFunctionType(selectedFunctionIndex, value);
-            }}
-            setSelectedFunctionInputParam={(paramIndex, value) => {
-              changeFunctionInputParam(paramIndex, value);
-            }}
-            setSelectedFunctionOutputParam={(paramIndex, value) => {
-              changeFunctionOutputParam(paramIndex, value);
-            }}
-            addSelectedFunctionInputParam={addFunctionInputParam}
-            addSelectedFunctionOutputParam={addFunctionOutputParam}
-            removeSelectedFunctionInputParam={removeFunctionInputParam}
-            removeSelectedFunctionOutputParam={removeFunctionOutputParam}
-            setWaitTxHash={setWaitTxHash}
-            setPreviousTxHash={setPreviousTxHash}
-          ></FunctionInteract>
+          <>
+            <fieldset>
+              <legend>Function&nbsp;data</legend>
+
+              <FunctionInteract
+                setNotifyText={setNotifyText}
+                contractAddress={contractAddress}
+                selectedFunction={functions[selectedFunctionIndex]}
+                setSelectedFunctionName={(value) => {
+                  changeFunctionName(selectedFunctionIndex, value);
+                }}
+                setSelectedFunctionType={(value) => {
+                  changeFunctionType(selectedFunctionIndex, value);
+                }}
+                setSelectedFunctionInputParam={(paramIndex, value) => {
+                  changeFunctionInputParam(paramIndex, value);
+                }}
+                setSelectedFunctionOutputParam={(paramIndex, value) => {
+                  changeFunctionOutputParam(paramIndex, value);
+                }}
+                addSelectedFunctionInputParam={addFunctionInputParam}
+                addSelectedFunctionOutputParam={addFunctionOutputParam}
+                removeSelectedFunctionInputParam={removeFunctionInputParam}
+                removeSelectedFunctionOutputParam={removeFunctionOutputParam}
+                setWaitTxHash={setWaitTxHash}
+                setPreviousTxHash={setPreviousTxHash}
+              ></FunctionInteract>
+            </fieldset>
+          </>
         )}
 
       <div>

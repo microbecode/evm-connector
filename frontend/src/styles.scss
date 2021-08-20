@@ -311,12 +311,18 @@ select {
   padding: 5px;
 }
 
-.box {
-  border-style: dotted;
+fieldset {
+  /*  border-style: dotted;
   border-width: 1px;
+   */
   border-radius: 5px;
+  border: 1px solid;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+legend {
+  width: 0%;
 }
 
 .myRadio {

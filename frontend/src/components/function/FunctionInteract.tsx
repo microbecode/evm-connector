@@ -1,5 +1,5 @@
 import { BigNumber, BytesLike, ethers } from "ethers";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import {
   FunctionParam,
@@ -13,6 +13,7 @@ import {
 } from "../types";
 import { Web3Context } from "../../contexts/Context";
 import { CopyToClipboard } from "../helpers/CopyToClipboard";
+import { getChainByChainId } from "evm-chains";
 
 interface Params {
   setNotifyText: React.Dispatch<React.SetStateAction<string>>;
@@ -43,10 +44,19 @@ export function FunctionInteract(params: Params) {
   );
   const [funcSignature, setFuncSignature] = useState<string>("");
   const [signatureHash, setSignatureHash] = useState<string>("");
+  const [usedChainName, setUsedChainName] = useState<string>("");
 
   const { selectedAddress } = useContext(Web3Context);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const setChainName = async () => {
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      const id = parseInt(ethers.BigNumber.from(chainId).toString());
+      const name = await getChainByChainId(id).name;
+      setUsedChainName(name);
+    };
+    setChainName();
+  }, [window.ethereum?.networkVersion]);
 
   useEffect(() => {
     updateSig();
@@ -95,7 +105,7 @@ export function FunctionInteract(params: Params) {
 
     const abiStr = getAbi();
 
-    console.log("used abi", abiStr);
+    //console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -123,7 +133,7 @@ export function FunctionInteract(params: Params) {
         ...inputValues,
         { value: customValue },
       );
-      console.log("result", res);
+      //console.log("result", res);
       if (res.wait) {
         // It's a real transaction
         params.setWaitTxHash(res.hash);
@@ -301,8 +311,7 @@ export function FunctionInteract(params: Params) {
     return item.value.toString();
   };
 
-  const executeName =
-    "Execute on blockchain ID " + window.ethereum?.networkVersion;
+  const executeName = "Execute on " + usedChainName;
 
   return (
     <div className="functions">
@@ -363,132 +372,138 @@ export function FunctionInteract(params: Params) {
             <label>&nbsp;weis</label>
           </div>
         )}
-      <div className="box">
-        <div>
-          {params.selectedFunction.funcInputParams.map((item, i) => {
-            //console.log('found item', item)
-            return (
-              <div key={i}>
-                <label>Input parameter {i} type:</label>
-                <select
-                  onChange={(e) => {
-                    setInputParamType(i, e.target.value);
-                  }}
-                  value={item.unitType}
-                >
-                  {Object.keys(UnitTypes).map((item2, i2) => {
-                    return (
-                      <option key={i2} value={UnitTypes[item2]}>
-                        {UnitTypes[item2]}
-                      </option>
-                    );
-                  })}
-                </select>
-                <label>Value:</label>
-                {item.unitType.indexOf("[]") > -1 && (
+      <div>
+        <fieldset>
+          <legend>Input&nbsp;parameters</legend>
+          <div>
+            {params.selectedFunction.funcInputParams.map((item, i) => {
+              //console.log('found item', item)
+              return (
+                <div key={i}>
+                  <label>Input parameter {i} type:</label>
+                  <select
+                    onChange={(e) => {
+                      setInputParamType(i, e.target.value);
+                    }}
+                    value={item.unitType}
+                  >
+                    {Object.keys(UnitTypes).map((item2, i2) => {
+                      return (
+                        <option key={i2} value={UnitTypes[item2]}>
+                          {UnitTypes[item2]}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <label>Value:</label>
+                  {item.unitType.indexOf("[]") > -1 && (
+                    <input
+                      type="text"
+                      value="["
+                      disabled={true}
+                      style={{ width: "15px" }}
+                    ></input>
+                  )}
                   <input
                     type="text"
-                    value="["
-                    disabled={true}
-                    style={{ width: "15px" }}
-                  ></input>
-                )}
-                <input
-                  type="text"
-                  onChange={(e) => {
-                    setInputParamValue(i, e.target.value);
-                  }}
-                  value={getItemValue(item)}
-                ></input>
-                {item.unitType.indexOf("[]") > -1 && (
-                  <input
-                    type="text"
-                    value="]"
-                    disabled={true}
-                    style={{ width: "15px" }}
-                  ></input>
-                )}
-                <input
-                  type="button"
-                  value="Remove parameter"
-                  onClick={() => {
-                    params.removeSelectedFunctionInputParam(i);
-                  }}
-                ></input>
-              </div>
-            );
-          })}
-        </div>
-        <div>
-          <input
-            type="button"
-            value="Add input parameter"
-            onClick={params.addSelectedFunctionInputParam}
-          ></input>
-        </div>
-      </div>
-      <div className="box">
-        <div>
-          {params.selectedFunction.funcOutputParams.map((item, i) => {
-            return (
-              <div key={i}>
-                <label>Output parameter {i} type:</label>
-                <select
-                  onChange={(e) => {
-                    setOutputParamType(i, e.target.value);
-                  }}
-                  value={item.unitType}
-                >
-                  {Object.keys(UnitTypes).map((item2, i2) => {
-                    return (
-                      <option key={i2} value={UnitTypes[item2]}>
-                        {UnitTypes[item2]}
-                      </option>
-                    );
-                  })}
-                </select>
-                {canHaveOutput && <label>Result value:</label>}
-                {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
-                  <input
-                    type="text"
-                    value="["
-                    disabled={true}
-                    style={{ width: "15px" }}
-                  ></input>
-                )}
-                {canHaveOutput && (
-                  <input
-                    type="text"
-                    disabled={true}
+                    onChange={(e) => {
+                      setInputParamValue(i, e.target.value);
+                    }}
                     value={getItemValue(item)}
                   ></input>
-                )}
-                {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
+                  {item.unitType.indexOf("[]") > -1 && (
+                    <input
+                      type="text"
+                      value="]"
+                      disabled={true}
+                      style={{ width: "15px" }}
+                    ></input>
+                  )}
                   <input
-                    type="text"
-                    value="]"
-                    disabled={true}
-                    style={{ width: "15px" }}
+                    type="button"
+                    value="Remove parameter"
+                    onClick={() => {
+                      params.removeSelectedFunctionInputParam(i);
+                    }}
                   ></input>
-                )}
-                <input
-                  type="button"
-                  value="Remove parameter"
-                  onClick={() => {
-                    params.removeSelectedFunctionOutputParam(i);
-                  }}
-                ></input>
-              </div>
-            );
-          })}
-        </div>
-        <div>
-          <input
-            type="button"
-            value="Add output parameter"
-            onClick={params.addSelectedFunctionOutputParam}
-          ></input>
-        </div>
+                </div>
+              );
+            })}
+          </div>
+          <div>
+            <input
+              type="button"
+              value="Add input parameter"
+              onClick={params.addSelectedFunctionInputParam}
+            ></input>
+          </div>
+        </fieldset>
+      </div>
+      <div>
+        <fieldset>
+          <legend>Output&nbsp;parameters</legend>
+          <div>
+            {params.selectedFunction.funcOutputParams.map((item, i) => {
+              return (
+                <div key={i}>
+                  <label>Output parameter {i} type:</label>
+                  <select
+                    onChange={(e) => {
+                      setOutputParamType(i, e.target.value);
+                    }}
+                    value={item.unitType}
+                  >
+                    {Object.keys(UnitTypes).map((item2, i2) => {
+                      return (
+                        <option key={i2} value={UnitTypes[item2]}>
+                          {UnitTypes[item2]}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  {canHaveOutput && <label>Result value:</label>}
+                  {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
+                    <input
+                      type="text"
+                      value="["
+                      disabled={true}
+                      style={{ width: "15px" }}
+                    ></input>
+                  )}
+                  {canHaveOutput && (
+                    <input
+                      type="text"
+                      disabled={true}
+                      value={getItemValue(item)}
+                    ></input>
+                  )}
+                  {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
+                    <input
+                      type="text"
+                      value="]"
+                      disabled={true}
+                      style={{ width: "15px" }}
+                    ></input>
+                  )}
+                  <input
+                    type="button"
+                    value="Remove parameter"
+                    onClick={() => {
+                      params.removeSelectedFunctionOutputParam(i);
+                    }}
+                  ></input>
+                </div>
+              );
+            })}
+          </div>
+          <div>
+            <input
+              type="button"
+              value="Add output parameter"
+              onClick={params.addSelectedFunctionOutputParam}
+            ></input>
+          </div>
+        </fieldset>
       </div>
       <div>
         <label>Function signature:</label>
@@ -517,32 +532,35 @@ export function FunctionInteract(params: Params) {
         window.ethereum.networkVersion != null &&
         selectedAddress && (
           <>
-            <div>
-              <label>Execution type: </label>
-              {Object.keys(ExecutionTypes).map((item, i) => {
-                return (
-                  <span key={i} className={"myRadio"}>
-                    <input
-                      type="radio"
-                      name="tranType"
-                      onChange={(e) => {
-                        setExecType(ExecutionTypes[e.target.value]);
-                      }}
-                      value={item}
-                      checked={ExecutionTypes[item] == execType}
-                    />
-                    {ExecutionTypes[item]}
-                  </span>
-                );
-              })}
-            </div>
-            <div>
-              <input
-                type="button"
-                value={executeName}
-                onClick={execute}
-              ></input>
-            </div>
+            <fieldset>
+              <legend>Execution</legend>
+              <div>
+                <label>Execution type: </label>
+                {Object.keys(ExecutionTypes).map((item, i) => {
+                  return (
+                    <span key={i} className={"myRadio"}>
+                      <input
+                        type="radio"
+                        name="tranType"
+                        onChange={(e) => {
+                          setExecType(ExecutionTypes[e.target.value]);
+                        }}
+                        value={item}
+                        checked={ExecutionTypes[item] == execType}
+                      />
+                      {ExecutionTypes[item]}
+                    </span>
+                  );
+                })}
+              </div>
+              <div>
+                <input
+                  type="button"
+                  value={executeName}
+                  onClick={execute}
+                ></input>
+              </div>
+            </fieldset>
           </>
         )}
     </div>
