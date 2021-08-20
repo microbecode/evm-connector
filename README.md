@@ -2,7 +2,7 @@
 
 This is a tool for interacting with arbitrary contracts on any EVM
 (Ethereum Virtual Machine) based blockchain, without an ABI. Defined
-functions can be shared via URL, so this can be utilized as a contract
+contracts can be shared via URL, so this can be utilized as a contract
 dashboard. The tool utilizes your installed browser wallet (MetaMask).
 
 EVM-based blockchains are for example:
@@ -24,7 +24,9 @@ The app is deployed at https://evmconnector.dev
 
 ## Functionality
 
-This tool is meant to be used if you know a function you want to interact with, but don't have the tools nor the ABI to interact with the function in more conventional ways.
+### Defining functions
+
+You can either add your own custom functions, or use the predefined contract templates to add functions from standard contracts.
 
 ### Share contract definition
 
@@ -47,15 +49,16 @@ Once another user opens the site through such contract URL, the data is populate
 
 ### Chosen network
 
-The blockchain network to use is determined by your browser wallet. Its chainId (https://chainlist.org/) is displayed in the "Execute" button.
-
-### Defining function
-
-You can either add your own custom function, or use the predefined contract templates to add functions from standard contracts.
+The blockchain network to use is determined by your browser wallet.
 
 ### Function interaction
 
-If you choose to define a custom function, you have to at least define "function name" and "contract address".
+In order to interact with a function, at least the following need to be correctly configured:
+
+1. Your browser wallet connected to the correct network
+1. Contract address
+1. Function name
+1. If the function has input parameters, define their types and values
 
 ## Possible questions
 
