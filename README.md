@@ -76,6 +76,12 @@ Some future development is considered and issues are created for those this repo
 
 # Technical stuff
 
+## Tecnical notes
+
+- There is no backend. There is only the frontend you see
+- There is no external web3 connection. The only connection to the blockchain is through your wallet
+- Considering the above two facts, it's rather difficult to abuse the system, since you can only hurt your own browser and/or the node your wallet uses.
+
 ## Technologies used
 
 - Node v14.15
