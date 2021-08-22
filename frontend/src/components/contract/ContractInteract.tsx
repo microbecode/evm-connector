@@ -18,6 +18,7 @@ import { FunctionInteract } from "../function/FunctionInteract";
 import { ContractTemplate } from "./ContractTemplate";
 import { decodeUrlParams, generateUrl } from "./urlGenerator";
 import { CopyToClipboard } from "../helpers/CopyToClipboard";
+import { ImportContract } from "../modals/ImportContract";
 
 interface Params {
   contractData: string;
@@ -34,6 +35,7 @@ export function ContractInteract(params: Params) {
   const [waitTxHash, setWaitTxHash] = useState<string>("");
   const [notifyText, setNotifyText] = useState<string>("");
   const [previousTxHash, setPreviousTxHash] = useState<string>("");
+  const [showImportModal, setShowImportModal] = useState(true);
 
   const debug: boolean = false;
 
@@ -106,7 +108,7 @@ export function ContractInteract(params: Params) {
     setFunctions(copy);
   };
 
-  const addTemplateFunctions = (newFuncs: IFuncTemplate[]) => {
+  const addFunctions = (newFuncs: IFuncTemplate[]) => {
     const copy = [...functions];
     newFuncs.forEach((func) => copy.push(func));
     setSelectedFunctionIndex(functions.length);
@@ -238,9 +240,7 @@ export function ContractInteract(params: Params) {
           value={contractAddress}
         />
       </div>
-      <ContractTemplate
-        addTemplateFunctions={addTemplateFunctions}
-      ></ContractTemplate>
+      <ContractTemplate addTemplateFunctions={addFunctions}></ContractTemplate>
       <div>
         <label>Select function:</label>
         <select
@@ -328,6 +328,12 @@ export function ContractInteract(params: Params) {
           txHash={waitTxHash}
         ></WaitingForTransactionMessage>
       )}
+      <ImportContract
+        show={showImportModal}
+        onHide={() => setShowImportModal(false)}
+        addFunctions={addFunctions}
+        addError={(err) => setNotifyText(err)}
+      ></ImportContract>
     </form>
   );
 }

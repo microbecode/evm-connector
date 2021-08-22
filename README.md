@@ -95,24 +95,28 @@ Some future development is considered and issues are created for those this repo
 
 ## Instructions
 
+### Required components
+
+Make sure you have `yarn` installed.
+
 You can run the project fully locally with the following instructions.
 
 To run local blockchain:
 
 ```
-npm run localchain
+yarn run localchain
 ```
 
 To deploy the example contract locally:
 
 ```
-npm run deploy-local
+yarn run deploy-local
 ```
 
 To run the frontend locally:
 
 ```
-npm run serve-frontend
+yarn run serve-frontend
 ```
 
 # Contact
