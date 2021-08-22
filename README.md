@@ -80,7 +80,8 @@ Some future development is considered and issues are created for those this repo
 
 - There is no backend. There is only the frontend you see
 - There is no external web3 connection. The only connection to the blockchain is through your wallet
-- Considering the above two facts, it's rather difficult to abuse the system, since you can only hurt your own browser and/or the node your wallet uses.
+- No cookies or other persistent storage is utilized
+- Considering the above facts, it's rather difficult to abuse the system, since you can only hurt your own browser and/or the node your wallet uses.
 
 ## Technologies used
 

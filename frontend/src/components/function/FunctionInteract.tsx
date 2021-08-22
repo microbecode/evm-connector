@@ -55,7 +55,9 @@ export function FunctionInteract(params: Params) {
       const name = await getChainByChainId(id).name;
       setUsedChainName(name);
     };
-    setChainName();
+    if (window.ethereum) {
+      setChainName();
+    }
   }, [window.ethereum?.networkVersion]);
 
   useEffect(() => {
@@ -315,13 +317,6 @@ export function FunctionInteract(params: Params) {
 
   return (
     <div className="functions">
-      {/*   <FuncTemplate
-        setFuncName={setFuncName}
-        setFuncType={setFuncType}
-        setFunctionInputParams={setFunctionInputParams}
-        setFunctionOutputParams={setFunctionOutputParams}
-        setUseTemplate={setUseTemplate}
-      ></FuncTemplate> */}
       <div>
         <label>Function name:</label>
         <input
