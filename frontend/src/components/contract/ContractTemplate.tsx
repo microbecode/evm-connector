@@ -31,7 +31,7 @@ export function ContractTemplate(params: Params) {
 
   return (
     <div>
-      <label>Add standard functions:</label>
+      <label>Choose standard:</label>
       <select
         onChange={(e) => {
           setSelectedTemplateIndex(+e.target.value);
@@ -46,7 +46,11 @@ export function ContractTemplate(params: Params) {
           );
         })}
       </select>
-      <input type="button" value="Add functions" onClick={addFunctions}></input>
+      <input
+        type="button"
+        value="Import functions"
+        onClick={addFunctions}
+      ></input>
     </div>
   );
 }

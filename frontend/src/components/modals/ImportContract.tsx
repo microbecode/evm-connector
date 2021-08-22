@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import { ethers } from "ethers";
@@ -9,6 +9,7 @@ import {
   StateMutability,
   UnitTypes,
 } from "../types";
+import { ContractTemplate } from "../contract/ContractTemplate";
 
 interface Props {
   show: boolean;
@@ -20,7 +21,11 @@ interface Props {
 export function ImportContract(props: Props) {
   const [abi, setABI] = useState<string>("");
 
-  const onImport = () => {
+  useEffect(() => {
+    setABI("");
+  }, [props.show]);
+
+  const onABIImport = () => {
     const parseFunctions = (inputFuncs: FunctionFragment[]) => {
       const funcs: IFuncTemplate[] = [];
 
@@ -60,32 +65,43 @@ export function ImportContract(props: Props) {
       return funcs;
     };
 
-    const iface = new Interface(abi);
-
-    const functions = parseFunctions(Object.values(iface.functions));
-    console.log("result", functions);
-
-    if (functions?.length != Object.values(iface.functions)?.length) {
-      props.addError(
-        "Unable to parse all ABI functions. Added only the successful ones. (Required data types probably not implemented yet.)",
-      );
+    try {
+      const iface = new Interface(abi);
+      console.log("got iface", iface);
+      const functions = parseFunctions(Object.values(iface.functions));
+      console.log("result", functions);
+      if (functions?.length != Object.values(iface.functions)?.length) {
+        props.addError(
+          "Unable to parse all ABI functions. Added only the successful ones. (Required data types probably not implemented yet.)",
+        );
+      }
+      props.addFunctions(functions);
+      props.onHide();
+    } catch (ex) {
+      props.addError("Unable to parse ABI");
+      props.onHide();
     }
+  };
 
-    props.addFunctions(functions);
+  const onStandardImport = (funcs: IFuncTemplate[]) => {
+    props.addFunctions(funcs);
     props.onHide();
   };
 
+  const modalProps = { onHide: props.onHide, show: props.show };
+
   return (
-    <Modal {...props} size="lg" aria-labelledby="modal-pp" centered>
+    <Modal {...modalProps} size="lg" aria-labelledby="modal-pp" centered>
       <Modal.Header closeButton>
         <Modal.Title id="modal-pp" className="text-uppercase">
-          Import contract
+          Import contract functions
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div>
           <fieldset>
             <legend>Import&nbsp;from&nbsp;ABI</legend>
+            <div>(Not all ABI formats are supported)</div>
             <textarea
               placeholder="Paste ABI here"
               rows={5}
@@ -94,11 +110,22 @@ export function ImportContract(props: Props) {
               }}
               value={abi}
             ></textarea>
+            <input
+              type="button"
+              value="Import functions"
+              onClick={onABIImport}
+            ></input>
           </fieldset>
         </div>
+        <fieldset>
+          <legend>Import&nbsp;from&nbsp;standard</legend>
+          <ContractTemplate
+            addTemplateFunctions={onStandardImport}
+          ></ContractTemplate>
+        </fieldset>
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={onImport}>Import</Button>
+        <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );

@@ -35,7 +35,7 @@ export function ContractInteract(params: Params) {
   const [waitTxHash, setWaitTxHash] = useState<string>("");
   const [notifyText, setNotifyText] = useState<string>("");
   const [previousTxHash, setPreviousTxHash] = useState<string>("");
-  const [showImportModal, setShowImportModal] = useState(true);
+  const [showImportModal, setShowImportModal] = useState(false);
 
   const debug: boolean = false;
 
@@ -230,6 +230,15 @@ export function ContractInteract(params: Params) {
         </div>
       )}
       <div>
+        <input
+          type="button"
+          value="Import contract functions"
+          onClick={() => {
+            setShowImportModal(true);
+          }}
+        ></input>
+      </div>
+      <div>
         <label>Contract address:</label>
         <input
           type="text"
@@ -240,7 +249,6 @@ export function ContractInteract(params: Params) {
           value={contractAddress}
         />
       </div>
-      <ContractTemplate addTemplateFunctions={addFunctions}></ContractTemplate>
       <div>
         <label>Select function:</label>
         <select
