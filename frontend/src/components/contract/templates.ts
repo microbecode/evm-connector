@@ -5,6 +5,24 @@ export const contractTemplates: IContractTemplate[] = [
     name: "ERC20",
     functions: [
       {
+        funcName: "name",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "string" }],
+      },
+      {
+        funcName: "symbol",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "string" }],
+      },
+      {
+        funcName: "decimals",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "uint8" }],
+      },
+      {
         funcName: "totalSupply",
         funcType: "view",
         funcInputParams: [],
@@ -23,18 +41,6 @@ export const contractTemplates: IContractTemplate[] = [
         funcOutputParams: [{ unitType: "bool" }],
       },
       {
-        funcName: "allowance",
-        funcType: "view",
-        funcInputParams: [{ unitType: "address" }, { unitType: "address" }],
-        funcOutputParams: [{ unitType: "uint" }],
-      },
-      {
-        funcName: "approve",
-        funcType: "nonpayable",
-        funcInputParams: [{ unitType: "address" }, { unitType: "uint" }],
-        funcOutputParams: [{ unitType: "bool" }],
-      },
-      {
         funcName: "transferFrom",
         funcType: "nonpayable",
         funcInputParams: [
@@ -43,6 +49,18 @@ export const contractTemplates: IContractTemplate[] = [
           { unitType: "uint" },
         ],
         funcOutputParams: [{ unitType: "bool" }],
+      },
+      {
+        funcName: "approve",
+        funcType: "nonpayable",
+        funcInputParams: [{ unitType: "address" }, { unitType: "uint" }],
+        funcOutputParams: [{ unitType: "bool" }],
+      },
+      {
+        funcName: "allowance",
+        funcType: "view",
+        funcInputParams: [{ unitType: "address" }, { unitType: "address" }],
+        funcOutputParams: [{ unitType: "uint" }],
       },
     ],
   },
@@ -106,6 +124,75 @@ export const contractTemplates: IContractTemplate[] = [
         funcType: "view",
         funcInputParams: [{ unitType: "address" }, { unitType: "address" }],
         funcOutputParams: [{ unitType: "bool" }],
+      },
+    ],
+  },
+  {
+    name: "BEP20",
+    functions: [
+      {
+        funcName: "name",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "string" }],
+      },
+      {
+        funcName: "symbol",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "string" }],
+      },
+      {
+        funcName: "decimals",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "uint8" }],
+      },
+      {
+        funcName: "totalSupply",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "uint" }],
+      },
+      {
+        funcName: "balanceOf",
+        funcType: "view",
+        funcInputParams: [{ unitType: "address" }],
+        funcOutputParams: [{ unitType: "uint" }],
+      },
+      {
+        funcName: "getOwner",
+        funcType: "view",
+        funcInputParams: [],
+        funcOutputParams: [{ unitType: "address" }],
+      },
+      {
+        funcName: "transfer",
+        funcType: "nonpayable",
+        funcInputParams: [{ unitType: "address" }, { unitType: "uint" }],
+        funcOutputParams: [{ unitType: "bool" }],
+      },
+      {
+        funcName: "transferFrom",
+        funcType: "nonpayable",
+        funcInputParams: [
+          { unitType: "address" },
+          { unitType: "address" },
+          { unitType: "uint" },
+        ],
+        funcOutputParams: [{ unitType: "bool" }],
+      },
+      {
+        funcName: "approve",
+        funcType: "nonpayable",
+        funcInputParams: [{ unitType: "address" }, { unitType: "uint" }],
+        funcOutputParams: [{ unitType: "bool" }],
+      },
+      {
+        funcName: "allowance",
+        funcType: "view",
+        funcInputParams: [{ unitType: "address" }, { unitType: "address" }],
+        funcOutputParams: [{ unitType: "uint" }],
       },
     ],
   },

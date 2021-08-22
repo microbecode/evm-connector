@@ -31,7 +31,7 @@ export function ContractTemplate(params: Params) {
 
   return (
     <div>
-      <label>Add functions from template:</label>
+      <label>Add standard functions:</label>
       <select
         onChange={(e) => {
           setSelectedTemplateIndex(+e.target.value);

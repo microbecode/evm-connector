@@ -5,8 +5,8 @@ export function What() {
         This is a tool for interacting with arbitrary contracts on any EVM
         (Ethereum Virtual Machine) based blockchain, without an ABI. Defined
         contracts can be shared via URL, so this can be utilized as a contract
-        dashboard. The tool utilizes your installed browser wallet (MetaMask).
-        For more information, please check{" "}
+        dashboard / GUI. The tool utilizes your installed browser wallet
+        (MetaMask). For more information, please check
         <a
           href="https://www.github.com/microbecode/evm-connector"
           target="_blank"
