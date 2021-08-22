@@ -239,17 +239,6 @@ export function ContractInteract(params: Params) {
         ></input>
       </div>
       <div>
-        <label>Contract address:</label>
-        <input
-          type="text"
-          placeholder="Enter contract address"
-          onChange={(e) => {
-            setContractAddress(e.target.value);
-          }}
-          value={contractAddress}
-        />
-      </div>
-      <div>
         <label>Select function:</label>
         <select
           onChange={(e) => {
@@ -284,6 +273,7 @@ export function ContractInteract(params: Params) {
               <FunctionInteract
                 setNotifyText={setNotifyText}
                 contractAddress={contractAddress}
+                setContractAddress={setContractAddress}
                 selectedFunction={functions[selectedFunctionIndex]}
                 setSelectedFunctionName={(value) => {
                   changeFunctionName(selectedFunctionIndex, value);

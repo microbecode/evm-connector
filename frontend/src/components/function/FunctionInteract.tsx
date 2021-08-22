@@ -13,11 +13,12 @@ import {
 } from "../types";
 import { Web3Context } from "../../contexts/Context";
 import { CopyToClipboard } from "../helpers/CopyToClipboard";
-import { getChainByChainId } from "evm-chains";
+import { getChainByChainId, getChain } from "evm-chains";
 
 interface Params {
   setNotifyText: React.Dispatch<React.SetStateAction<string>>;
   contractAddress: string;
+  setContractAddress: React.Dispatch<React.SetStateAction<string>>;
   selectedFunction: IFuncTemplate;
   setSelectedFunctionName: (value: string) => void;
   setSelectedFunctionType: (value: StateMutability) => void;
@@ -52,8 +53,12 @@ export function FunctionInteract(params: Params) {
     const setChainName = async () => {
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
       const id = parseInt(ethers.BigNumber.from(chainId).toString());
-      const name = await getChainByChainId(id).name;
-      setUsedChainName(name);
+      try {
+        const chain = await getChainByChainId(id);
+        setUsedChainName(chain.name);
+      } catch (ex) {
+        // do nothing, the chain wasn't found. Probably some local chain
+      }
     };
     if (window.ethereum) {
       setChainName();
@@ -313,7 +318,9 @@ export function FunctionInteract(params: Params) {
     return item.value.toString();
   };
 
-  const executeName = "Execute on " + usedChainName;
+  const executeName =
+    "Execute" +
+    (usedChainName && usedChainName.length > 0 ? " on " + usedChainName : "");
 
   return (
     <div className="functions">
@@ -529,6 +536,17 @@ export function FunctionInteract(params: Params) {
           <>
             <fieldset>
               <legend>Execution</legend>
+              <div>
+                <label>Contract address:</label>
+                <input
+                  type="text"
+                  placeholder="Enter contract address"
+                  onChange={(e) => {
+                    params.setContractAddress(e.target.value);
+                  }}
+                  value={params.contractAddress}
+                />
+              </div>
               <div>
                 <label>Execution type: </label>
                 {Object.keys(ExecutionTypes).map((item, i) => {

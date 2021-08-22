@@ -54,7 +54,7 @@ export function Header({ connectWallet, selectedAddress }: Props) {
                       className="d-block filled arrow mt-3 my-xl-0 mx-4"
                       onClick={connectWallet}
                     >
-                      Connect wallet
+                      Connect wallet to interact
                     </Button>
                   )
                 ) : (
