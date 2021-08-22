@@ -1,7 +1,7 @@
 # EVM Connector
 
 This is a tool for interacting with arbitrary contracts on any EVM
-(Ethereum Virtual Machine) based blockchain, without an ABI. Defined
+(Ethereum Virtual Machine) based blockchain, with or without an ABI. Defined
 contracts can be shared via URL, so this can be utilized as a contract
 dashboard. The tool utilizes your installed browser wallet (MetaMask).
 
@@ -24,9 +24,12 @@ The app is deployed at https://evmconnector.dev
 
 ## Functionality
 
-### Defining functions
+### Importing functions
 
-You can either add your own custom functions, or use the predefined contract templates to add functions from standard contracts.
+You can import functions either with an ABI or from a known contract standard (such as ERC-20). The tool will tell you if the import succeeded. Notes about the import:
+
+1. Not all legacy ABI formats are supported
+1. Not all parameter types are (yet) supported. Only functions with supported parameter types will be imported.
 
 ### Share contract definition
 
