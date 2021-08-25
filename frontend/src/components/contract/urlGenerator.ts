@@ -1,7 +1,7 @@
 import { ParamType } from "ethers/lib/utils";
 import JSONCrush from "jsoncrush";
 import {
-  FunctionParam,
+  IFunctionParam,
   IContract,
   IFuncTemplate,
   IShortContract,
@@ -24,12 +24,12 @@ export const decodeUrlParams = (crushed: string): IContract => {
 
   const funcs: IFuncTemplate[] = [];
 
-  const mapParam = (param: IShortParamType): FunctionParam => {
-    const put: FunctionParam = {
+  const mapParam = (param: IShortParamType): IFunctionParam => {
+    const put: IFunctionParam = {
       unitType: param.t,
     };
     if (param.t == "tuple") {
-      put.components = param.c.map((c): FunctionParam => {
+      put.components = param.c.map((c): IFunctionParam => {
         return { unitType: c };
       });
     }
@@ -68,7 +68,7 @@ const encodeUrlParams = (
 ): string => {
   const funcs: IShortFunc[] = [];
 
-  const mapParam = (param: FunctionParam): IShortParamType => {
+  const mapParam = (param: IFunctionParam): IShortParamType => {
     const put: IShortParamType = {
       t: param.unitType,
     };

@@ -106,14 +106,14 @@ export interface IContract {
 export interface IFuncTemplate {
   funcName: string;
   funcType: StateMutability;
-  funcInputParams: FunctionParam[];
-  funcOutputParams: FunctionParam[];
+  funcInputParams: IFunctionParam[];
+  funcOutputParams: IFunctionParam[];
 }
 
-export interface FunctionParam {
+export interface IFunctionParam {
   unitType: string;
   value?: any;
-  components?: FunctionParam[];
+  components?: IFunctionParam[];
 }
 
 export interface IShortContract {

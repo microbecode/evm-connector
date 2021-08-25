@@ -2,7 +2,7 @@ import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import {
-  FunctionParam,
+  IFunctionParam,
   FuncTypes,
   UnitTypes,
   RawAbiDefinition,
@@ -14,6 +14,7 @@ import {
 import { Web3Context } from "../../contexts/Context";
 import { CopyToClipboard } from "../helpers/CopyToClipboard";
 import { getChainByChainId, getChain } from "evm-chains";
+import { FunctionParam } from "./FunctionParam";
 
 interface Params {
   setNotifyText: React.Dispatch<React.SetStateAction<string>>;
@@ -24,11 +25,11 @@ interface Params {
   setSelectedFunctionType: (value: StateMutability) => void;
   setSelectedFunctionInputParam: (
     paramIndex: number,
-    value: FunctionParam,
+    value: IFunctionParam,
   ) => void;
   setSelectedFunctionOutputParam: (
     paramIndex: number,
-    value: FunctionParam,
+    value: IFunctionParam,
   ) => void;
   addSelectedFunctionInputParam: () => void;
   addSelectedFunctionOutputParam: () => void;
@@ -195,7 +196,7 @@ export function FunctionInteract(params: Params) {
 
   const updateSig = () => {
     let sig = params.selectedFunction.funcName;
-    const addParam = (params: FunctionParam[]) => {
+    const addParam = (params: IFunctionParam[]) => {
       let inSig = "";
       let paramTypes = [];
       params.forEach((item) => {
@@ -300,7 +301,7 @@ export function FunctionInteract(params: Params) {
     return true;
   };
 
-  const getItemValue = (item: FunctionParam) => {
+  const getItemValue = (item: IFunctionParam) => {
     if (!item.value) {
       return "";
     }
@@ -381,54 +382,21 @@ export function FunctionInteract(params: Params) {
             {params.selectedFunction.funcInputParams.map((item, i) => {
               //console.log('found item', item)
               return (
-                <div key={i}>
-                  <label>Input parameter {i} type:</label>
-                  <select
-                    onChange={(e) => {
-                      setInputParamType(i, e.target.value);
-                    }}
-                    value={item.unitType}
-                  >
-                    {Object.keys(UnitTypes).map((item2, i2) => {
-                      return (
-                        <option key={i2} value={UnitTypes[item2]}>
-                          {UnitTypes[item2]}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <label>Value:</label>
-                  {item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="["
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      setInputParamValue(i, e.target.value);
-                    }}
-                    value={getItemValue(item)}
-                  ></input>
-                  {item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="]"
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  <input
-                    type="button"
-                    value="Remove parameter"
-                    onClick={() => {
-                      params.removeSelectedFunctionInputParam(i);
-                    }}
-                  ></input>
-                </div>
+                <FunctionParam
+                  key={i}
+                  paramIndex={i}
+                  item={item}
+                  selectedFunction={params.selectedFunction}
+                  setSelectedFunctionParam={
+                    params.setSelectedFunctionInputParam
+                  }
+                  addSelectedFunctionParam={
+                    params.addSelectedFunctionInputParam
+                  }
+                  removeSelectedFunctionParam={
+                    params.removeSelectedFunctionInputParam
+                  }
+                ></FunctionParam>
               );
             })}
           </div>
@@ -447,54 +415,21 @@ export function FunctionInteract(params: Params) {
           <div>
             {params.selectedFunction.funcOutputParams.map((item, i) => {
               return (
-                <div key={i}>
-                  <label>Output parameter {i} type:</label>
-                  <select
-                    onChange={(e) => {
-                      setOutputParamType(i, e.target.value);
-                    }}
-                    value={item.unitType}
-                  >
-                    {Object.keys(UnitTypes).map((item2, i2) => {
-                      return (
-                        <option key={i2} value={UnitTypes[item2]}>
-                          {UnitTypes[item2]}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  {canHaveOutput && <label>Result value:</label>}
-                  {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="["
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  {canHaveOutput && (
-                    <input
-                      type="text"
-                      disabled={true}
-                      value={getItemValue(item)}
-                    ></input>
-                  )}
-                  {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="]"
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  <input
-                    type="button"
-                    value="Remove parameter"
-                    onClick={() => {
-                      params.removeSelectedFunctionOutputParam(i);
-                    }}
-                  ></input>
-                </div>
+                <FunctionParam
+                  key={i}
+                  paramIndex={i}
+                  item={item}
+                  selectedFunction={params.selectedFunction}
+                  setSelectedFunctionParam={
+                    params.setSelectedFunctionOutputParam
+                  }
+                  addSelectedFunctionParam={
+                    params.addSelectedFunctionOutputParam
+                  }
+                  removeSelectedFunctionParam={
+                    params.removeSelectedFunctionOutputParam
+                  }
+                ></FunctionParam>
               );
             })}
           </div>

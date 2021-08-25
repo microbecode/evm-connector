@@ -4,7 +4,7 @@ import { Button } from "react-bootstrap";
 import { ethers } from "ethers";
 import { FormatTypes, FunctionFragment, Interface } from "ethers/lib/utils";
 import {
-  FunctionParam,
+  IFunctionParam,
   IFuncTemplate,
   StateMutability,
   UnitTypes,
@@ -30,19 +30,19 @@ export function ImportContract(props: Props) {
       const funcs: IFuncTemplate[] = [];
 
       inputFuncs.forEach((func) => {
-        const inputs: FunctionParam[] = [];
+        const inputs: IFunctionParam[] = [];
         func.inputs.forEach((put) => {
           if (UnitTypes.includes(put.type)) {
-            const par = { unitType: put.type } as FunctionParam;
+            const par = { unitType: put.type } as IFunctionParam;
             inputs.push(par);
           } else {
           }
         });
-        const outputs: FunctionParam[] = [];
+        const outputs: IFunctionParam[] = [];
 
         func.outputs.forEach((put) => {
           if (UnitTypes.includes(put.type)) {
-            const par = { unitType: put.type } as FunctionParam;
+            const par = { unitType: put.type } as IFunctionParam;
             outputs.push(par);
           }
         });
