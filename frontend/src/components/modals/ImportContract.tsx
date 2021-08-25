@@ -91,7 +91,13 @@ export function ImportContract(props: Props) {
   const modalProps = { onHide: props.onHide, show: props.show };
 
   return (
-    <Modal {...modalProps} size="lg" aria-labelledby="modal-pp" centered>
+    <Modal
+      {...modalProps}
+      size="lg"
+      aria-labelledby="modal-pp"
+      centered
+      animation={false}
+    >
       <Modal.Header closeButton>
         <Modal.Title id="modal-pp" className="text-uppercase">
           Import contract functions

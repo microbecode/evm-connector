@@ -26,13 +26,6 @@ export function ParamList(props: Props) {
     setFuncValue(props.funcParam.value);
   }, [props.funcParam]); */
 
-  console.log("got value", props.funcParam);
-  if (props.funcParam && Array.isArray(props.funcParam.value)) {
-    console.log(props.funcParam.value[1]);
-  }
-
-  const modalProps = { onHide: props.onHide, show: props.show };
-
   const onAddValue = () => {
     const copy = [...props.funcParam.value];
     copy.push("");
@@ -51,8 +44,16 @@ export function ParamList(props: Props) {
     props.setParamValue(props.paramIndex, copy);
   };
 
+  const modalProps = { onHide: props.onHide, show: props.show };
+
   return (
-    <Modal {...modalProps} size="lg" aria-labelledby="modal-pp" centered>
+    <Modal
+      {...modalProps}
+      size="lg"
+      aria-labelledby="modal-pp"
+      centered
+      animation={false}
+    >
       <Modal.Header closeButton>
         <Modal.Title id="modal-pp" className="text-uppercase">
           Define array parameter values
@@ -65,9 +66,8 @@ export function ParamList(props: Props) {
         <div>
           {props.funcParam.value.map((item, itemIndex) => {
             return (
-              <>
+              <span key={itemIndex}>
                 <input
-                  key={itemIndex}
                   type="text"
                   value={item}
                   onChange={(e) => onChangeValue(e.target.value, itemIndex)}
@@ -75,7 +75,7 @@ export function ParamList(props: Props) {
                 <Button onClick={(e) => onRemoveValue(itemIndex)}>
                   Remove value
                 </Button>
-              </>
+              </span>
             );
           })}
         </div>

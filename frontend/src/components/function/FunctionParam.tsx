@@ -66,7 +66,7 @@ export function FunctionParam(params: Params) {
     } */
 
     if (Array.isArray(item.value)) {
-      return item.value.join("; ");
+      return "[" + item.value.join("; ") + "]";
     }
 
     return item.value.toString();
@@ -106,10 +106,12 @@ export function FunctionParam(params: Params) {
         <>
           <input
             type="text"
-            defaultValue={getItemValue(params.funcParam)}
+            value={getItemValue(params.funcParam)}
             hidden={!params.displayValue}
             /*    disabled={true} */
-            onSelect={() => setShowListModal(true)}
+            onClick={() => setShowListModal(true)}
+            onKeyPress={() => setShowListModal(true)}
+            onChange={() => {}}
           ></input>
           <ParamList
             show={showListModal}
