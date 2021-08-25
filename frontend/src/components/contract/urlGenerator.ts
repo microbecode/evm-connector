@@ -33,8 +33,12 @@ export const decodeUrlParams = (crushed: string): IContract => {
         return mapParam(c);
       });
     }
-    if (param.t.indexOf("[")) {
+    if (param.t.indexOf("[") > -1) {
       put.value = [];
+      if (Number.isInteger(+param.t.substr(param.t.indexOf("[") + 1, 1))) {
+        // If there is a number after [, this is a statically sized array
+        put.isStaticArray = true;
+      }
     }
     return put;
   };
@@ -77,6 +81,9 @@ const encodeUrlParams = (
     };
     if (param.unitType == "tuple") {
       put.c = param.components.map((c) => mapParam(c));
+    }
+    if (param.isStaticArray) {
+      put.t = param.unitType.replace("[]", "[" + param.value.length + "]");
     }
     return put;
   };

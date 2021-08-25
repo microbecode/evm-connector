@@ -28,7 +28,7 @@ export function FunctionParam(params: Params) {
   };
 
   const setParamValue = (index: number, value: any) => {
-    console.log("new value", Array.isArray(value), value);
+    //console.log("new value", Array.isArray(value), value);
     //const copy = [...params.selectedFunction.funcInputParams];
     const item = { ...[...params.selectedFunction.funcInputParams][index] };
     item.value = value;

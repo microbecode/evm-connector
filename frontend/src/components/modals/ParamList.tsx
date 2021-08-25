@@ -22,12 +22,6 @@ interface Props {
 }
 
 export function ParamList(props: Props) {
-  // const [funcValue, setFuncValue] = useState<any[]>([]);
-
-  /*   useEffect(() => {
-    setFuncValue(props.funcParam.value);
-  }, [props.funcParam]); */
-
   const onAddValue = () => {
     const copy = [...props.funcParam.value];
     copy.push("");
@@ -81,7 +75,7 @@ export function ParamList(props: Props) {
                 ></input>
                 <Button
                   onClick={(e) => onRemoveValue(itemIndex)}
-                  disabled={props.disableInput}
+                  hidden={props.disableInput}
                 >
                   Remove value
                 </Button>
@@ -90,7 +84,7 @@ export function ParamList(props: Props) {
           })}
         </div>
         <div>
-          <Button onClick={onAddValue} disabled={props.disableInput}>
+          <Button onClick={onAddValue} hidden={props.disableInput}>
             Add value
           </Button>
         </div>
