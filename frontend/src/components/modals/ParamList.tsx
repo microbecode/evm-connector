@@ -16,7 +16,9 @@ interface Props {
   onHide: () => void;
   funcParam: IFunctionParam;
   paramIndex: number;
+  disableInput: boolean;
   setParamValue: (index: number, value: any) => void;
+  setParamArrayStaticity: (index: number, isStatic: boolean) => void;
 }
 
 export function ParamList(props: Props) {
@@ -42,6 +44,10 @@ export function ParamList(props: Props) {
     copy[itemIndex] = newValue;
 
     props.setParamValue(props.paramIndex, copy);
+  };
+
+  const changeArrayType = (val: boolean) => {
+    props.setParamArrayStaticity(props.paramIndex, val);
   };
 
   const modalProps = { onHide: props.onHide, show: props.show };
@@ -71,8 +77,12 @@ export function ParamList(props: Props) {
                   type="text"
                   value={item}
                   onChange={(e) => onChangeValue(e.target.value, itemIndex)}
+                  disabled={props.disableInput}
                 ></input>
-                <Button onClick={(e) => onRemoveValue(itemIndex)}>
+                <Button
+                  onClick={(e) => onRemoveValue(itemIndex)}
+                  disabled={props.disableInput}
+                >
                   Remove value
                 </Button>
               </span>
@@ -80,7 +90,39 @@ export function ParamList(props: Props) {
           })}
         </div>
         <div>
-          <Button onClick={onAddValue}>Add value</Button>
+          <Button onClick={onAddValue} disabled={props.disableInput}>
+            Add value
+          </Button>
+        </div>
+        <div>
+          <span>
+            <label>Array type:</label>
+            <input
+              type="radio"
+              name="arrayType"
+              onChange={(e) => {
+                changeArrayType(false);
+              }}
+              value={"0"}
+              checked={
+                props.funcParam.isStaticArray == false ||
+                props.funcParam.isStaticArray == undefined
+              }
+            />
+            Dynamic
+          </span>
+          <span>
+            <input
+              type="radio"
+              name="arrayType"
+              onChange={(e) => {
+                changeArrayType(true);
+              }}
+              value={"1"}
+              checked={props.funcParam.isStaticArray === true}
+            />
+            Static
+          </span>
         </div>
       </Modal.Body>
       <Modal.Footer>

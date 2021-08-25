@@ -10,6 +10,7 @@ interface Params {
   addSelectedFunctionParam: () => void;
   removeSelectedFunctionParam: (paramIndex: number) => void;
   displayValue: boolean;
+  isInput: boolean;
 }
 
 export function FunctionParam(params: Params) {
@@ -47,6 +48,12 @@ export function FunctionParam(params: Params) {
     } */
     //console.log('setting new value', item.value);
     //copy[index] = item;
+    params.setSelectedFunctionParam(index, item);
+  };
+
+  const setParamArrayStaticity = (index: number, isStatic: boolean) => {
+    const item = { ...[...params.selectedFunction.funcInputParams][index] };
+    item.isStaticArray = isStatic;
     params.setSelectedFunctionParam(index, item);
   };
 
@@ -100,6 +107,7 @@ export function FunctionParam(params: Params) {
           }}
           value={getItemValue(params.funcParam)}
           hidden={!params.displayValue}
+          disabled={!params.isInput}
         ></input>
       )}
       {isArrayType && (
@@ -108,7 +116,7 @@ export function FunctionParam(params: Params) {
             type="text"
             value={getItemValue(params.funcParam)}
             hidden={!params.displayValue}
-            /*    disabled={true} */
+            /* disabled={!params.isInput} */
             onClick={() => setShowListModal(true)}
             onKeyPress={() => setShowListModal(true)}
             onChange={() => {}}
@@ -118,7 +126,9 @@ export function FunctionParam(params: Params) {
             onHide={() => setShowListModal(false)}
             funcParam={params.funcParam}
             paramIndex={params.paramIndex}
+            disableInput={!params.isInput}
             setParamValue={setParamValue}
+            setParamArrayStaticity={setParamArrayStaticity}
           ></ParamList>
         </>
       )}

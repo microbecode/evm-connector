@@ -33,6 +33,9 @@ export const decodeUrlParams = (crushed: string): IContract => {
         return mapParam(c);
       });
     }
+    if (param.t.indexOf("[")) {
+      put.value = [];
+    }
     return put;
   };
 

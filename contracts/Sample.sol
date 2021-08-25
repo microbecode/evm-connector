@@ -4,16 +4,19 @@ pragma solidity ^0.8.0;
 
 contract Sample {
     uint stor;
-    // test case 1
-    function NoReturnDefault() public {
+    function Case1() public {
     } 
 
-    // test case 2
-    function NoReturnDefault(uint a, string calldata b, address c) public {
+    function Case2(uint a, string calldata b, address c) public {
     }  
 
     // test case 3
-    function NoReturnView() public view {
+    function Case3(uint[] calldata a) public view returns (uint[] calldata) {
+        return (a);
+    } 
+
+    function Case4(uint[] calldata a, string[2] calldata b) public view returns (uint[] calldata, string[2] calldata) {
+        return (a, b);
     } 
 
     // test case 4

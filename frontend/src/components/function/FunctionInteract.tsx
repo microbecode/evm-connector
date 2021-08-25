@@ -77,6 +77,11 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
+
+      if (item.isStaticArray) {
+        para.type = para.type.replace("[]", "[" + item.value.length + "]");
+      }
+
       inputParams.push(para);
     });
 
@@ -86,6 +91,9 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
+      if (item.isStaticArray) {
+        para.type = para.type.replace("[]", "[" + item.value.length + "]");
+      }
       outputParams.push(para);
     });
 
@@ -111,9 +119,11 @@ export function FunctionInteract(params: Params) {
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const abiStr = getAbi();
+    const abiStr =
+      // '[{"name":"Case4","type":"function","inputs":[{"name":"","type":"uint[]"},{"name":"","type":"string[2]"}],"stateMutability":"view","outputs":[{"name":"","type":"int[]"},{"name":"","type":"string[]"}]}]';
+      getAbi();
 
-    //console.log("used abi", abiStr);
+    console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -129,7 +139,7 @@ export function FunctionInteract(params: Params) {
         return param.value;
       },
     );
-    //console.log("inputting", inputValues, params.selectedFunction);
+    console.log("inputting", ...inputValues);
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {
@@ -200,7 +210,12 @@ export function FunctionInteract(params: Params) {
       let inSig = "";
       let paramTypes = [];
       params.forEach((item) => {
-        paramTypes.push(item.unitType);
+        let newType = item.unitType;
+        if (item.isStaticArray) {
+          const staticSize = item.value.length;
+          newType = newType.replace("[]", "[" + staticSize + "]");
+        }
+        paramTypes.push(newType);
       });
       inSig += paramTypes.flat();
       return inSig;
@@ -338,6 +353,7 @@ export function FunctionInteract(params: Params) {
                     params.removeSelectedFunctionInputParam
                   }
                   displayValue={true}
+                  isInput={true}
                 ></FunctionParam>
               );
             })}
@@ -372,6 +388,7 @@ export function FunctionInteract(params: Params) {
                     params.removeSelectedFunctionOutputParam
                   }
                   displayValue={canHaveOutput}
+                  isInput={false}
                 ></FunctionParam>
               );
             })}
