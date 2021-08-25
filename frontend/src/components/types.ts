@@ -1,6 +1,7 @@
 // https://github.com/ethereum-ts/TypeChain/blob/1561c32e39611a255f56ffcd75c5a1701929b562/packages/typechain/src/parser/abiParser.ts#L68
 
 import { BytesLike } from "@ethersproject/bytes";
+import { ParamType } from "ethers/lib/utils";
 
 export type StateMutability = "pure" | "view" | "nonpayable" | "payable";
 
@@ -32,11 +33,6 @@ export interface RawEventArgAbiDefinition {
   indexed: boolean;
   name: string;
   type: string;
-}
-
-export interface FunctionParam {
-  unitType: string;
-  value?: any;
 }
 
 export const UnitTypes: string[] = [
@@ -82,6 +78,7 @@ export const UnitTypes: string[] = [
   "uint[]",
   "string",
   "string[]",
+  "tuple",
 ];
 
 export enum ExecutionTypes {
@@ -106,21 +103,32 @@ export interface IContract {
   functions: IFuncTemplate[];
 }
 
+export interface IFuncTemplate {
+  funcName: string;
+  funcType: StateMutability;
+  funcInputParams: FunctionParam[];
+  funcOutputParams: FunctionParam[];
+}
+
+export interface FunctionParam {
+  unitType: string;
+  value?: any;
+  components?: FunctionParam[];
+}
+
 export interface IShortContract {
   a: string;
   f: IShortFunc[];
 }
 
 export interface IShortFunc {
-  n: string;
-  t: StateMutability;
-  i: string[];
-  o: string[];
+  n: string; // name of the function
+  t: StateMutability; // type: view, pure, ...
+  i: IShortParamType[]; // inputs
+  o: IShortParamType[]; // outputs
 }
 
-export interface IFuncTemplate {
-  funcName: string;
-  funcType: StateMutability;
-  funcInputParams: FunctionParam[];
-  funcOutputParams: FunctionParam[];
+export interface IShortParamType {
+  t: string; // type: uint, string, tuple, ...
+  c?: string[]; // components for tuple types: [string, uint], ...
 }

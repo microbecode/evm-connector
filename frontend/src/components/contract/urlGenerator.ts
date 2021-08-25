@@ -1,3 +1,4 @@
+import { ParamType } from "ethers/lib/utils";
 import JSONCrush from "jsoncrush";
 import {
   FunctionParam,
@@ -5,6 +6,7 @@ import {
   IFuncTemplate,
   IShortContract,
   IShortFunc,
+  IShortParamType,
 } from "../types";
 
 export const generateUrl = (
@@ -22,13 +24,25 @@ export const decodeUrlParams = (crushed: string): IContract => {
 
   const funcs: IFuncTemplate[] = [];
 
+  const mapParam = (param: IShortParamType): FunctionParam => {
+    const put: FunctionParam = {
+      unitType: param.t,
+    };
+    if (param.t == "tuple") {
+      put.components = param.c.map((c): FunctionParam => {
+        return { unitType: c };
+      });
+    }
+    return put;
+  };
+
   short.f.forEach((f) => {
     const inputs = f.i.map((p) => {
-      return { unitType: p } as FunctionParam;
+      return mapParam(p);
     });
 
     const outputs = f.o.map((p) => {
-      return { unitType: p } as FunctionParam;
+      return mapParam(p);
     });
 
     const func: IFuncTemplate = {
@@ -54,9 +68,24 @@ const encodeUrlParams = (
 ): string => {
   const funcs: IShortFunc[] = [];
 
+  const mapParam = (param: FunctionParam): IShortParamType => {
+    const put: IShortParamType = {
+      t: param.unitType,
+    };
+    if (param.unitType == "tuple") {
+      put.c = param.components.map((c) => c.unitType);
+    }
+    return put;
+  };
+
   functions.forEach((f) => {
-    const inputs = f.funcInputParams.map((p) => p.unitType);
-    const outputs = f.funcOutputParams.map((p) => p.unitType);
+    const inputs = f.funcInputParams.map((p) => {
+      return mapParam(p);
+    });
+
+    const outputs = f.funcOutputParams.map((p) => {
+      return mapParam(p);
+    });
 
     const func: IShortFunc = {
       n: f.funcName,
@@ -73,6 +102,7 @@ const encodeUrlParams = (
   };
 
   const json = JSON.stringify(contr);
+  console.log("json", json);
   const crushed = JSONCrush.crush(json);
 
   return crushed;
