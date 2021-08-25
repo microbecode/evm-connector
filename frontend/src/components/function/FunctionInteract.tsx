@@ -226,47 +226,6 @@ export function FunctionInteract(params: Params) {
     }
   };
 
-  const setInputParamType = (index: number, value: string) => {
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
-    item.unitType = value;
-    params.setSelectedFunctionInputParam(index, item);
-  };
-
-  const setInputParamValue = (index: number, value: string) => {
-    //const copy = [...params.selectedFunction.funcInputParams];
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
-    item.value = value;
-    /*     if (item.unitType.indexOf('bytes') > -1) {
-      console.log('new value', value, item)
-      if (item.unitType.indexOf('[]') > -1) {
-        const rawValues = item.value.split(',');
-        const values = rawValues.map(item2 => ethers.utils.toUtf8Bytes(ethers.utils.hexZeroPad(item2, 8)));
-        item.value = values;
-      }
-      else {        
-        item.value = ethers.utils.toUtf8Bytes(value);
-      }
-    }
-    else  */ if (item.unitType.indexOf("[]") > 0) {
-      item.value = item.value.split(",");
-    }
-    //console.log('setting new value', item.value);
-    //copy[index] = item;
-    params.setSelectedFunctionInputParam(index, item);
-  };
-
-  /*   const setOutputParamValue = (index : number, value : string) => {
-    const item = {...[...params.selectedFunction.funcOutputParams][index]};
-    item.value = value;
-    params.setSelectedFunctionOutputParam(index, item);
-  } */
-
-  const setOutputParamType = (index: number, value: string) => {
-    const item = { ...[...params.selectedFunction.funcOutputParams][index] };
-    item.unitType = value;
-    params.setSelectedFunctionOutputParam(index, item);
-  };
-
   const canHaveOutput =
     (execType == ExecutionTypes.default &&
       (params.selectedFunction.funcType == "pure" ||
@@ -299,24 +258,6 @@ export function FunctionInteract(params: Params) {
       return false;
     }
     return true;
-  };
-
-  const getItemValue = (item: IFunctionParam) => {
-    if (!item.value) {
-      return "";
-    }
-    //console.log('found item', item)
-    /*     if (item.unitType.indexOf('bytes') > -1) {
-      if (item.unitType.indexOf('[]') > -1) {
-        const rawValues = item.value as string[];
-        const values = rawValues.map(item2 => ethers.utils.toUtf8String(item2 as BytesLike));
-        console.log('vallll', values)
-        return values;
-      }
-      return ethers.utils.toUtf8String(item.value as BytesLike);
-    } */
-
-    return item.value.toString();
   };
 
   const executeName =
@@ -385,7 +326,7 @@ export function FunctionInteract(params: Params) {
                 <FunctionParam
                   key={i}
                   paramIndex={i}
-                  item={item}
+                  funcParam={item}
                   selectedFunction={params.selectedFunction}
                   setSelectedFunctionParam={
                     params.setSelectedFunctionInputParam
@@ -396,6 +337,7 @@ export function FunctionInteract(params: Params) {
                   removeSelectedFunctionParam={
                     params.removeSelectedFunctionInputParam
                   }
+                  displayValue={true}
                 ></FunctionParam>
               );
             })}
@@ -418,7 +360,7 @@ export function FunctionInteract(params: Params) {
                 <FunctionParam
                   key={i}
                   paramIndex={i}
-                  item={item}
+                  funcParam={item}
                   selectedFunction={params.selectedFunction}
                   setSelectedFunctionParam={
                     params.setSelectedFunctionOutputParam
@@ -429,6 +371,7 @@ export function FunctionInteract(params: Params) {
                   removeSelectedFunctionParam={
                     params.removeSelectedFunctionOutputParam
                   }
+                  displayValue={canHaveOutput}
                 ></FunctionParam>
               );
             })}

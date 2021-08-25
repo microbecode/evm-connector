@@ -30,7 +30,7 @@ export const decodeUrlParams = (crushed: string): IContract => {
     };
     if (param.t == "tuple") {
       put.components = param.c.map((c): IFunctionParam => {
-        return { unitType: c };
+        return mapParam(c);
       });
     }
     return put;
@@ -73,7 +73,7 @@ const encodeUrlParams = (
       t: param.unitType,
     };
     if (param.unitType == "tuple") {
-      put.c = param.components.map((c) => c.unitType);
+      put.c = param.components.map((c) => mapParam(c));
     }
     return put;
   };

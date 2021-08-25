@@ -78,7 +78,6 @@ export const UnitTypes: string[] = [
   "uint[]",
   "string",
   "string[]",
-  "tuple",
 ];
 
 export enum ExecutionTypes {
@@ -130,5 +129,5 @@ export interface IShortFunc {
 
 export interface IShortParamType {
   t: string; // type: uint, string, tuple, ...
-  c?: string[]; // components for tuple types: [string, uint], ...
+  c?: IShortParamType[]; // components for tuple types: [string, uint], ...
 }
