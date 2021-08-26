@@ -35,7 +35,9 @@ export interface RawEventArgAbiDefinition {
   type: string;
 }
 
-export const UnitTypes: string[] = [
+export const UnitTypes: string[] = ["address", "bool", "int", "uint", "string"];
+
+export const UnitTypes2: string[] = [
   "address",
   "address[]",
   "bool",
@@ -110,7 +112,8 @@ export interface IFuncTemplate {
 }
 
 export interface IFunctionParam {
-  unitType: string;
+  unitType: string; // the full type: uint, uint[], string[6], ...
+  basicType?: string; // uint, string, address, ...
   value?: any;
   staticArraySize?: number;
   components?: IFunctionParam[];

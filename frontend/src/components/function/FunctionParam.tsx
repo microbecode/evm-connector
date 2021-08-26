@@ -1,4 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import { ParamDetails } from "../modals/ParamDetails";
 import { ParamList } from "../modals/ParamList";
 import { IFunctionParam, UnitTypes, IFuncTemplate } from "../types";
 
@@ -15,17 +17,44 @@ interface Params {
 
 export function FunctionParam(params: Params) {
   const [showListModal, setShowListModal] = useState(false);
+  const [showParamDetailsModal, setShowParamDetailsModal] = useState(false);
 
   const setParamType = (index: number, value: string) => {
     const item = { ...[...getAllParams()][index] };
     //console.log("changing type to", item, value);
+
     item.unitType = value;
-    if (value.indexOf("[")) {
+    item.staticArraySize = 0;
+    if (value.indexOf("[") > -1) {
       item.value = [];
+
+      const arraySizeMatch = value.match(/\[(\d+)\]/);
+      console.log("match", arraySizeMatch);
+      if (arraySizeMatch) {
+        item.staticArraySize = +arraySizeMatch[1];
+      }
+      item.basicType = value.replace(/\[.*\]/, "").replace(/\d/g, ""); // remove array and number elements
     } else {
       item.value = "";
+      item.basicType = value.replace(/\d/g, ""); // remove number elements
     }
+    console.log(
+      "setting unit type",
+      item.unitType,
+      value,
+      item.basicType,
+      item.staticArraySize,
+    );
     params.setSelectedFunctionParam(index, item);
+  };
+
+  //
+  const setBasicParamType = (index: number, value: string) => {
+    let newValue = value;
+    if (value.indexOf("int") > -1) {
+      newValue = value.replace("int", "int256");
+    }
+    setParamType(index, newValue);
   };
 
   const getAllParams = (): IFunctionParam[] => {
@@ -96,9 +125,9 @@ export function FunctionParam(params: Params) {
       <label>Parameter {params.paramIndex} type:</label>
       <select
         onChange={(e) => {
-          setParamType(params.paramIndex, e.target.value);
+          setBasicParamType(params.paramIndex, e.target.value);
         }}
-        value={params.funcParam.unitType}
+        value={params.funcParam.basicType}
       >
         {Object.keys(UnitTypes).map((item2, i2) => {
           return (
@@ -108,6 +137,7 @@ export function FunctionParam(params: Params) {
           );
         })}
       </select>
+      <Button onClick={() => setShowParamDetailsModal(true)}>Details</Button>
       <label hidden={!params.displayValue}>Value:</label>
       {!isArrayType && (
         <input
@@ -149,6 +179,15 @@ export function FunctionParam(params: Params) {
           params.removeSelectedFunctionParam(params.paramIndex);
         }}
       ></input>
+      <ParamDetails
+        show={showParamDetailsModal}
+        onHide={() => setShowParamDetailsModal(false)}
+        funcParam={params.funcParam}
+        paramIndex={params.paramIndex}
+        disableInput={!params.isInput}
+        setParamType={setParamType}
+        setParamArrayStaticity={setParamArrayStaticity}
+      ></ParamDetails>
     </div>
   );
 }

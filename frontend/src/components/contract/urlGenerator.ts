@@ -36,15 +36,15 @@ export const decodeUrlParams = (crushed: string): IContract => {
     }
     if (param.t.indexOf("[") > -1) {
       put.value = [];
-      const chars = +param.t.substr(
+      const arraySize = +param.t.substr(
         param.t.indexOf("[") + 1,
         param.t.indexOf("]") - param.t.indexOf("[") - 1,
       );
 
-      if (Number.isInteger(chars)) {
-        console.log("decoding", param.t, chars);
+      if (Number.isInteger(arraySize)) {
+        //console.log("decoding", param.t, arraySize);
         // If there is a number after [, this is a statically sized array
-        put.staticArraySize = chars;
+        put.staticArraySize = arraySize;
         put.unitType = put.unitType.replace(/\[.*\]/, "[]");
       }
     }

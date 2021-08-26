@@ -165,6 +165,7 @@ export function ContractInteract(params: Params) {
   const getEmptyParam = () => {
     const param: IFunctionParam = {
       unitType: "uint",
+      basicType: "uint",
       value: "",
       staticArraySize: 0,
     };
