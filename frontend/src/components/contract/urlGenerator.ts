@@ -27,6 +27,7 @@ export const decodeUrlParams = (crushed: string): IContract => {
   const mapParam = (param: IShortParamType): IFunctionParam => {
     const put: IFunctionParam = {
       unitType: param.t,
+      staticArraySize: 0,
     };
     if (param.t == "tuple") {
       put.components = param.c.map((c): IFunctionParam => {
@@ -35,9 +36,16 @@ export const decodeUrlParams = (crushed: string): IContract => {
     }
     if (param.t.indexOf("[") > -1) {
       put.value = [];
-      if (Number.isInteger(+param.t.substr(param.t.indexOf("[") + 1, 1))) {
+      const chars = +param.t.substr(
+        param.t.indexOf("[") + 1,
+        param.t.indexOf("]") - param.t.indexOf("[") - 1,
+      );
+
+      if (Number.isInteger(chars)) {
+        console.log("decoding", param.t, chars);
         // If there is a number after [, this is a statically sized array
-        put.isStaticArray = true;
+        put.staticArraySize = chars;
+        put.unitType = put.unitType.replace(/\[.*\]/, "[]");
       }
     }
     return put;
@@ -82,8 +90,11 @@ const encodeUrlParams = (
     if (param.unitType == "tuple") {
       put.c = param.components.map((c) => mapParam(c));
     }
-    if (param.isStaticArray) {
-      put.t = param.unitType.replace("[]", "[" + param.value.length + "]");
+    if (param.staticArraySize > 0) {
+      put.t = param.unitType.replace(
+        /\[.*\]/,
+        "[" + param.staticArraySize + "]",
+      );
     }
     return put;
   };

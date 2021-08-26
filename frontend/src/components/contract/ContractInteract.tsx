@@ -166,6 +166,7 @@ export function ContractInteract(params: Params) {
     const param: IFunctionParam = {
       unitType: "uint",
       value: "",
+      staticArraySize: 0,
     };
     return param;
   };

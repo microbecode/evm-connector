@@ -78,8 +78,11 @@ export function FunctionInteract(params: Params) {
         type: item.unitType,
       };
 
-      if (item.isStaticArray) {
-        para.type = para.type.replace("[]", "[" + item.value.length + "]");
+      if (item.staticArraySize > 0) {
+        para.type = para.type.replace(
+          /\[.*\]/,
+          "[" + item.staticArraySize + "]",
+        );
       }
 
       inputParams.push(para);
@@ -91,8 +94,11 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
-      if (item.isStaticArray) {
-        para.type = para.type.replace("[]", "[" + item.value.length + "]");
+      if (item.staticArraySize > 0) {
+        para.type = para.type.replace(
+          /\[.*\]/,
+          "[" + item.staticArraySize + "]",
+        );
       }
       outputParams.push(para);
     });
@@ -207,13 +213,16 @@ export function FunctionInteract(params: Params) {
   const updateSig = () => {
     let sig = params.selectedFunction.funcName;
     const addParam = (params: IFunctionParam[]) => {
+      //console.log("adding param", params);
       let inSig = "";
       let paramTypes = [];
       params.forEach((item) => {
         let newType = item.unitType;
-        if (item.isStaticArray) {
-          const staticSize = item.value.length;
-          newType = newType.replace("[]", "[" + staticSize + "]");
+        if (item.staticArraySize > 0) {
+          newType = newType.replace(/\[.*\]/, "[" + item.staticArraySize + "]");
+          //console.log("is size", item.staticArraySize, newType);
+        } else {
+          newType = newType.replace(/\[.*\]/, "[]");
         }
         paramTypes.push(newType);
       });

@@ -17,7 +17,8 @@ export function FunctionParam(params: Params) {
   const [showListModal, setShowListModal] = useState(false);
 
   const setParamType = (index: number, value: string) => {
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
+    const item = { ...[...getAllParams()][index] };
+    //console.log("changing type to", item, value);
     item.unitType = value;
     if (value.indexOf("[")) {
       item.value = [];
@@ -27,10 +28,18 @@ export function FunctionParam(params: Params) {
     params.setSelectedFunctionParam(index, item);
   };
 
+  const getAllParams = (): IFunctionParam[] => {
+    let allParams: IFunctionParam[] = params.selectedFunction.funcInputParams;
+    if (!params.isInput) {
+      allParams = params.selectedFunction.funcOutputParams;
+    }
+    return allParams;
+  };
+
   const setParamValue = (index: number, value: any) => {
     //console.log("new value", Array.isArray(value), value);
-    //const copy = [...params.selectedFunction.funcInputParams];
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
+
+    const item = { ...[...getAllParams()][index] };
     item.value = value;
     /*     if (item.unitType.indexOf('bytes') > -1) {
       console.log('new value', value, item)
@@ -51,9 +60,10 @@ export function FunctionParam(params: Params) {
     params.setSelectedFunctionParam(index, item);
   };
 
-  const setParamArrayStaticity = (index: number, isStatic: boolean) => {
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
-    item.isStaticArray = isStatic;
+  const setParamArrayStaticity = (index: number, staticSize: number) => {
+    const item = { ...[...getAllParams()][index] };
+    item.staticArraySize = staticSize;
+    //console.log("putting size", staticSize);
     params.setSelectedFunctionParam(index, item);
   };
 

@@ -1,15 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
-import { ethers } from "ethers";
-import { FormatTypes, FunctionFragment, Interface } from "ethers/lib/utils";
-import {
-  IFunctionParam,
-  IFuncTemplate,
-  StateMutability,
-  UnitTypes,
-} from "../types";
-import { ContractTemplate } from "../contract/ContractTemplate";
+import { IFunctionParam } from "../types";
 
 interface Props {
   show: boolean;
@@ -18,7 +10,7 @@ interface Props {
   paramIndex: number;
   disableInput: boolean;
   setParamValue: (index: number, value: any) => void;
-  setParamArrayStaticity: (index: number, isStatic: boolean) => void;
+  setParamArrayStaticity: (index: number, staticSize: number) => void;
 }
 
 export function ParamList(props: Props) {
@@ -41,11 +33,24 @@ export function ParamList(props: Props) {
   };
 
   const changeArrayType = (val: boolean) => {
-    props.setParamArrayStaticity(props.paramIndex, val);
+    if (val) {
+      props.setParamArrayStaticity(props.paramIndex, 1); // default value is 1
+    } else {
+      props.setParamArrayStaticity(props.paramIndex, 0);
+    }
+  };
+
+  const changeArrayStaticSize = (valStr: string) => {
+    //console.log("changing", valStr, +valStr);
+    if (Number.isInteger(+valStr)) {
+      props.setParamArrayStaticity(props.paramIndex, +valStr);
+    } else {
+      props.setParamArrayStaticity(props.paramIndex, 0);
+    }
   };
 
   const modalProps = { onHide: props.onHide, show: props.show };
-
+  //console.log("size is", props.funcParam.staticArraySize);
   return (
     <Modal
       {...modalProps}
@@ -98,10 +103,7 @@ export function ParamList(props: Props) {
                 changeArrayType(false);
               }}
               value={"0"}
-              checked={
-                props.funcParam.isStaticArray == false ||
-                props.funcParam.isStaticArray == undefined
-              }
+              checked={!(props.funcParam.staticArraySize > 0)}
             />
             Dynamic
           </span>
@@ -113,9 +115,22 @@ export function ParamList(props: Props) {
                 changeArrayType(true);
               }}
               value={"1"}
-              checked={props.funcParam.isStaticArray === true}
+              checked={props.funcParam.staticArraySize > 0}
             />
-            Static
+            Static with&nbsp;
+            <input
+              type="text"
+              value={
+                props.funcParam.staticArraySize > 0
+                  ? props.funcParam.staticArraySize
+                  : ""
+              }
+              placeholder={"num"}
+              onChange={(e) => changeArrayStaticSize(e.target.value)}
+              disabled={props.disableInput}
+              style={{ width: "50px" }}
+            ></input>
+            <label>items</label>
           </span>
         </div>
       </Modal.Body>

@@ -112,7 +112,7 @@ export interface IFuncTemplate {
 export interface IFunctionParam {
   unitType: string;
   value?: any;
-  isStaticArray?: boolean;
+  staticArraySize?: number;
   components?: IFunctionParam[];
 }
 
