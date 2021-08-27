@@ -37,51 +37,6 @@ export interface RawEventArgAbiDefinition {
 
 export const UnitTypes: string[] = ["address", "bool", "int", "uint", "string"];
 
-export const UnitTypes2: string[] = [
-  "address",
-  "address[]",
-  "bool",
-  "bool[]",
-  /*     'bytes',
-    'bytes[]',
-    'bytes8',
-    'bytes8[]',
-    'bytes16',
-    'bytes16[]',
-    'bytes32',
-    'bytes32[]', */
-  "int8",
-  "int8[]",
-  "int16",
-  "int16[]",
-  "int32",
-  "int32[]",
-  "int64",
-  "int64[]",
-  "int128",
-  "int128[]",
-  "int256",
-  "int256[]",
-  "int",
-  "int[]",
-  "uint8",
-  "uint8[]",
-  "uint16",
-  "uint16[]",
-  "uint32",
-  "uint32[]",
-  "uint64",
-  "uint64[]",
-  "uint128",
-  "uint128[]",
-  "uint256",
-  "uint256[]",
-  "uint",
-  "uint[]",
-  "string",
-  "string[]",
-];
-
 export enum ExecutionTypes {
   default = "default (infer from function type)",
   local = "local call",
@@ -113,7 +68,7 @@ export interface IFuncTemplate {
 
 export interface IFunctionParam {
   unitType: string; // the full type: uint, uint[], string[6], ...
-  basicType?: string; // uint, string, address, ...
+  basicType: string; // uint, string, address, ...
   value?: any;
   staticArraySize?: number;
   components?: IFunctionParam[];
@@ -132,6 +87,6 @@ export interface IShortFunc {
 }
 
 export interface IShortParamType {
-  t: string; // type: uint, string, tuple, ...
+  t: string; // type: uint, string[5], tuple, ...
   c?: IShortParamType[]; // components for tuple types: [string, uint], ...
 }

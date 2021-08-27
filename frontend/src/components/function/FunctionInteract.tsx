@@ -129,7 +129,7 @@ export function FunctionInteract(params: Params) {
       // '[{"name":"Case4","type":"function","inputs":[{"name":"","type":"uint[]"},{"name":"","type":"string[2]"}],"stateMutability":"view","outputs":[{"name":"","type":"int[]"},{"name":"","type":"string[]"}]}]';
       getAbi();
 
-    //console.log("used abi", abiStr);
+    console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -422,7 +422,7 @@ export function FunctionInteract(params: Params) {
           value={funcSignature}
         />
         <CopyToClipboard textToCopy={funcSignature} />
-        <label>Function hash:</label>
+  {/*       <label>Function hash:</label>
         <input
           type="text"
           style={{ width: "500px" }}
@@ -431,7 +431,7 @@ export function FunctionInteract(params: Params) {
           onChange={(e) => {}}
           value={signatureHash}
         />
-        <CopyToClipboard textToCopy={signatureHash} />
+        <CopyToClipboard textToCopy={signatureHash} /> */}
       </div>
 
       {window.ethereum !== undefined &&

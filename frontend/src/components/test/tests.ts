@@ -18,7 +18,7 @@ interface Params {
 export const fillTest = (params: Params) => {
   const dummyAddr = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
   switch (params.index) {
-    case 1:
+    /* case 1:
       params.setFuncName("NoReturnDefault");
       params.setFuncType("nonpayable");
       break;
@@ -82,18 +82,18 @@ export const fillTest = (params: Params) => {
         { unitType: "address" },
         { unitType: "bool" },
       ]);
-      break;
-      /*       case 10:
-        params.setFuncName("ReturnView2");
-        params.setFuncType("view");
-        params.setFunctionInputParams([
-            { unitType: 'bool', value: true },
-             { unitType: 'string[]', value: [ 
-                ethers.utils.toUtf8Bytes("a")
-            ] }, 
-            { unitType: 'uint[]', value: [1, 2, 99] } 
-        ]); */
-      break;
+      break; */
+    /*       case 10:
+      params.setFuncName("ReturnView2");
+      params.setFuncType("view");
+      params.setFunctionInputParams([
+          { unitType: 'bool', value: true },
+           { unitType: 'string[]', value: [ 
+              ethers.utils.toUtf8Bytes("a")
+          ] }, 
+          { unitType: 'uint[]', value: [1, 2, 99] } 
+      ]); 
+    break;*/
   }
 
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));

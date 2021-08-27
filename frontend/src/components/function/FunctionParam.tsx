@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import { parseParam } from "../helpers/paramHelper";
 import { ParamDetails } from "../modals/ParamDetails";
 import { IFunctionParam, UnitTypes, IFuncTemplate } from "../types";
 
@@ -18,10 +19,9 @@ export function FunctionParam(params: Params) {
   const [showParamDetailsModal, setShowParamDetailsModal] = useState(false);
 
   const setParamType = (index: number, value: string) => {
-    const item = { ...[...getAllParams()][index] };
     //console.log("changing type to", item, value);
-
-    item.unitType = value;
+const item = parseParam(value);
+   /*  item.unitType = value;
     item.staticArraySize = 0;
     if (value.indexOf("[") > -1) {
       item.value = [];
@@ -35,7 +35,7 @@ export function FunctionParam(params: Params) {
     } else {
       item.value = "";
       item.basicType = value.replace(/\d/g, ""); // remove number elements
-    }
+    } */
    /*  console.log(
       "setting unit type",
       item.unitType,

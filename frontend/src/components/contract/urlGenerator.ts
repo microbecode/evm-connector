@@ -1,5 +1,6 @@
 import { ParamType } from "ethers/lib/utils";
 import JSONCrush from "jsoncrush";
+import { parseParam } from "../helpers/paramHelper";
 import {
   IFunctionParam,
   IContract,
@@ -24,39 +25,13 @@ export const decodeUrlParams = (crushed: string): IContract => {
 
   const funcs: IFuncTemplate[] = [];
 
-  const mapParam = (param: IShortParamType): IFunctionParam => {
-    const put: IFunctionParam = {
-      unitType: param.t,
-      staticArraySize: 0,
-    };
-    /*     if (param.t == "tuple") {
-          put.components = param.c.map((c): IFunctionParam => {
-            return mapParam(c);
-          });
-        } */
-    if (param.t.indexOf("[") > -1) {
-      put.value = [];
-      const arraySize = +param.t.substr(
-        param.t.indexOf("[") + 1,
-        param.t.indexOf("]") - param.t.indexOf("[") - 1,
-      );
-
-      if (Number.isInteger(arraySize)) {
-        //console.log("decoding", param.t, arraySize);
-        put.staticArraySize = arraySize;
-        put.unitType = put.unitType.replace(/\[.*\]/, "[]");
-      }
-    }
-    return put;
-  };
-
   short.f.forEach((f) => {
     const inputs = f.i.map((p) => {
-      return mapParam(p);
+      return parseParam(p.t);
     });
 
     const outputs = f.o.map((p) => {
-      return mapParam(p);
+      return parseParam(p.t);
     });
 
     const func: IFuncTemplate = {
@@ -86,15 +61,15 @@ const encodeUrlParams = (
     const put: IShortParamType = {
       t: param.unitType,
     };
-    if (param.unitType == "tuple") {
-      put.c = param.components.map((c) => mapParam(c));
-    }
-    if (param.staticArraySize > 0) {
-      put.t = param.unitType.replace(
-        /\[.*\]/,
-        "[" + param.staticArraySize + "]",
-      );
-    }
+    /*     if (param.unitType == "tuple") {
+          put.c = param.components.map((c) => mapParam(c));
+        } */
+    /*     if (param.staticArraySize > 0) {
+          put.t = param.unitType.replace(
+            /\[.*\]/,
+            "[" + param.staticArraySize + "]",
+          );
+        } */
     return put;
   };
 

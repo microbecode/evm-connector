@@ -46,39 +46,8 @@ export function ParamDetails(props: Props) {
     bitAmount = +bitMatch[1];
   }
 
-  /*   let staticArraySize = 0;
-  const arraySizeMatch = props.funcParam.unitType.match(/\[(\d+)\]/);
-  if (arraySizeMatch) {
-    staticArraySize = +arraySizeMatch[1];
-  } */
-/*   console.log(
-    "incoming data",
-    paramType,
-    bitAmount,
-    props.funcParam.staticArraySize,
-  ); */
-  /*  console.log(
-    "have tpye",
-    paramType,
-    props.funcParam.unitType,
-    props.funcParam.staticArraySize,
-  ); */
-
   //const bytesBitOptions = Array.from({ length: 32 }, (e, i) => i + 1);
   const intBitOptions = Array.from({ length: 32 }, (e, i) => (i + 1) * 8);
-
-  /*   const onChangeValue = (newValue: string, itemIndex: number) => {
-    const copy = [...props.funcParam.value];
-    copy[itemIndex] = newValue;
-
-    props.setParamValue(props.paramIndex, copy);
-  };
-*/
-
-  const updateUpstreamType = () => {
-    /*     const sig = getSignature(paramType);
-    props.setParamType(props.paramIndex, sig); */
-  };
 
   const getSignature = (
     type: ParamTypes,
@@ -211,10 +180,10 @@ export function ParamDetails(props: Props) {
             }}
             value={props.funcParam.basicType}
           >
-            {Object.keys(UnitTypes).map((item2, i2) => {
+            {Object.keys(UnitTypes).map((item, i) => {
               return (
-                <option key={i2} value={UnitTypes[item2]}>
-                  {UnitTypes[item2]}
+                <option key={i} value={UnitTypes[item]}>
+                  {UnitTypes[item]}
                 </option>
               );
             })}
@@ -229,7 +198,6 @@ export function ParamDetails(props: Props) {
               onChange={(e) => {
                 changeArrayType(ParamTypes.Basic);
               }}
-              /*    value={"0"} */
               checked={paramType == ParamTypes.Basic}
             />
             Basic
@@ -241,7 +209,6 @@ export function ParamDetails(props: Props) {
               onChange={(e) => {
                 changeArrayType(ParamTypes.DynamicArray);
               }}
-              /*         value={"0"} */
               checked={paramType == ParamTypes.DynamicArray}
             />
             Dynamic array
@@ -253,7 +220,6 @@ export function ParamDetails(props: Props) {
               onChange={(e) => {
                 changeArrayType(ParamTypes.StaticArray);
               }}
-              /*    value={"1"} */
               checked={paramType == ParamTypes.StaticArray}
             />
             Static array with&nbsp;
