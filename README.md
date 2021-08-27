@@ -16,7 +16,7 @@ EVM-based blockchains are for example:
 
 ## Web app
 
-The app is deployed at https://evmconnector.dev
+The app is deployed at https://evmconnector.dev .
 
 ![alt text](example.png)
 
