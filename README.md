@@ -88,7 +88,7 @@ This tool is mostly meant for developers who know what they are doing. Anyway, h
 <p>Q: Why is there an option to specify the execution type? A: Normally you can just leave this to be the default value.But if you need, for example, the return value from a state-changing function, you can change this to "Local call" to simulate calling the function as type `view` even if really isn't a `view` function. This way you can get the resulting data (although no state changes are performed).</p>
 
 ## Future development
-
+ 
 Some future development is considered and issues are created for those this repo. Please feel free to leave feedback!
 
 # Technical stuff
