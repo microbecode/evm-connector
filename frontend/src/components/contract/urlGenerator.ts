@@ -29,11 +29,11 @@ export const decodeUrlParams = (crushed: string): IContract => {
       unitType: param.t,
       staticArraySize: 0,
     };
-    if (param.t == "tuple") {
-      put.components = param.c.map((c): IFunctionParam => {
-        return mapParam(c);
-      });
-    }
+    /*     if (param.t == "tuple") {
+          put.components = param.c.map((c): IFunctionParam => {
+            return mapParam(c);
+          });
+        } */
     if (param.t.indexOf("[") > -1) {
       put.value = [];
       const arraySize = +param.t.substr(
@@ -43,7 +43,6 @@ export const decodeUrlParams = (crushed: string): IContract => {
 
       if (Number.isInteger(arraySize)) {
         //console.log("decoding", param.t, arraySize);
-        // If there is a number after [, this is a statically sized array
         put.staticArraySize = arraySize;
         put.unitType = put.unitType.replace(/\[.*\]/, "[]");
       }

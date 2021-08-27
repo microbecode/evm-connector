@@ -129,7 +129,7 @@ export function FunctionInteract(params: Params) {
       // '[{"name":"Case4","type":"function","inputs":[{"name":"","type":"uint[]"},{"name":"","type":"string[2]"}],"stateMutability":"view","outputs":[{"name":"","type":"int[]"},{"name":"","type":"string[]"}]}]';
       getAbi();
 
-    console.log("used abi", abiStr);
+    //console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -145,7 +145,7 @@ export function FunctionInteract(params: Params) {
         return param.value;
       },
     );
-    console.log("inputting", ...inputValues);
+    //console.log("inputting", ...inputValues);
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {

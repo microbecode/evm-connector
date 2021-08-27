@@ -10,7 +10,7 @@ interface Props {
   paramIndex: number;
   disableInput: boolean;
   setParamType: (index: number, newType: string) => void;
-  setParamArrayStaticity: (index: number, staticSize: number) => void;
+  setParamValue:  (index: number, value: any) => void;
 }
 
 enum ParamTypes {
@@ -41,7 +41,7 @@ export function ParamDetails(props: Props) {
 
   let bitAmount = 256;
   const bitMatch = props.funcParam.unitType.match(/\w(\d+)/);
-  console.log("type is " + props.funcParam.unitType);
+  //console.log("type is " + props.funcParam.unitType);
   if (bitMatch) {
     bitAmount = +bitMatch[1];
   }
@@ -51,12 +51,12 @@ export function ParamDetails(props: Props) {
   if (arraySizeMatch) {
     staticArraySize = +arraySizeMatch[1];
   } */
-  console.log(
+/*   console.log(
     "incoming data",
     paramType,
     bitAmount,
     props.funcParam.staticArraySize,
-  );
+  ); */
   /*  console.log(
     "have tpye",
     paramType,
@@ -96,7 +96,7 @@ export function ParamDetails(props: Props) {
     } else if (type == ParamTypes.StaticArray) {
       sig += "[" + staticArraySize + "]";
     }
-    console.log("generated sig", sig);
+    //console.log("generated sig", sig);
     return sig;
   };
 
@@ -124,11 +124,9 @@ export function ParamDetails(props: Props) {
     if (val == ParamTypes.Basic || val == ParamTypes.DynamicArray) {
       const sig = getSignature(val, bitAmount, props.funcParam.basicType, 0);
       props.setParamType(props.paramIndex, sig);
-      //props.setParamArrayStaticity(props.paramIndex, 0);
     } else if (val == ParamTypes.StaticArray) {
       const sig = getSignature(val, bitAmount, props.funcParam.basicType, 1);
       props.setParamType(props.paramIndex, sig);
-      //props.setParamArrayStaticity(props.paramIndex, 0);
     }
   };
 
@@ -152,21 +150,6 @@ export function ParamDetails(props: Props) {
     }
   };
 
-  /*  const changeParamType = (type: ParamTypes) => {
-    if (type == ParamTypes.Basic) {
-      props.setParamArrayStaticity(props.paramIndex, 0);
-    }
-    if (type == ParamTypes.DynamicArray) {
-      props.setParamArrayStaticity(props.paramIndex, 0);
-    } else if (type == ParamTypes.StaticArray) {
-      props.setParamArrayStaticity(props.paramIndex, 1); // default value is 1
-    }
-    const newType = getSignature(type);
-    props.setParamType(props.paramIndex, newType);
-  };
-
-   */
-
   const signature = getSignature(
     paramType,
     bitAmount,
@@ -174,6 +157,34 @@ export function ParamDetails(props: Props) {
     props.funcParam.staticArraySize,
   );
 
+  const onAddValue = () => {
+    const copy = [...props.funcParam.value];
+    copy.push("");
+    props.setParamValue(props.paramIndex, copy);
+  };
+
+  const onRemoveValue = (itemIndex: number) => {
+    const copy = props.funcParam.value.filter((_, i) => i !== itemIndex);
+    props.setParamValue(props.paramIndex, copy);
+  };
+
+  const onChangeValue = (newValue: string, itemIndex: number) => {
+    const copy = [...props.funcParam.value];
+    copy[itemIndex] = newValue;
+    if (paramType == ParamTypes.Basic) {
+      props.setParamValue(props.paramIndex, newValue);
+    }
+    else {
+      props.setParamValue(props.paramIndex, copy);
+    }
+//console.log('sending value', copy, newValue, itemIndex)
+    
+  };
+
+  let values = props.funcParam.value;
+  if (!Array.isArray(values)) {
+    values = [values];
+  }
   const modalProps = { onHide: props.onHide, show: props.show };
   //console.log("size is", props.funcParam.staticArraySize);
   return (
@@ -186,11 +197,13 @@ export function ParamDetails(props: Props) {
     >
       <Modal.Header closeButton>
         <Modal.Title id="modal-pp" className="text-uppercase">
-          Define parameter type details
+          Define parameter details
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div>
+        <fieldset>
+          <legend>Type</legend>
+          <div>
           <label>Parameter base type:</label>
           <select
             onChange={(e) => {
@@ -253,12 +266,12 @@ export function ParamDetails(props: Props) {
               }
               placeholder={"num"}
               onChange={(e) => changeArrayStaticSize(e.target.value)}
-              disabled={props.disableInput}
               style={{ width: "50px" }}
             ></input>
             <label>items</label>
           </span>
         </div>
+        {props.funcParam.basicType.indexOf("int") > -1 &&
         <div>
           <label>Number of bits:</label>
           <select
@@ -277,10 +290,45 @@ export function ParamDetails(props: Props) {
             })}
           </select>
         </div>
+        }
         <div>
           <label>Parameter signature:</label>
           <input type="text" value={signature} disabled={true}></input>
         </div>
+        </fieldset>
+        
+       <fieldset>
+         <legend>Value</legend>         
+         <div>
+          {values.map((item, itemIndex) => {
+            return (
+              <span key={itemIndex}>
+                <input
+                  type="text"
+                  value={item}
+                  onChange={(e) => onChangeValue(e.target.value, itemIndex)}
+                  disabled={props.disableInput}
+                ></input>
+                {paramType !== ParamTypes.Basic &&
+                <Button
+                  onClick={(e) => onRemoveValue(itemIndex)}
+                  hidden={props.disableInput}
+                >
+                  Remove value
+                </Button>
+                } 
+              </span>
+            );
+          })}
+        </div>
+        {paramType !== ParamTypes.Basic &&
+        <div>
+          <Button onClick={onAddValue} hidden={props.disableInput}>
+            Add value
+          </Button>
+        </div>        }   
+       </fieldset>     
+       
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>

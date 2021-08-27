@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { ParamDetails } from "../modals/ParamDetails";
-import { ParamList } from "../modals/ParamList";
 import { IFunctionParam, UnitTypes, IFuncTemplate } from "../types";
 
 interface Params {
@@ -16,7 +15,6 @@ interface Params {
 }
 
 export function FunctionParam(params: Params) {
-  const [showListModal, setShowListModal] = useState(false);
   const [showParamDetailsModal, setShowParamDetailsModal] = useState(false);
 
   const setParamType = (index: number, value: string) => {
@@ -29,7 +27,7 @@ export function FunctionParam(params: Params) {
       item.value = [];
 
       const arraySizeMatch = value.match(/\[(\d+)\]/);
-      console.log("match", arraySizeMatch);
+      //console.log("match", arraySizeMatch);
       if (arraySizeMatch) {
         item.staticArraySize = +arraySizeMatch[1];
       }
@@ -38,13 +36,13 @@ export function FunctionParam(params: Params) {
       item.value = "";
       item.basicType = value.replace(/\d/g, ""); // remove number elements
     }
-    console.log(
+   /*  console.log(
       "setting unit type",
       item.unitType,
       value,
       item.basicType,
       item.staticArraySize,
-    );
+    ); */
     params.setSelectedFunctionParam(index, item);
   };
 
@@ -84,15 +82,8 @@ export function FunctionParam(params: Params) {
     else  */ /*  if (item.unitType.indexOf("[") > -1) {
       item.value = item.value.split(",");
     } */
-    //console.log('setting new value', item.value);
+    //console.log('setting new value', item.value, getAllParams());
     //copy[index] = item;
-    params.setSelectedFunctionParam(index, item);
-  };
-
-  const setParamArrayStaticity = (index: number, staticSize: number) => {
-    const item = { ...[...getAllParams()][index] };
-    item.staticArraySize = staticSize;
-    //console.log("putting size", staticSize);
     params.setSelectedFunctionParam(index, item);
   };
 
@@ -122,7 +113,7 @@ export function FunctionParam(params: Params) {
 
   return (
     <div>
-      <label>Parameter {params.paramIndex} type:</label>
+      <label>Parameter {params.paramIndex} base type:</label>
       <select
         onChange={(e) => {
           setBasicParamType(params.paramIndex, e.target.value);
@@ -137,7 +128,7 @@ export function FunctionParam(params: Params) {
           );
         })}
       </select>
-      <Button onClick={() => setShowParamDetailsModal(true)}>Details</Button>
+      <input type='button' value='Details' onClick={() => setShowParamDetailsModal(true)}></input>
       <label hidden={!params.displayValue}>Value:</label>
       {!isArrayType && (
         <input
@@ -157,19 +148,10 @@ export function FunctionParam(params: Params) {
             value={getItemValue(params.funcParam)}
             hidden={!params.displayValue}
             /* disabled={!params.isInput} */
-            onClick={() => setShowListModal(true)}
-            onKeyPress={() => setShowListModal(true)}
+            onClick={() => setShowParamDetailsModal(true)}
+            onKeyPress={() => setShowParamDetailsModal(true)}
             onChange={() => {}}
           ></input>
-          <ParamList
-            show={showListModal}
-            onHide={() => setShowListModal(false)}
-            funcParam={params.funcParam}
-            paramIndex={params.paramIndex}
-            disableInput={!params.isInput}
-            setParamValue={setParamValue}
-            setParamArrayStaticity={setParamArrayStaticity}
-          ></ParamList>
         </>
       )}
       <input
@@ -186,7 +168,7 @@ export function FunctionParam(params: Params) {
         paramIndex={params.paramIndex}
         disableInput={!params.isInput}
         setParamType={setParamType}
-        setParamArrayStaticity={setParamArrayStaticity}
+        setParamValue={setParamValue}
       ></ParamDetails>
     </div>
   );

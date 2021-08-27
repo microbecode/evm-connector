@@ -35,19 +35,19 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
     },
-    ropsten: {
-      url: providerRopsten,
-      accounts: [privKeyExists],
-      gasPrice: 2000000000 // 2gwei
-    },
-    mainnet: {
-      url: providerMainnet,
-      accounts: [privKeyExists]
-    }
+    /*     ropsten: {
+          url: providerRopsten,
+          accounts: [privKeyExists],
+          gasPrice: 2000000000 // 2gwei
+        },
+        mainnet: {
+          url: providerMainnet,
+          accounts: [privKeyExists]
+        } */
   },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY
-  }
+  /*   etherscan: {
+      apiKey: process.env.ETHERSCAN_API_KEY
+    } */
   // defaultNetwork: "hardhat",
   // networks: {
   //   localhost: {
