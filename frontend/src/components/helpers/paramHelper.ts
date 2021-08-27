@@ -7,6 +7,9 @@ export const parseParam = (unitType: string): IFunctionParam => {
     };
 
     item.staticArraySize = 0;
+    if (unitType.indexOf("][") > -1 || unitType.indexOf('tuple') > -1) {
+        return null; // tuples and  double arrays not supported yet
+    }
     if (unitType.indexOf("[") > -1) {
         item.value = [];
 

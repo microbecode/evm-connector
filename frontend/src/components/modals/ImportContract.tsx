@@ -10,6 +10,7 @@ import {
   UnitTypes,
 } from "../types";
 import { ContractTemplate } from "../contract/ContractTemplate";
+import { parseParam } from "../helpers/paramHelper";
 
 interface Props {
   show: boolean;
@@ -32,19 +33,18 @@ export function ImportContract(props: Props) {
       inputFuncs.forEach((func) => {
         const inputs: IFunctionParam[] = [];
         func.inputs.forEach((put) => {
-          if (UnitTypes.includes(put.type)) {
-            const par = { unitType: put.type } as IFunctionParam;
-            inputs.push(par);
-          } else {
-          }
+            const par = parseParam(put.type);
+            if (par != null) {
+              inputs.push(par);
+            }
         });
         const outputs: IFunctionParam[] = [];
 
         func.outputs.forEach((put) => {
-          if (UnitTypes.includes(put.type)) {
-            const par = { unitType: put.type } as IFunctionParam;
-            outputs.push(par);
-          }
+          const par = parseParam(put.type);
+            if (par != null) {
+              outputs.push(par);
+            }
         });
 
         if (

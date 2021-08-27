@@ -113,6 +113,8 @@ export function ContractInteract(params: Params) {
     newFuncs.forEach((func) => copy.push(func));
     setSelectedFunctionIndex(functions.length);
     setFunctions(copy);
+
+    //console.log('setting funcs', copy)
   };
 
   const removeFunction = () => {
