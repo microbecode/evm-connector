@@ -1,6 +1,7 @@
 // https://github.com/ethereum-ts/TypeChain/blob/1561c32e39611a255f56ffcd75c5a1701929b562/packages/typechain/src/parser/abiParser.ts#L68
 
 import { BytesLike } from "@ethersproject/bytes";
+import { ParamType } from "ethers/lib/utils";
 
 export type StateMutability = "pure" | "view" | "nonpayable" | "payable";
 
@@ -34,55 +35,7 @@ export interface RawEventArgAbiDefinition {
   type: string;
 }
 
-export interface FunctionParam {
-  unitType: string;
-  value?: any;
-}
-
-export const UnitTypes: string[] = [
-  "address",
-  "address[]",
-  "bool",
-  "bool[]",
-  /*     'bytes',
-    'bytes[]',
-    'bytes8',
-    'bytes8[]',
-    'bytes16',
-    'bytes16[]',
-    'bytes32',
-    'bytes32[]', */
-  "int8",
-  "int8[]",
-  "int16",
-  "int16[]",
-  "int32",
-  "int32[]",
-  "int64",
-  "int64[]",
-  "int128",
-  "int128[]",
-  "int256",
-  "int256[]",
-  "int",
-  "int[]",
-  "uint8",
-  "uint8[]",
-  "uint16",
-  "uint16[]",
-  "uint32",
-  "uint32[]",
-  "uint64",
-  "uint64[]",
-  "uint128",
-  "uint128[]",
-  "uint256",
-  "uint256[]",
-  "uint",
-  "uint[]",
-  "string",
-  "string[]",
-];
+export const UnitTypes: string[] = ["address", "bool", "int", "uint", "string"];
 
 export enum ExecutionTypes {
   default = "default (infer from function type)",
@@ -106,21 +59,34 @@ export interface IContract {
   functions: IFuncTemplate[];
 }
 
+export interface IFuncTemplate {
+  funcName: string;
+  funcType: StateMutability;
+  funcInputParams: IFunctionParam[];
+  funcOutputParams: IFunctionParam[];
+}
+
+export interface IFunctionParam {
+  unitType: string; // the full type: uint, uint[], string[6], ...
+  basicType: string; // uint, string, address, ...
+  value?: any;
+  staticArraySize?: number;
+  components?: IFunctionParam[];
+}
+
 export interface IShortContract {
   a: string;
   f: IShortFunc[];
 }
 
 export interface IShortFunc {
-  n: string;
-  t: StateMutability;
-  i: string[];
-  o: string[];
+  n: string; // name of the function
+  t: StateMutability; // type: view, pure, ...
+  i: IShortParamType[]; // inputs
+  o: IShortParamType[]; // outputs
 }
 
-export interface IFuncTemplate {
-  funcName: string;
-  funcType: StateMutability;
-  funcInputParams: FunctionParam[];
-  funcOutputParams: FunctionParam[];
+export interface IShortParamType {
+  t: string; // type: uint, string[5], tuple, ...
+  c?: IShortParamType[]; // components for tuple types: [string, uint], ...
 }

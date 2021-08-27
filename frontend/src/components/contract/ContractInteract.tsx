@@ -2,7 +2,7 @@ import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useContext, useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import {
-  FunctionParam,
+  IFunctionParam,
   FuncTypes,
   UnitTypes,
   RawAbiDefinition,
@@ -113,6 +113,8 @@ export function ContractInteract(params: Params) {
     newFuncs.forEach((func) => copy.push(func));
     setSelectedFunctionIndex(functions.length);
     setFunctions(copy);
+
+    //console.log('setting funcs', copy)
   };
 
   const removeFunction = () => {
@@ -140,7 +142,7 @@ export function ContractInteract(params: Params) {
 
   const changeFunctionInputParam = (
     paramIndex: number,
-    newParam: FunctionParam,
+    newParam: IFunctionParam,
   ) => {
     const functionsCopy = [...functions];
     const functionItem = { ...functionsCopy[selectedFunctionIndex] };
@@ -152,7 +154,7 @@ export function ContractInteract(params: Params) {
 
   const changeFunctionOutputParam = (
     paramIndex: number,
-    newParam: FunctionParam,
+    newParam: IFunctionParam,
   ) => {
     const functionsCopy = [...functions];
     const functionItem = { ...functionsCopy[selectedFunctionIndex] };
@@ -163,9 +165,11 @@ export function ContractInteract(params: Params) {
   };
 
   const getEmptyParam = () => {
-    const param: FunctionParam = {
+    const param: IFunctionParam = {
       unitType: "uint",
+      basicType: "uint",
       value: "",
+      staticArraySize: 0,
     };
     return param;
   };

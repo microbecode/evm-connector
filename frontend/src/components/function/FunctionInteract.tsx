@@ -2,7 +2,7 @@ import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { fillTest } from "../test/tests";
 import {
-  FunctionParam,
+  IFunctionParam,
   FuncTypes,
   UnitTypes,
   RawAbiDefinition,
@@ -14,6 +14,7 @@ import {
 import { Web3Context } from "../../contexts/Context";
 import { CopyToClipboard } from "../helpers/CopyToClipboard";
 import { getChainByChainId, getChain } from "evm-chains";
+import { FunctionParam } from "./FunctionParam";
 
 interface Params {
   setNotifyText: React.Dispatch<React.SetStateAction<string>>;
@@ -24,11 +25,11 @@ interface Params {
   setSelectedFunctionType: (value: StateMutability) => void;
   setSelectedFunctionInputParam: (
     paramIndex: number,
-    value: FunctionParam,
+    value: IFunctionParam,
   ) => void;
   setSelectedFunctionOutputParam: (
     paramIndex: number,
-    value: FunctionParam,
+    value: IFunctionParam,
   ) => void;
   addSelectedFunctionInputParam: () => void;
   addSelectedFunctionOutputParam: () => void;
@@ -76,6 +77,14 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
+
+      if (item.staticArraySize > 0) {
+        para.type = para.type.replace(
+          /\[.*\]/,
+          "[" + item.staticArraySize + "]",
+        );
+      }
+
       inputParams.push(para);
     });
 
@@ -85,6 +94,12 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
+      if (item.staticArraySize > 0) {
+        para.type = para.type.replace(
+          /\[.*\]/,
+          "[" + item.staticArraySize + "]",
+        );
+      }
       outputParams.push(para);
     });
 
@@ -110,9 +125,11 @@ export function FunctionInteract(params: Params) {
     }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const abiStr = getAbi();
+    const abiStr =
+      // '[{"name":"Case4","type":"function","inputs":[{"name":"","type":"uint[]"},{"name":"","type":"string[2]"}],"stateMutability":"view","outputs":[{"name":"","type":"int[]"},{"name":"","type":"string[]"}]}]';
+      getAbi();
 
-    //console.log("used abi", abiStr);
+    console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -128,7 +145,7 @@ export function FunctionInteract(params: Params) {
         return param.value;
       },
     );
-    //console.log("inputting", inputValues, params.selectedFunction);
+    //console.log("inputting", ...inputValues);
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {
@@ -195,11 +212,19 @@ export function FunctionInteract(params: Params) {
 
   const updateSig = () => {
     let sig = params.selectedFunction.funcName;
-    const addParam = (params: FunctionParam[]) => {
+    const addParam = (params: IFunctionParam[]) => {
+      //console.log("adding param", params);
       let inSig = "";
       let paramTypes = [];
       params.forEach((item) => {
-        paramTypes.push(item.unitType);
+        let newType = item.unitType;
+        if (item.staticArraySize > 0) {
+          newType = newType.replace(/\[.*\]/, "[" + item.staticArraySize + "]");
+          //console.log("is size", item.staticArraySize, newType);
+        } else {
+          newType = newType.replace(/\[.*\]/, "[]");
+        }
+        paramTypes.push(newType);
       });
       inSig += paramTypes.flat();
       return inSig;
@@ -223,47 +248,6 @@ export function FunctionInteract(params: Params) {
       setSignatureHash(sigHash);
       setFuncSignature(sig);
     }
-  };
-
-  const setInputParamType = (index: number, value: string) => {
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
-    item.unitType = value;
-    params.setSelectedFunctionInputParam(index, item);
-  };
-
-  const setInputParamValue = (index: number, value: string) => {
-    //const copy = [...params.selectedFunction.funcInputParams];
-    const item = { ...[...params.selectedFunction.funcInputParams][index] };
-    item.value = value;
-    /*     if (item.unitType.indexOf('bytes') > -1) {
-      console.log('new value', value, item)
-      if (item.unitType.indexOf('[]') > -1) {
-        const rawValues = item.value.split(',');
-        const values = rawValues.map(item2 => ethers.utils.toUtf8Bytes(ethers.utils.hexZeroPad(item2, 8)));
-        item.value = values;
-      }
-      else {        
-        item.value = ethers.utils.toUtf8Bytes(value);
-      }
-    }
-    else  */ if (item.unitType.indexOf("[]") > 0) {
-      item.value = item.value.split(",");
-    }
-    //console.log('setting new value', item.value);
-    //copy[index] = item;
-    params.setSelectedFunctionInputParam(index, item);
-  };
-
-  /*   const setOutputParamValue = (index : number, value : string) => {
-    const item = {...[...params.selectedFunction.funcOutputParams][index]};
-    item.value = value;
-    params.setSelectedFunctionOutputParam(index, item);
-  } */
-
-  const setOutputParamType = (index: number, value: string) => {
-    const item = { ...[...params.selectedFunction.funcOutputParams][index] };
-    item.unitType = value;
-    params.setSelectedFunctionOutputParam(index, item);
   };
 
   const canHaveOutput =
@@ -298,24 +282,6 @@ export function FunctionInteract(params: Params) {
       return false;
     }
     return true;
-  };
-
-  const getItemValue = (item: FunctionParam) => {
-    if (!item.value) {
-      return "";
-    }
-    //console.log('found item', item)
-    /*     if (item.unitType.indexOf('bytes') > -1) {
-      if (item.unitType.indexOf('[]') > -1) {
-        const rawValues = item.value as string[];
-        const values = rawValues.map(item2 => ethers.utils.toUtf8String(item2 as BytesLike));
-        console.log('vallll', values)
-        return values;
-      }
-      return ethers.utils.toUtf8String(item.value as BytesLike);
-    } */
-
-    return item.value.toString();
   };
 
   const executeName =
@@ -381,54 +347,23 @@ export function FunctionInteract(params: Params) {
             {params.selectedFunction.funcInputParams.map((item, i) => {
               //console.log('found item', item)
               return (
-                <div key={i}>
-                  <label>Input parameter {i} type:</label>
-                  <select
-                    onChange={(e) => {
-                      setInputParamType(i, e.target.value);
-                    }}
-                    value={item.unitType}
-                  >
-                    {Object.keys(UnitTypes).map((item2, i2) => {
-                      return (
-                        <option key={i2} value={UnitTypes[item2]}>
-                          {UnitTypes[item2]}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <label>Value:</label>
-                  {item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="["
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  <input
-                    type="text"
-                    onChange={(e) => {
-                      setInputParamValue(i, e.target.value);
-                    }}
-                    value={getItemValue(item)}
-                  ></input>
-                  {item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="]"
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  <input
-                    type="button"
-                    value="Remove parameter"
-                    onClick={() => {
-                      params.removeSelectedFunctionInputParam(i);
-                    }}
-                  ></input>
-                </div>
+                <FunctionParam
+                  key={i}
+                  paramIndex={i}
+                  funcParam={item}
+                  selectedFunction={params.selectedFunction}
+                  setSelectedFunctionParam={
+                    params.setSelectedFunctionInputParam
+                  }
+                  addSelectedFunctionParam={
+                    params.addSelectedFunctionInputParam
+                  }
+                  removeSelectedFunctionParam={
+                    params.removeSelectedFunctionInputParam
+                  }
+                  displayValue={true}
+                  isInput={true}
+                ></FunctionParam>
               );
             })}
           </div>
@@ -447,54 +382,23 @@ export function FunctionInteract(params: Params) {
           <div>
             {params.selectedFunction.funcOutputParams.map((item, i) => {
               return (
-                <div key={i}>
-                  <label>Output parameter {i} type:</label>
-                  <select
-                    onChange={(e) => {
-                      setOutputParamType(i, e.target.value);
-                    }}
-                    value={item.unitType}
-                  >
-                    {Object.keys(UnitTypes).map((item2, i2) => {
-                      return (
-                        <option key={i2} value={UnitTypes[item2]}>
-                          {UnitTypes[item2]}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  {canHaveOutput && <label>Result value:</label>}
-                  {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="["
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  {canHaveOutput && (
-                    <input
-                      type="text"
-                      disabled={true}
-                      value={getItemValue(item)}
-                    ></input>
-                  )}
-                  {canHaveOutput && item.unitType.indexOf("[]") > -1 && (
-                    <input
-                      type="text"
-                      value="]"
-                      disabled={true}
-                      style={{ width: "15px" }}
-                    ></input>
-                  )}
-                  <input
-                    type="button"
-                    value="Remove parameter"
-                    onClick={() => {
-                      params.removeSelectedFunctionOutputParam(i);
-                    }}
-                  ></input>
-                </div>
+                <FunctionParam
+                  key={i}
+                  paramIndex={i}
+                  funcParam={item}
+                  selectedFunction={params.selectedFunction}
+                  setSelectedFunctionParam={
+                    params.setSelectedFunctionOutputParam
+                  }
+                  addSelectedFunctionParam={
+                    params.addSelectedFunctionOutputParam
+                  }
+                  removeSelectedFunctionParam={
+                    params.removeSelectedFunctionOutputParam
+                  }
+                  displayValue={canHaveOutput}
+                  isInput={false}
+                ></FunctionParam>
               );
             })}
           </div>
@@ -518,7 +422,7 @@ export function FunctionInteract(params: Params) {
           value={funcSignature}
         />
         <CopyToClipboard textToCopy={funcSignature} />
-        <label>Function hash:</label>
+  {/*       <label>Function hash:</label>
         <input
           type="text"
           style={{ width: "500px" }}
@@ -527,7 +431,7 @@ export function FunctionInteract(params: Params) {
           onChange={(e) => {}}
           value={signatureHash}
         />
-        <CopyToClipboard textToCopy={signatureHash} />
+        <CopyToClipboard textToCopy={signatureHash} /> */}
       </div>
 
       {window.ethereum !== undefined &&

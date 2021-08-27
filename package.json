@@ -1,7 +1,7 @@
 {
   "name": "evmconnector",
   "version": "1.0.0",
-  "description": "EVM connector",
+  "description": "EVM connector - a tool to interact with EVM based blockchain contracts",
   "directories": {
     "test": "test"
   },

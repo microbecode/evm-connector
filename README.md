@@ -16,7 +16,7 @@ EVM-based blockchains are for example:
 
 ## Web app
 
-The app is deployed at https://evmconnector.dev
+The app is deployed at https://evmconnector.dev .
 
 ![alt text](example.png)
 
@@ -30,6 +30,33 @@ You can import functions either with an ABI or from a known contract standard (s
 
 1. Not all legacy ABI formats are supported
 1. Not all parameter types are (yet) supported. Only functions with supported parameter types will be imported.
+
+### Defining function parameters
+
+Each function has zero or more input and output parameters. Input parameters are data you input to the function. Output parameters are data that comes out of the function, once it's executed. Both of these are part of the function signature.
+
+Defining function parameters:
+
+1. Add a new input or output parameter, depending on which one you want to define
+1. Select its `base type`
+1. If you need to define the type further, click *Details*
+1. Choose the desired parameter type definitions in the details view
+1. If this is an input function, add input value(s) for it
+
+You can always check the function signature to see if your function definition looks correct.
+
+### Chosen network
+
+The blockchain network to use is determined by your browser wallet.
+
+### Function interaction
+
+In order to interact with a function, at least the following need to be correctly configured:
+
+1. Your browser wallet connected to the correct network
+1. Contract address
+1. Function name
+1. If the function has input parameters, define their types and values
 
 ### Share contract definition
 
@@ -49,19 +76,6 @@ Once another user opens the site through such contract URL, the data is populate
 1. Choose which function he wants to interact with
 1. Enter needed input values for the possible input parameters
 1. Execute the function
-
-### Chosen network
-
-The blockchain network to use is determined by your browser wallet.
-
-### Function interaction
-
-In order to interact with a function, at least the following need to be correctly configured:
-
-1. Your browser wallet connected to the correct network
-1. Contract address
-1. Function name
-1. If the function has input parameters, define their types and values
 
 ## Possible questions
 
@@ -83,7 +97,7 @@ Some future development is considered and issues are created for those this repo
 
 - There is no backend. There is only the frontend you see
 - There is no external web3 connection. The only connection to the blockchain is through your wallet
-- No cookies or other persistent storage is utilized
+- No cookies or other persistent storage is utilized. This also means no tracking of any kind
 - Considering the above facts, it's rather difficult to abuse the system, since you can only hurt your own browser and/or the node your wallet uses.
 
 ## Technologies used

@@ -4,12 +4,13 @@ import { Button } from "react-bootstrap";
 import { ethers } from "ethers";
 import { FormatTypes, FunctionFragment, Interface } from "ethers/lib/utils";
 import {
-  FunctionParam,
+  IFunctionParam,
   IFuncTemplate,
   StateMutability,
   UnitTypes,
 } from "../types";
 import { ContractTemplate } from "../contract/ContractTemplate";
+import { parseParam } from "../helpers/paramHelper";
 
 interface Props {
   show: boolean;
@@ -30,21 +31,20 @@ export function ImportContract(props: Props) {
       const funcs: IFuncTemplate[] = [];
 
       inputFuncs.forEach((func) => {
-        const inputs: FunctionParam[] = [];
+        const inputs: IFunctionParam[] = [];
         func.inputs.forEach((put) => {
-          if (UnitTypes.includes(put.type)) {
-            const par = { unitType: put.type } as FunctionParam;
-            inputs.push(par);
-          } else {
-          }
+            const par = parseParam(put.type);
+            if (par != null) {
+              inputs.push(par);
+            }
         });
-        const outputs: FunctionParam[] = [];
+        const outputs: IFunctionParam[] = [];
 
         func.outputs.forEach((put) => {
-          if (UnitTypes.includes(put.type)) {
-            const par = { unitType: put.type } as FunctionParam;
-            outputs.push(par);
-          }
+          const par = parseParam(put.type);
+            if (par != null) {
+              outputs.push(par);
+            }
         });
 
         if (
@@ -91,7 +91,13 @@ export function ImportContract(props: Props) {
   const modalProps = { onHide: props.onHide, show: props.show };
 
   return (
-    <Modal {...modalProps} size="lg" aria-labelledby="modal-pp" centered>
+    <Modal
+      {...modalProps}
+      size="lg"
+      aria-labelledby="modal-pp"
+      centered
+      animation={false}
+    >
       <Modal.Header closeButton>
         <Modal.Title id="modal-pp" className="text-uppercase">
           Import contract functions

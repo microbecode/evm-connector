@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Button, Overlay, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import "../../styles/smallIcon.scss";
 
 type Props = {
@@ -9,16 +9,11 @@ type Props = {
 };
 
 export const SmallIcon = ({ imageUrl, tooltip, onClick }: Props) => {
-  const placement = "right";
   return (
     <>
-      <OverlayTrigger
-        key={placement}
-        placement={placement}
-        overlay={<Tooltip id={`tooltip-${placement}`}>{tooltip}</Tooltip>}
-      >
-        <img src={imageUrl} onClick={onClick} />
-      </OverlayTrigger>
+      <Button onClick={onClick} title={tooltip} className={"tooltipbtn"}>
+        <img src={imageUrl} />
+      </Button>
     </>
   );
 };
