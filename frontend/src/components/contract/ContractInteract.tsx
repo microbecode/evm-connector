@@ -298,7 +298,7 @@ export function ContractInteract(params: Params) {
           </>
         )}
 
- {/*      <div>
+      <div>
         <input
           type="button"
           value="Generate shareable URL"
@@ -306,7 +306,7 @@ export function ContractInteract(params: Params) {
         ></input>
         <input type="text" placeholder="" disabled={true} value={contractUrl} />
         <CopyToClipboard textToCopy={contractUrl} />
-      </div> */}
+      </div>
 
       {previousTxHash && (
         <div>
