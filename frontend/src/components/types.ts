@@ -35,7 +35,7 @@ export interface RawEventArgAbiDefinition {
   type: string;
 }
 
-export const UnitTypes: string[] = ["address", "bool", "int", "uint", "string"];
+export const UnitTypes: string[] = ["address", "bool", "bytes", "int", "uint", "string"];
 
 export enum ExecutionTypes {
   default = "default (infer from function type)",

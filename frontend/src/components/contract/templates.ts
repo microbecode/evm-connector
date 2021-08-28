@@ -2,7 +2,7 @@ import { IContractTemplate } from "../types";
 
 export const contractTemplates: IContractTemplate[] = [
   {
-    name: "ERC20",
+    name: "ERC-20",
     functions: [
       {
         funcName: "name",
@@ -65,7 +65,7 @@ export const contractTemplates: IContractTemplate[] = [
     ],
   },
   {
-    name: "ERC721",
+    name: "ERC-721",
     functions: [
       {
         funcName: "balanceOf",
@@ -128,7 +128,7 @@ export const contractTemplates: IContractTemplate[] = [
     ],
   },
   {
-    name: "BEP20",
+    name: "BEP-20",
     functions: [
       {
         funcName: "name",
