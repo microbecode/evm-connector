@@ -20,15 +20,6 @@ enum ParamTypes {
 }
 
 export function ParamDetails(props: Props) {
-  /*   const [bitAmount, setBitAmount] = useState<number>(256); */
-  /*  const [baseType, setBaseType] = useState<string>("uint256");
-  
-  const [paramType, setParamType] = useState<ParamTypes>(ParamTypes.Basic);
-  const [arrayStaticSize, setArrayStaticSize] = useState<number>(0); */
-
-  /*   useEffect(() => {
-    updateUpstreamType();
-  }, [baseType , bitAmount, paramType, arrayStaticSize ]); */
 
   let paramType = ParamTypes.Basic;
 
@@ -40,14 +31,19 @@ export function ParamDetails(props: Props) {
   }
 
   let bitAmount = 256;
+  if (props.funcParam.basicType === "bytes") {
+    bitAmount = 32;
+  }
   const bitMatch = props.funcParam.unitType.match(/\w(\d+)/);
   //console.log("type is " + props.funcParam.unitType);
   if (bitMatch) {
     bitAmount = +bitMatch[1];
   }
 
-  //const bytesBitOptions = Array.from({ length: 32 }, (e, i) => i + 1);
+  const bytesBitOptions = Array.from({ length: 32 }, (e, i) => i + 1);
   const intBitOptions = Array.from({ length: 32 }, (e, i) => (i + 1) * 8);
+
+  const usedBitOptions = props.funcParam.basicType === "bytes" ? bytesBitOptions : intBitOptions;
 
   const getSignature = (
     type: ParamTypes,
@@ -57,7 +53,7 @@ export function ParamDetails(props: Props) {
   ) => {
     let sig = basicType; //.replace(/\[.*\]/, "").replace(/\d/g, "");
     //console.log("initial sig", sig);
-    if (sig.indexOf("int") > -1) {
+    if (sig.indexOf("int") > -1 || sig === "bytes") {
       sig += bitAmount.toString();
     }
     if (type == ParamTypes.DynamicArray) {
@@ -154,6 +150,8 @@ export function ParamDetails(props: Props) {
   if (!Array.isArray(values)) {
     values = [values];
   }
+
+  const showBitOptions = props.funcParam.basicType.indexOf("int") > -1 || props.funcParam.basicType === "bytes";
   const modalProps = { onHide: props.onHide, show: props.show };
   //console.log("size is", props.funcParam.staticArraySize);
   return (
@@ -237,7 +235,7 @@ export function ParamDetails(props: Props) {
             <label>items</label>
           </span>
         </div>
-        {props.funcParam.basicType.indexOf("int") > -1 &&
+        {showBitOptions &&
         <div>
           <label>Number of bits:</label>
           <select
@@ -245,9 +243,9 @@ export function ParamDetails(props: Props) {
               changeBitAmount(+e.target.value);
             }}
             value={bitAmount}
-            disabled={props.funcParam.basicType.indexOf("int") == -1}
+/*             disabled={props.funcParam.basicType.indexOf("int") == -1} */
           >
-            {intBitOptions.map((item, i) => {
+            {usedBitOptions.map((item, i) => {
               return (
                 <option key={item} value={item}>
                   {item}
@@ -262,7 +260,6 @@ export function ParamDetails(props: Props) {
           <input type="text" value={signature} disabled={true}></input>
         </div>
         </fieldset>
-        
        <fieldset>
          <legend>Value</legend>         
          <div>

@@ -37,6 +37,19 @@ contract Sample {
     return d;
   }
 
+  // http://localhost:3000/load/('aE0x5FbDB2315678afecb367f032d93F642f64180aa3'~f.('nECase6'~tEpure'~i.*1')G2[-G3[2A~o.*32[A)])*('tEbytesA').![A-]E!'G,*GEA.-*_
+  function Case6(
+    bytes1 a,
+    bytes2[] memory b,
+    bytes3[2] memory c
+  ) public pure returns (bytes32[] memory) {
+    bytes32[] memory d = new bytes32[](3);
+    d[0] = a;
+    d[1] = b[0];
+    d[2] = c[1];
+    return d;
+  }
+
   // test case 5
   function NoReturnPayable(
     uint256 a,

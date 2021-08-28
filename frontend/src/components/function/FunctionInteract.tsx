@@ -168,7 +168,7 @@ export function FunctionInteract(params: Params) {
         // non-constant function return values can't be received directly, so don't even try
         return;
       }
-      //console.log("checking return values", res);
+      console.log("checking return values", res);
       for (
         let index = 0;
         index < params.selectedFunction.funcOutputParams.length;
@@ -218,12 +218,12 @@ export function FunctionInteract(params: Params) {
       let paramTypes = [];
       params.forEach((item) => {
         let newType = item.unitType;
-        if (item.staticArraySize > 0) {
+/*         if (item.staticArraySize > 0) {
           newType = newType.replace(/\[.*\]/, "[" + item.staticArraySize + "]");
           //console.log("is size", item.staticArraySize, newType);
         } else {
           newType = newType.replace(/\[.*\]/, "[]");
-        }
+        } */
         paramTypes.push(newType);
       });
       inSig += paramTypes.flat();
@@ -242,10 +242,10 @@ export function FunctionInteract(params: Params) {
       sig += ")";
     }
 
-    const sigHash = getFuncSig();
+    const sigHash = getFuncSig(); // just to make the signature is parseable
 
     if (sigHash != null) {
-      setSignatureHash(sigHash);
+      //setSignatureHash(sigHash);
       setFuncSignature(sig);
     }
   };
