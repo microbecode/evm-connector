@@ -68,20 +68,6 @@ const item = parseParam(value);
 
     const item = { ...[...getAllParams()][index] };
     item.value = value;
-    /*     if (item.unitType.indexOf('bytes') > -1) {
-      console.log('new value', value, item)
-      if (item.unitType.indexOf('[]') > -1) {
-        const rawValues = item.value.split(',');
-        const values = rawValues.map(item2 => ethers.utils.toUtf8Bytes(ethers.utils.hexZeroPad(item2, 8)));
-        item.value = values;
-      }
-      else {        
-        item.value = ethers.utils.toUtf8Bytes(value);
-      }
-    }
-    else  */ /*  if (item.unitType.indexOf("[") > -1) {
-      item.value = item.value.split(",");
-    } */
     //console.log('setting new value', item.value, getAllParams());
     //copy[index] = item;
     params.setSelectedFunctionParam(index, item);
@@ -92,15 +78,6 @@ const item = parseParam(value);
       return "";
     }
     //console.log('found item', item)
-    /*     if (item.unitType.indexOf('bytes') > -1) {
-      if (item.unitType.indexOf('[]') > -1) {
-        const rawValues = item.value as string[];
-        const values = rawValues.map(item2 => ethers.utils.toUtf8String(item2 as BytesLike));
-        console.log('vallll', values)
-        return values;
-      }
-      return ethers.utils.toUtf8String(item.value as BytesLike);
-    } */
 
     if (Array.isArray(item.value)) {
       return "[" + item.value.join("; ") + "]";
