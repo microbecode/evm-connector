@@ -39,7 +39,7 @@ Defining function parameters:
 
 1. Add a new input or output parameter, depending on which one you want to define
 1. Select its `base type`
-1. If you need to define the type further, click *Details*
+1. If you need to define the type further, click _Details_
 1. Choose the desired parameter type definitions in the details view
 1. If this is an input function, add input value(s) for it
 
@@ -60,7 +60,7 @@ In order to interact with a function, at least the following need to be correctl
 
 ### Share contract definition
 
-Once you have defined a contract with functions, you can share the interaction page with others via a URL. You can generate a URL for any contract you have defined in this tool and other will be able to access the same contract functionality via the URL. Click the "Generate shareable URL" button to generate a contract URL.
+Once you have defined a contract with functions, you can share the page with others via a URL. You can generate a URL for any contract you have defined in this tool and others will be able to load the same contract functionality via the URL. Click the "Generate shareable URL" button to generate a contract URL.
 
 Sharing a contract through URL includes the following information:
 
@@ -70,7 +70,7 @@ Sharing a contract through URL includes the following information:
   - Function type
   - Function input and output parameters without values
 
-Once another user opens the site through such contract URL, the data is populated for him. In order to interact with the contract, the user needs to:
+Once another user opens the site through such contract URL, the data is populated for him/her. In order to interact with the contract, the user needs to:
 
 1. Connect his wallet and connect to the correct network
 1. Choose which function he wants to interact with
@@ -79,16 +79,18 @@ Once another user opens the site through such contract URL, the data is populate
 
 ## Possible questions
 
-This tool is mostly meant for developers who know what they are doing. Anyway, here are answers to some of the most obvious questions:
+Answers to some common questions:
+
+<p>Q: Where are types `uint` and `int`? A: Those are just alias names for `uint256` and `int256`, respectively. So use the types with the bit amount specified. </p>
 
 <p>Q: What is the "default" function type? A: It means there is no explicit function type specified in the function signature. It implies a "nonpayable" function which can do state changes but has no special properties. </p>
 
 <p>Q: Why can't I sometimes see the result of the function execution? A: There is no way to get function result data if the call is in a real transaction.</p>
 
-<p>Q: Why is there an option to specify the execution type? A: Normally you can just leave this to be the default value.But if you need, for example, the return value from a state-changing function, you can change this to "Local call" to simulate calling the function as type `view` even if really isn't a `view` function. This way you can get the resulting data (although no state changes are performed).</p>
+<p>Q: Why is there an option to specify the execution type? A: Normally you can just leave this to be the default value. But if you need, for example, the return value from a state-changing function, you can change this to "Local call" to simulate calling the function as type `view` even if really isn't a `view` function. This way you can get the resulting data (although no state changes are performed).</p>
 
 ## Future development
- 
+
 Some future development is considered and issues are created for those this repo. Please feel free to leave feedback!
 
 # Technical stuff
@@ -102,9 +104,8 @@ Some future development is considered and issues are created for those this repo
 
 ## Technologies used
 
-- Node v14.15
-- Solidity 0.7.5 (only for some local testing)
-- Hardhat
+- Node
+- Solidity 0.7.5 and Hardhat (only for some local testing)
 - Ethers.js
 - ReactJS
 - TypeScript
