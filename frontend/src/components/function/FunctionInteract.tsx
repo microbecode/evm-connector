@@ -78,13 +78,6 @@ export function FunctionInteract(params: Params) {
         type: item.unitType,
       };
 
-      if (item.staticArraySize > 0) {
-        para.type = para.type.replace(
-          /\[.*\]/,
-          "[" + item.staticArraySize + "]",
-        );
-      }
-
       inputParams.push(para);
     });
 
@@ -94,12 +87,7 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
-      if (item.staticArraySize > 0) {
-        para.type = para.type.replace(
-          /\[.*\]/,
-          "[" + item.staticArraySize + "]",
-        );
-      }
+
       outputParams.push(para);
     });
 
@@ -141,7 +129,12 @@ export function FunctionInteract(params: Params) {
 
     const inputValues = params.selectedFunction.funcInputParams.map(
       (param, i) => {
-        //console.log('value for exec', param.value)
+        console.log("value for exec", param.value);
+        try {
+          const parsed = JSON.parse(param.value);
+          //console.log("parsed for exec", parsed);
+          return [parsed];
+        } catch (ex) {}
         return param.value;
       },
     );
@@ -153,10 +146,9 @@ export function FunctionInteract(params: Params) {
         //console.log('etting val', customValue)
       }
 
-      const res = await contract.functions[params.selectedFunction.funcName](
-        ...inputValues,
-        { value: customValue },
-      );
+      const res = await contract.functions[
+        params.selectedFunction.funcName
+      ](...inputValues, { value: customValue });
       //console.log("result", res);
       if (res.wait) {
         // It's a real transaction
@@ -168,7 +160,7 @@ export function FunctionInteract(params: Params) {
         // non-constant function return values can't be received directly, so don't even try
         return;
       }
-      console.log("checking return values", res);
+      //console.log("checking return values", res);
       for (
         let index = 0;
         index < params.selectedFunction.funcOutputParams.length;
@@ -218,7 +210,7 @@ export function FunctionInteract(params: Params) {
       let paramTypes = [];
       params.forEach((item) => {
         let newType = item.unitType;
-/*         if (item.staticArraySize > 0) {
+        /*         if (item.staticArraySize > 0) {
           newType = newType.replace(/\[.*\]/, "[" + item.staticArraySize + "]");
           //console.log("is size", item.staticArraySize, newType);
         } else {
@@ -422,7 +414,7 @@ export function FunctionInteract(params: Params) {
           value={funcSignature}
         />
         <CopyToClipboard textToCopy={funcSignature} />
-  {/*       <label>Function hash:</label>
+        {/*       <label>Function hash:</label>
         <input
           type="text"
           style={{ width: "500px" }}

@@ -38,6 +38,7 @@ contract Sample {
   }
 
   // http://localhost:3000/load/('aE0x5FbDB2315678afecb367f032d93F642f64180aa3'~f.('nECase6'~tEpure'~i.*1')G2[-G3[2A~o.*32[A)])*('tEbytesA').![A-]E!'G,*GEA.-*_
+  // input 0x12, [0x1234, 0x3456] and [0xabcdef, 0x987654]. output [0x12..., 0x1234..., 0x987654...]
   function Case6(
     bytes1 a,
     bytes2[] memory b,
@@ -48,6 +49,15 @@ contract Sample {
     d[1] = b[0];
     d[2] = c[1];
     return d;
+  }
+
+// http://localhost:3000/load/('a!'0x5FbDB2315678afecb367f032d93F642f64180aa3'~fA('n!'Case7'~t!'pure'~i-3][][1]'),*'.~o-]'..)*('t!'uint256-A*[.)]A![A.-*_
+// input [[1,2,3],[4,5,6]] and 1, return 6,5,0
+  function Case7(uint256[3][][1] memory arr, uint basic) public pure returns(uint256[] memory) {
+      uint256[] memory d = new uint256[](3);
+      d[0] = arr[0][1][2];
+      d[1] = arr[0][basic][1];
+      return d;
   }
 
   // test case 5

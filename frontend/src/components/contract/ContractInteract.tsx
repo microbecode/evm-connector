@@ -39,40 +39,6 @@ export function ContractInteract(params: Params) {
 
   const debug: boolean = false;
 
-  //console.log("amounts", functions.length, selectedFunctionIndex);
-
-  /*   const doTest = (index : number) => {
-    setContractAddress('0x5FbDB2315678afecb367f032d93F642f64180aa3');
-    fillTest({
-        index, 
-        setFuncName, 
-        setFuncType,
-        setFunctionInputParams,
-        setFunctionOutputParams,
-        execute
-      }
-  )}
-
-  useEffect(() => {
-    if (testNumber > 0) {
-      reset();
-      doTest(testNumber);
-    }    
-  }, [testNumber]); */
-  /* 
-
-  
-  const reset = () => {
-    setContractAddress('');
-    setFuncName('');
-    setFuncType('nonpayable');
-    setFunctionInputParams([]);
-    setFunctionOutputParams([]);
-    setExecType(ExecutionTypes.default);
-  } */
-
-  //useEffect(() => {}, [functions]);
-
   useEffect(() => {
     if (params && params.contractData) {
       try {
@@ -166,10 +132,10 @@ export function ContractInteract(params: Params) {
 
   const getEmptyParam = () => {
     const param: IFunctionParam = {
-      unitType: "uint",
+      unitType: "uint256",
       basicType: "uint",
       value: "",
-      staticArraySize: 0,
+      /*    staticArraySize: 0, */
     };
     return param;
   };
