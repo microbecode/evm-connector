@@ -115,7 +115,7 @@ export function FunctionInteract(params: Params) {
       // '[{"name":"Case4","type":"function","inputs":[{"name":"","type":"uint[]"},{"name":"","type":"string[2]"}],"stateMutability":"view","outputs":[{"name":"","type":"int[]"},{"name":"","type":"string[]"}]}]';
       getAbi();
 
-    console.log("used abi", abiStr);
+    //console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -127,7 +127,7 @@ export function FunctionInteract(params: Params) {
 
     const inputValues = params.selectedFunction.funcInputParams.map(
       (param, i) => {
-        console.log("value for exec", param.value);
+        //console.log("value for exec", param.value);
         try {
           const parsed = JSON.parse(param.value);
           //console.log("parsed for exec", parsed);
@@ -136,7 +136,7 @@ export function FunctionInteract(params: Params) {
         return param.value;
       },
     );
-    //console.log("inputting", ...inputValues);
+    console.log("inputting", ...inputValues);
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {
@@ -208,12 +208,6 @@ export function FunctionInteract(params: Params) {
       let paramTypes = [];
       params.forEach((item) => {
         let newType = item.unitType;
-        /*         if (item.staticArraySize > 0) {
-          newType = newType.replace(/\[.*\]/, "[" + item.staticArraySize + "]");
-          //console.log("is size", item.staticArraySize, newType);
-        } else {
-          newType = newType.replace(/\[.*\]/, "[]");
-        } */
         paramTypes.push(newType);
       });
       inSig += paramTypes.flat();
@@ -248,11 +242,15 @@ export function FunctionInteract(params: Params) {
 
   const validate = () => {
     let errors = [];
-    if (
-      !params.contractAddress ||
-      params.contractAddress.length != 42 ||
-      !params.contractAddress.startsWith("0x")
-    ) {
+
+    const isValidAddress = (addr: string) => {
+      if (!addr || addr.length !== 42 || !addr.startsWith("0x")) {
+        return false;
+      }
+      return true;
+    };
+
+    if (!isValidAddress(params.contractAddress)) {
       errors.push("Invalid contract address");
     }
     if (
@@ -267,6 +265,26 @@ export function FunctionInteract(params: Params) {
     if (getFuncSig() == null) {
       errors.push("Invalid function name");
     }
+
+    params.selectedFunction.funcInputParams.forEach((par) => {
+      switch (par.unitType) {
+        case "address":
+          if (!isValidAddress(par.value)) {
+            errors.push("Invalid input value for address");
+          }
+          break;
+        /*         case "bool":
+          if (par.value !== "true" || par.value !== "false") {
+            errors.push("Invalid input value for bool");
+          }
+          break; */
+        case "uint":
+          if (!par.value.match("^\\d+$")) {
+            errors.push("Invalid input value for uint");
+          }
+          break;
+      }
+    });
     if (errors.length > 0) {
       params.setNotifyText("Validation errors: " + errors.join(", "));
       return false;

@@ -7,6 +7,7 @@ contract Sample {
 
   function Case1() public {}
 
+// http://localhost:3000/load/('a!'0x5FbDB2315678afecb367f032d93F642f64180aa3'~f-('n!'Case2'~.nonpayable'~i-('.uint256*string*address')]~o-])])*'),('.-![.t!'.-*_
   function Case2(
     uint256 a,
     string calldata b,
@@ -16,18 +17,10 @@ contract Sample {
   // test case 3
   function Case3(uint256[] calldata a)
     public
-    view
+    pure
     returns (uint256[] calldata)
   {
     return (a);
-  }
-
-  function Case4(uint256[] calldata a, string[2] calldata b)
-    public
-    view
-    returns (uint256[] calldata, string[2] calldata)
-  {
-    return (a, b);
   }
 
   function Case5(uint256[2] memory a) public pure returns (uint256[] memory) {
@@ -60,13 +53,16 @@ contract Sample {
       return d;
   }
 
-  // test case 5
+  // http://localhost:3000/load/('aC0x5FbDB2315678afecb367f032d93F642f64180aa3'~f.('nCNoReturnP-tCp-i.Euint256A*addressA[]')]~o.])])*'),E-ayable'~.![A*stringC!'E('tCECA.-*_
   function NoReturnPayable(
     uint256 a,
     string calldata b,
     address c,
     string[] calldata d
   ) public payable {}
+
+// http://localhost:3000/load/('a!'0x5FbDB2315678afecb367f032d93F642f64180aa3'~f-('n!'SimpleP*t!'p*i.~o.)])*ayable'~-![.-].-*_
+  function SimplePayable() public payable {}
 
   // test case 6
   function ReturnDefault()
@@ -102,7 +98,7 @@ contract Sample {
     c = msg.sender;
   }
 
-  // test case 8
+  // http://localhost:3000/load/('a.0x5FbDB2315678afecb367f032d93F642f64180aa3'~f-('n.ReturnView'~t.view'~i-]~o-Auint256*string*address*bool')])])*'),A-![.!'A('t.A.-*_
   function ReturnView()
     public
     view
@@ -120,9 +116,17 @@ contract Sample {
     return (a, b, c, d);
   }
 
-  function Test1(uint256 a) public {
+// http://localhost:3000/load/('a!'0x5FbDB2315678afecb367f032d93F642f64180aa3'~f*('n!'Test1'~t!'pure'~i*('t!'uint256')]~o*])])*![*_
+  function Test1(uint256 a) public pure {
     if (a > 5) {
       revert();
+    }
+  }
+
+// http://localhost:3000/load/('a!'0x5FbDB2315678afecb367f032d93F642f64180aa3'~f*('n!'BoolTest'~t!'pure'~i*('t!'bool')]~o*])])*![*_
+  function BoolTest(bool a) public pure {
+    if (a) {
+      revert("some message");
     }
   }
 }

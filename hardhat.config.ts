@@ -28,13 +28,12 @@ const config: HardhatUserConfig = {
     compilers: [
       {
         version: "0.8.0",
-      }
+      },
     ],
   },
   defaultNetwork: "hardhat",
   networks: {
-    hardhat: {
-    },
+    hardhat: {},
     /*     ropsten: {
           url: providerRopsten,
           accounts: [privKeyExists],
