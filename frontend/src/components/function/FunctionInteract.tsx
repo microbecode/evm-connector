@@ -1,10 +1,8 @@
 import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { fillTest } from "../test/tests";
 import {
   IFunctionParam,
   FuncTypes,
-  UnitTypes,
   RawAbiDefinition,
   RawAbiParameter,
   StateMutability,

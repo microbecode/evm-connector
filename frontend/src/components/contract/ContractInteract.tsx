@@ -1,16 +1,5 @@
-import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useContext, useEffect, useState } from "react";
-import { fillTest } from "../test/tests";
-import {
-  IFunctionParam,
-  FuncTypes,
-  UnitTypes,
-  RawAbiDefinition,
-  RawAbiParameter,
-  StateMutability,
-  ExecutionTypes,
-  IFuncTemplate,
-} from "../types";
+import { IFunctionParam, StateMutability, IFuncTemplate } from "../types";
 import { WaitingForTransactionMessage } from "../WaitingForTransactionMessage";
 import { Notification } from "../Notification";
 import { Web3Context } from "../../contexts/Context";
