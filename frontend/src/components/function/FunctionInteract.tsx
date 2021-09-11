@@ -128,15 +128,27 @@ export function FunctionInteract(params: Params) {
     const inputValues = params.selectedFunction.funcInputParams.map(
       (param, i) => {
         //console.log("value for exec", param.value);
-        try {
-          const parsed = JSON.parse(param.value);
-          //console.log("parsed for exec", parsed);
-          return [parsed];
-        } catch (ex) {}
+        if (param.unitType.indexOf("[") > -1) {
+          try {
+            const parsed = JSON.parse(param.value);
+            //console.log("parsed for exec", parsed);
+            return [parsed];
+          } catch (ex) {}
+        }
+
+        if (param.basicType === "bool") {
+          if (param.value === "true" || param.value === "1") {
+            return true;
+          }
+          if (param.value === "false" || param.value === "0") {
+            return false;
+          }
+        }
+
         return param.value;
       },
     );
-    console.log("inputting", ...inputValues);
+    //console.log("inputting", ...inputValues);
     try {
       let customValue = BigNumber.from(0);
       if (params.selectedFunction.funcType === "payable") {
@@ -168,7 +180,7 @@ export function FunctionInteract(params: Params) {
         item.value = res[index];
         params.setSelectedFunctionOutputParam(index, item);
       }
-      //console.log('result', res, res.toString());
+      //console.log("result", res, res.toString());
     } catch (ex) {
       let msg = ex.message;
       if (ex.data?.message) {
@@ -267,20 +279,41 @@ export function FunctionInteract(params: Params) {
     }
 
     params.selectedFunction.funcInputParams.forEach((par) => {
+      //console.log("validating", par.value);
       switch (par.unitType) {
+        // don't validate array type values, for now. Only simple types
         case "address":
           if (!isValidAddress(par.value)) {
             errors.push("Invalid input value for address");
           }
           break;
-        /*         case "bool":
-          if (par.value !== "true" || par.value !== "false") {
-            errors.push("Invalid input value for bool");
+        case "bool":
+          if (
+            par.value !== "true" &&
+            par.value !== "false" &&
+            par.value !== "1" &&
+            par.value !== "0"
+          ) {
+            errors.push(
+              "Invalid input value for bool. Accepted values are: true, false, 0, 1",
+            );
           }
-          break; */
-        case "uint":
+          break;
+        case "bytes":
+          if (!par.value.startsWith("0x")) {
+            errors.push("Invalid input value for bytes. Has to start with 0x");
+          }
+          break;
+        case "uint256":
           if (!par.value.match("^\\d+$")) {
-            errors.push("Invalid input value for uint");
+            errors.push(
+              "Invalid input value for uint. Has to be a positive integer",
+            );
+          }
+          break;
+        case "int256":
+          if (!par.value.match("^-?\\d+$")) {
+            errors.push("Invalid input value for int. Has to be an integer");
           }
           break;
       }

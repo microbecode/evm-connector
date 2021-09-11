@@ -23,6 +23,20 @@ contract Sample {
     return (a);
   }
 
+uint totalValue;
+
+// http://localhost:3000/load/('a!'0x5FbDB2315678afecb367f032d93F642f64180aa3'~f-('n!'CaseP*t!'p*i-]~o-('t!'uint256[]')])])*ayable'~-![-*_
+  function CasePayable()
+    public
+    payable
+  {
+    totalValue += msg.value;
+  }
+
+  function CheckValue() public view returns (uint) {
+    return totalValue;
+  }
+
   function Case5(uint256[2] memory a) public pure returns (uint256[] memory) {
     uint256[] memory d = new uint256[](3);
     d[0] = uint256(5);
