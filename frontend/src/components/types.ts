@@ -70,7 +70,6 @@ export interface IFunctionParam {
   unitType: string; // the full type: uint, uint[], string[6], ...
   basicType: string; // uint, string, address, ...
   value?: any;
-  staticArraySize?: number;
   components?: IFunctionParam[];
 }
 

@@ -97,7 +97,7 @@ const encodeUrlParams = (
   };
 
   const json = JSON.stringify(contr);
-  console.log("json", json);
+  //console.log("json", json);
   const crushed = JSONCrush.crush(json);
 
   return crushed;

@@ -19,9 +19,9 @@ export function FunctionParam(params: Params) {
   const [showParamDetailsModal, setShowParamDetailsModal] = useState(false);
 
   const setParamType = (index: number, value: string) => {
-    //console.log("changing type to", item, value);
-const item = parseParam(value);
-   /*  item.unitType = value;
+    //console.log("changing type to", value);
+    const item = parseParam(value);
+    /*  item.unitType = value;
     item.staticArraySize = 0;
     if (value.indexOf("[") > -1) {
       item.value = [];
@@ -36,7 +36,7 @@ const item = parseParam(value);
       item.value = "";
       item.basicType = value.replace(/\d/g, ""); // remove number elements
     } */
-   /*  console.log(
+    /*  console.log(
       "setting unit type",
       item.unitType,
       value,
@@ -105,7 +105,11 @@ const item = parseParam(value);
           );
         })}
       </select>
-      <input type='button' value='Details' onClick={() => setShowParamDetailsModal(true)}></input>
+      <input
+        type="button"
+        value="Details"
+        onClick={() => setShowParamDetailsModal(true)}
+      ></input>
       <label hidden={!params.displayValue}>Value:</label>
       {!isArrayType && (
         <input

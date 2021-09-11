@@ -1,10 +1,8 @@
 import { BigNumber, BytesLike, ethers } from "ethers";
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import { fillTest } from "../test/tests";
 import {
   IFunctionParam,
   FuncTypes,
-  UnitTypes,
   RawAbiDefinition,
   RawAbiParameter,
   StateMutability,
@@ -78,13 +76,6 @@ export function FunctionInteract(params: Params) {
         type: item.unitType,
       };
 
-      if (item.staticArraySize > 0) {
-        para.type = para.type.replace(
-          /\[.*\]/,
-          "[" + item.staticArraySize + "]",
-        );
-      }
-
       inputParams.push(para);
     });
 
@@ -94,12 +85,7 @@ export function FunctionInteract(params: Params) {
         name: "",
         type: item.unitType,
       };
-      if (item.staticArraySize > 0) {
-        para.type = para.type.replace(
-          /\[.*\]/,
-          "[" + item.staticArraySize + "]",
-        );
-      }
+
       outputParams.push(para);
     });
 
@@ -129,7 +115,7 @@ export function FunctionInteract(params: Params) {
       // '[{"name":"Case4","type":"function","inputs":[{"name":"","type":"uint[]"},{"name":"","type":"string[2]"}],"stateMutability":"view","outputs":[{"name":"","type":"int[]"},{"name":"","type":"string[]"}]}]';
       getAbi();
 
-    console.log("used abi", abiStr);
+    //console.log("used abi", abiStr);
 
     const contract = new ethers.Contract(
       params.contractAddress,
@@ -141,7 +127,24 @@ export function FunctionInteract(params: Params) {
 
     const inputValues = params.selectedFunction.funcInputParams.map(
       (param, i) => {
-        //console.log('value for exec', param.value)
+        //console.log("value for exec", param.value);
+        if (param.unitType.indexOf("[") > -1) {
+          try {
+            const parsed = JSON.parse(param.value);
+            //console.log("parsed for exec", parsed);
+            return [parsed];
+          } catch (ex) {}
+        }
+
+        if (param.basicType === "bool") {
+          if (param.value === "true" || param.value === "1") {
+            return true;
+          }
+          if (param.value === "false" || param.value === "0") {
+            return false;
+          }
+        }
+
         return param.value;
       },
     );
@@ -153,10 +156,9 @@ export function FunctionInteract(params: Params) {
         //console.log('etting val', customValue)
       }
 
-      const res = await contract.functions[params.selectedFunction.funcName](
-        ...inputValues,
-        { value: customValue },
-      );
+      const res = await contract.functions[
+        params.selectedFunction.funcName
+      ](...inputValues, { value: customValue });
       //console.log("result", res);
       if (res.wait) {
         // It's a real transaction
@@ -168,7 +170,7 @@ export function FunctionInteract(params: Params) {
         // non-constant function return values can't be received directly, so don't even try
         return;
       }
-      console.log("checking return values", res);
+      //console.log("checking return values", res);
       for (
         let index = 0;
         index < params.selectedFunction.funcOutputParams.length;
@@ -178,7 +180,7 @@ export function FunctionInteract(params: Params) {
         item.value = res[index];
         params.setSelectedFunctionOutputParam(index, item);
       }
-      //console.log('result', res, res.toString());
+      //console.log("result", res, res.toString());
     } catch (ex) {
       let msg = ex.message;
       if (ex.data?.message) {
@@ -218,12 +220,6 @@ export function FunctionInteract(params: Params) {
       let paramTypes = [];
       params.forEach((item) => {
         let newType = item.unitType;
-/*         if (item.staticArraySize > 0) {
-          newType = newType.replace(/\[.*\]/, "[" + item.staticArraySize + "]");
-          //console.log("is size", item.staticArraySize, newType);
-        } else {
-          newType = newType.replace(/\[.*\]/, "[]");
-        } */
         paramTypes.push(newType);
       });
       inSig += paramTypes.flat();
@@ -258,11 +254,15 @@ export function FunctionInteract(params: Params) {
 
   const validate = () => {
     let errors = [];
-    if (
-      !params.contractAddress ||
-      params.contractAddress.length != 42 ||
-      !params.contractAddress.startsWith("0x")
-    ) {
+
+    const isValidAddress = (addr: string) => {
+      if (!addr || addr.length !== 42 || !addr.startsWith("0x")) {
+        return false;
+      }
+      return true;
+    };
+
+    if (!isValidAddress(params.contractAddress)) {
       errors.push("Invalid contract address");
     }
     if (
@@ -277,6 +277,47 @@ export function FunctionInteract(params: Params) {
     if (getFuncSig() == null) {
       errors.push("Invalid function name");
     }
+
+    params.selectedFunction.funcInputParams.forEach((par) => {
+      //console.log("validating", par.value);
+      switch (par.unitType) {
+        // don't validate array type values, for now. Only simple types
+        case "address":
+          if (!isValidAddress(par.value)) {
+            errors.push("Invalid input value for address");
+          }
+          break;
+        case "bool":
+          if (
+            par.value !== "true" &&
+            par.value !== "false" &&
+            par.value !== "1" &&
+            par.value !== "0"
+          ) {
+            errors.push(
+              "Invalid input value for bool. Accepted values are: true, false, 0, 1",
+            );
+          }
+          break;
+        case "bytes":
+          if (!par.value.startsWith("0x")) {
+            errors.push("Invalid input value for bytes. Has to start with 0x");
+          }
+          break;
+        case "uint256":
+          if (!par.value.match("^\\d+$")) {
+            errors.push(
+              "Invalid input value for uint. Has to be a positive integer",
+            );
+          }
+          break;
+        case "int256":
+          if (!par.value.match("^-?\\d+$")) {
+            errors.push("Invalid input value for int. Has to be an integer");
+          }
+          break;
+      }
+    });
     if (errors.length > 0) {
       params.setNotifyText("Validation errors: " + errors.join(", "));
       return false;
@@ -422,7 +463,7 @@ export function FunctionInteract(params: Params) {
           value={funcSignature}
         />
         <CopyToClipboard textToCopy={funcSignature} />
-  {/*       <label>Function hash:</label>
+        {/*       <label>Function hash:</label>
         <input
           type="text"
           style={{ width: "500px" }}
