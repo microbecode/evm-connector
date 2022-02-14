@@ -74,7 +74,7 @@ export function FunctionParam(params: Params) {
   };
 
   const getItemValue = (item: IFunctionParam) => {
-    if (!item.value) {
+    if (!item.value && typeof item.value != "boolean") {
       return "";
     }
     //console.log('found item', item)
