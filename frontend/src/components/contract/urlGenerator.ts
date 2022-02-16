@@ -19,7 +19,8 @@ export const generateUrl = (
   return url;
 };
 
-export const decodeUrlParams = (crushed: string): IContract => {
+export const decodeUrlParams = (encoded: string): IContract => {
+  const crushed = decodeURIComponent(encoded);
   const json = JSONCrush.uncrush(crushed);
   const short = JSON.parse(json) as IShortContract;
 
@@ -61,15 +62,6 @@ const encodeUrlParams = (
     const put: IShortParamType = {
       t: param.unitType,
     };
-    /*     if (param.unitType == "tuple") {
-          put.c = param.components.map((c) => mapParam(c));
-        } */
-    /*     if (param.staticArraySize > 0) {
-          put.t = param.unitType.replace(
-            /\[.*\]/,
-            "[" + param.staticArraySize + "]",
-          );
-        } */
     return put;
   };
 
@@ -97,8 +89,9 @@ const encodeUrlParams = (
   };
 
   const json = JSON.stringify(contr);
-  //console.log("json", json);
   const crushed = JSONCrush.crush(json);
+  const encoded = encodeURIComponent(crushed);
 
-  return crushed;
+  console.log('json', {json}, {crushed}, {encoded});
+  return encoded;
 };
